@@ -2,6 +2,7 @@ package EntityEngine;
 
 import EntityEngine.Components.Component;
 import EntityEngine.GameClasses.TDCamera;
+import EntityEngine.Network.ClientUpdate;
 import EntityEngine.Renderer.Cell;
 import EntityEngine.Renderer.SpatialHashGrid;
 import EntityEngine.Systems.*;
@@ -25,7 +26,7 @@ public class Engine {
     public Batch batch;
     int entityId = 0;
 
-
+    public String user;
 
     public Engine(Batch batch, TDCamera camera){
         this.batch = batch;
@@ -190,6 +191,14 @@ public class Engine {
 
     public Array<Cell> getCellsFromCameraCenter(){
         return getSpatialHashGrid().getNeighbours(camera.getCameraTransform());
+    }
+
+    /*
+    * Override this when creating custom server client
+    * */
+    public void addNetWorkClientOnUpdate(ClientUpdate client){
+        NetworkManager manager = (NetworkManager) getSystem(NetworkManager.class);
+        manager.addClientOnUpdate(client);
     }
 
     public TDCamera getCamera(){

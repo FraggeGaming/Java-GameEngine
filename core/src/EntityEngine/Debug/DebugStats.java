@@ -44,7 +44,7 @@ public class DebugStats {
     Array<DebugLabel> labels = new Array<>();
     DebugLabel frameTimeDebug;
 
-    String ip = "94.255.149.44"; //"192.168.50.181";
+    String ip = "94.255.149.44";//"192.168.50.181";
     int port = 1234;
 
 
@@ -130,6 +130,32 @@ public class DebugStats {
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 NetworkManager manager = (NetworkManager) engine.getSystem(NetworkManager.class);
                 manager.openNetwork(false, ip, port);
+            }
+        });
+
+        item = new UIItem(stage);
+        item.setMargin(10);
+        item.floatTop();
+        item.floatLeft();
+        item.translate(30, -50*(labelOrder++));
+        debugger = createButton("Join as Player 1" ,  item.getX(), item.getY());
+        debugger.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                engine.user = "Player";
+            }
+        });
+
+        item = new UIItem(stage);
+        item.setMargin(10);
+        item.floatTop();
+        item.floatLeft();
+        item.translate(30, -52*(labelOrder++));
+        debugger = createButton("Join as Player 2",  item.getX(), item.getY());
+        debugger.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                engine.user = "Player2";
             }
         });
 

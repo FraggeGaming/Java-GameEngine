@@ -5,9 +5,11 @@ import EntityEngine.Engine;
 import EntityEngine.Entity;
 import EntityEngine.GameClasses.Animation;
 import EntityEngine.GameClasses.TDCamera;
+import EntityEngine.Network.ClientUpdate;
 import EntityEngine.Noise.OpenSimplexNoise;
 import EntityEngine.Systems.*;
 import EntityEngine.Tile;
+import TestFiles.scripts.NetWorkClient;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -31,6 +33,9 @@ public class DOPVsOOP extends ApplicationAdapter {
 	int mapSize = 500;
 	int mapSizeIndex = 0;
 	OpenSimplexNoise noise;
+
+
+
 
 	@Override
 	public void create () {
@@ -121,6 +126,24 @@ public class DOPVsOOP extends ApplicationAdapter {
 			for (int j = 0; j < 10; j++)
 			createFireAnimationTest(30 * i, 30*j, fireAtlas );
 		}
+
+
+		player = new Entity();
+		player.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion("RedAnt"))));
+		player.addComponents(new TransformComponent(150, 150, 5, 30, 30));
+		c = new CollisionComponent(100, 100, 30, 30);
+		c.id = "Player2";
+		player.addComponents(c);
+		player.addComponents(new VelocityComponent());
+		player.tag = "Player2";
+		engine.addEntity(player);
+
+
+		NetWorkClient client = new NetWorkClient();
+		//to stuff with netGame
+		engine.addNetWorkClientOnUpdate(client);
+
+
 	}
 
 	public void createFireAnimationTest(int x, int y, TextureAtlas fireAtlas){

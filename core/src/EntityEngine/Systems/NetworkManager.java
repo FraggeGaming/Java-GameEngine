@@ -2,11 +2,12 @@ package EntityEngine.Systems;
 
 import EntityEngine.Components.TransformComponent;
 import EntityEngine.Entity;
-import EntityEngine.Network.Host;
-import EntityEngine.Network.Packet;
+import EntityEngine.Network.*;
 import EntityEngine.NetworkClient.Client;
+import TestFiles.scripts.Data;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.google.gson.Gson;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -20,11 +21,20 @@ public class NetworkManager extends System{
     public boolean isHost;
     BlockingQueue<Packet> queueOut = new ArrayBlockingQueue<>(1024);
     BlockingQueue<Packet> queueIn = new ArrayBlockingQueue<>(1024);
+    boolean isOpen = false;
 
 
-    Entity e;
+    ClientUpdate clientUpdate;
+    NetWorkData data;
+    Gson gson = new Gson();
     public NetworkManager(){
 
+    }
+
+    public void addClientOnUpdate(ClientUpdate client){
+        this.clientUpdate = client;
+        clientUpdate.addEngine(engine);
+        clientUpdate.addNetwork(this);
     }
 
     public void giveData(Packet data){
@@ -49,56 +59,55 @@ public class NetworkManager extends System{
         client = new Client(ip, port, queueOut, queueIn, isHost);
         engine.pool.submit(client);
 
+        isOpen = true;
+
     }
 
     @Override
     public void update(float dt) {
-        if (isHost){
-            //get request
-            String s = getData().toString();
-            if (s!=null)
-                java.lang.System.out.println(s);
+        if (isOpen){
+            /*if (isHost){
+                Packet p = getData();
+                if (p != null) {
+                    giveData(p);
+                }
 
-            //if can apply
-            applyData(s);
-            //apply the input request
+                    /*}String s = p.toString();
+                    if (s!=null){
+                        NetWorkData data = gson.fromJson(s, Data.class);
 
-            //send the correct and checked request to other players
-            //giveData(new NetworkData(s));
+                        //Handle data
 
-            if (Gdx.input.isKeyJustPressed(Input.Keys.Q)){
-                e = engine.getEntity("Player");
-                TransformComponent c = (TransformComponent) e.getComponent(TransformComponent.class);
-                giveData(new Packet(c.toString()));
-            }
-            //Send reply to all other clients
+
+                        s = gson.toJson(data, Data.class);
+                        if (s != null)
+                            giveData(new Packet(s));
+                    }
+
+                }
+            }*/
+
+
+            clientUpdate.update();
         }
 
-        else {
-            String s = getData().toString();
-            if (s!=null)
-                java.lang.System.out.println(s);
-            applyData(s);
-            //get demand from host and apply
-
-            //Send new request to host
-            if (Gdx.input.isKeyJustPressed(Input.Keys.Q)){
-                e = engine.getEntity("Player");
-                TransformComponent c = (TransformComponent) e.getComponent(TransformComponent.class);
-                giveData(new Packet(c.toString()));
-            }
-        }
     }
 
-    private void applyData(String s) {
-        //pars string to json and do things
+    private NetWorkData applyDataAsHost(NetWorkData fromJson) {
+
+        return fromJson;
     }
+
 
     public Packet getData(){
+        Packet p = null;
         try {
-            if (!queueIn.isEmpty()){
-                return queueIn.take();
+             while(!queueIn.isEmpty()){
+                 p = queueIn.take();
             }
+
+             if (p != null)
+                 return p;
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

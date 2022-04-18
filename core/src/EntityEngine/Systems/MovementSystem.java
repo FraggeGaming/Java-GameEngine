@@ -18,7 +18,7 @@ public class MovementSystem extends System {
 
     @Override
     public void update(float dt){
-        float x = 0, y = 0;
+        /*float x = 0, y = 0;
         if(Gdx.input.isKeyPressed(Input.Keys.A)){
             //change vertical direction
             x -= 1;
@@ -41,17 +41,19 @@ public class MovementSystem extends System {
         if (x != 0 || y != 0){
             engine.getCamera().translate(x * 300 * dt , y * 300 * dt);
 
-            addVelocity(engine.getEntity("Player"), x*300*dt, y*300*dt);
+            addVelocity(engine.getEntity(engine.user), x*300*dt, y*300*dt);
 
 
         }
 
 
-        engine.getCamera().update();
+        engine.getCamera().update();*/
     }
 
     public void addVelocity(Entity e, float x, float y){
 
+        if (e == null)
+            return;
         t = (TransformComponent) e.getComponent( TransformComponent.class);
         c = (CollisionComponent) e.getComponent(CollisionComponent.class);
         v = (VelocityComponent) e.getComponent(VelocityComponent.class);

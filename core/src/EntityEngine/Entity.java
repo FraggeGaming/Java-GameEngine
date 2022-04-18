@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 public class Entity {
     public Array<Component> components = new Array<>();
-    int id;
+    public int id;
     public String tag;
     private Array<String> tags = new Array<>();
     Component c;
@@ -49,5 +49,13 @@ public class Entity {
         setComponentId();
 
         componentMapper.put(id, this);
+    }
+
+    public void removeComponent(Class<?extends Component> component){
+        for (int i = 0; i < components.size; i++){
+            if (components.get(i) == c){
+
+            }
+        }
     }
 }
