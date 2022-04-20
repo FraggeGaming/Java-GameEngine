@@ -9,6 +9,8 @@ import EntityEngine.Systems.*;
 import EntityEngine.Systems.System;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ScreenUtils;
+
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -35,9 +37,21 @@ public class Engine {
         spatialHashGrid.setData((int) camera.viewportHeight);
         pool = Executors.newCachedThreadPool();
 
+        initSetup();
+
+    }
+
+    public void initSetup(){
+        addSystem(new SpatialRenderer());
+        addSystem(new NetworkManager());
+        addSystem(new AnimationSystem());
+        addSystem(new CollisionDetectionSystem());
+        addSystem(new ComponentManagerSystem());
+        addSystem(new Debugger());
     }
 
     public void update(float dt){
+        ScreenUtils.clear(1, 1, 1, 0.7f);
         //TODO: render drawable first, when drawable ends, end batch
         //Render batches
         batch.setProjectionMatrix(camera.combined);
