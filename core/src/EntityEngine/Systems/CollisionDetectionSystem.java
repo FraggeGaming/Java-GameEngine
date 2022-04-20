@@ -52,10 +52,9 @@ public class CollisionDetectionSystem extends System{
         if (timeStep >= 1/stepValue){
 
 
-            lookForNewCollisions();
 
             loadedCells = engine.getCellsFromCameraCenter();
-            computedCollisions = engine.pool.submit(new CollisionCalculation(loadedCells, engine.componentMap));
+            computedCollisions = engine.pool.submit(new CollisionCalculation(loadedCells, engine.componentMap, collisions));
 
 
             timeStep = 0;
@@ -81,24 +80,6 @@ public class CollisionDetectionSystem extends System{
             e.printStackTrace();
         }
 
-    }
-
-    private void collisionNonThreaded(float dt){
-        timeStep += dt;
-
-        if (timeStep >= 1/stepValue){
-
-            lookForNewCollisions();
-            timeStep = 0;
-        }
-
-        if (timeStep >= 1/stepValue/2){
-            collidableComponents = 0;
-            loadedCells = engine.getCellsFromCameraCenter();
-            for (int i = 0; i < loadedCells.size; i++){
-                calculateCollisions(loadedCells.get(i));
-            }
-        }
     }
 
     private void calculateCollisions(Cell cell) {
@@ -141,15 +122,6 @@ public class CollisionDetectionSystem extends System{
         return c1.isStatic && c2.isStatic;
     }
 
-    private void lookForNewCollisions(){
-        for (CollisionComponent c : collisions){
-            c.clearCollisionData();
-        }
-
-        detectedCollisions = 0;
-        collisions.clear();
-    }
-
     public int getNumOfCollisions(){
         return collisionDebugValue;
     }
@@ -180,4 +152,33 @@ public class CollisionDetectionSystem extends System{
 
         return false;
     }
+
+    public Array<CollisionComponent> getCollisision(CollisionComponent c, String id){
+        Array<CollisionComponent> comp = new Array<>();
+        if (collisions.contains(c)){
+            for (CollisionComponent c1 : c.collisions){
+
+                if (c1.id.equals(id)){
+                   comp.add(c1);
+                }
+            }
+        }
+
+        return comp;
+    }
+
+    public CollisionComponent getCollisisionFirst(CollisionComponent c, String id){
+
+        if (collisions.contains(c)){
+            for (CollisionComponent c1 : c.collisions){
+
+                if (c1.id.equals(id)){
+                    return c1;
+                }
+            }
+        }
+
+        return null;
+    }
+
 }

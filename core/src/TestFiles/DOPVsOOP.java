@@ -30,11 +30,9 @@ public class DOPVsOOP extends ApplicationAdapter {
 	int tileMapRenderIndexY = 0;
 	double scale = 0.04f;
 	float z = 1f;
-	int mapSize = 500;
+	int mapSize = 1000;
 	int mapSizeIndex = 0;
 	OpenSimplexNoise noise;
-
-
 
 
 	@Override
@@ -44,12 +42,12 @@ public class DOPVsOOP extends ApplicationAdapter {
 
 		TDCamera camera = new TDCamera(width, height);
 		camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-		System.out.println(Gdx.graphics.getHeight());
 		batch = new SpriteBatch();
 
 		//engine setup
 		engine = new Engine(batch, camera);
 		engine.addSystem(new SpatialRenderer());
+		engine.addSystem(new NetworkManager());
 		engine.addSystem(new UI());
 		engine.addSystem(new AnimationSystem());
 		collisionSystem = new CollisionDetectionSystem();
@@ -57,14 +55,15 @@ public class DOPVsOOP extends ApplicationAdapter {
 		engine.addSystem(new Debugger());
 		engine.addSystem(new MovementSystem());
 		engine.addSystem(new ComponentManagerSystem());
-		engine.addSystem(new NetworkManager());
+		//engine.addSystem(new PhysicsSystem());
+
 
 		atlas = new TextureAtlas("atlas/TexturePack.atlas");
 		TextureAtlas fireAtlas = new TextureAtlas("atlas/Fire.atlas");
-		noise = new OpenSimplexNoise();
+
 
 		//TODO collision filter
-		//TODO network
+		//TODO add UpNp
 
 		//TODO create mouse clicking system (perhaps with mouse position? MouseEventComponent? actors? collision component on mouse?)
 
@@ -111,36 +110,21 @@ public class DOPVsOOP extends ApplicationAdapter {
 		//TODO navMesh (multithreaded pathfinding)
 
 
-		player = new Entity();
-		player.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion("BlueAnt"))));
-		player.addComponents(new TransformComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 5, 30, 30));
-		CollisionComponent c = new CollisionComponent(100, 100, 30, 30);
-		c.id = "Player";
-		player.addComponents(c);
-		player.addComponents(new VelocityComponent());
-		player.tag = "Player";
-		engine.addEntity(player);
 
+		createPlayers(camera);
 
-		for (int i = 0; i < 10; i++){
-			for (int j = 0; j < 10; j++)
+		for (int i = 0; i < 5; i++){
+			for (int j = 0; j < 5; j++)
 			createFireAnimationTest(30 * i, 30*j, fireAtlas );
 		}
 
-
-		player = new Entity();
-		player.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion("RedAnt"))));
-		player.addComponents(new TransformComponent(150, 150, 5, 30, 30));
-		c = new CollisionComponent(100, 100, 30, 30);
-		c.id = "Player2";
-		player.addComponents(c);
-		player.addComponents(new VelocityComponent());
-		player.tag = "Player2";
-		engine.addEntity(player);
+		noise = new OpenSimplexNoise(); //for tilemap generation
 
 
+		engine.user = "Player"; //TODO change this later to less shit way
+
+		//to stuff with netWork
 		NetWorkClient client = new NetWorkClient();
-		//to stuff with netGame
 		engine.addNetWorkClientOnUpdate(client);
 
 
@@ -168,7 +152,7 @@ public class DOPVsOOP extends ApplicationAdapter {
 		if (mapSizeIndex > mapSize*mapSize)
 			return;
 
-		for (int i = 0; i < 200; i++){
+		for (int i = 0; i < 100; i++){
 			if (tileMapRenderIndexX < mapSize){
 
 				t = new Tile(atlas, noise.eval(tileMapRenderIndexX*scale, tileMapRenderIndexY*scale, z), 15*tileMapRenderIndexX, 15*tileMapRenderIndexY, 0, 15, 15);
@@ -186,8 +170,32 @@ public class DOPVsOOP extends ApplicationAdapter {
 		}
 
 
-
 	}
+
+	public void createPlayers(TDCamera camera){
+
+
+		player = new Entity();
+		player.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion("RedAnt"))));
+		player.addComponents(new TransformComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 5, 30, 30));
+		CollisionComponent c = new CollisionComponent(100, 100, 30, 30);
+		c.id = "Player2";
+		player.addComponents(c);
+		player.addComponents(new VelocityComponent());
+		player.tag = "Player2";
+		engine.addEntity(player);
+
+		player = new Entity();
+		player.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion("BlueAnt"))));
+		player.addComponents(new TransformComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 5, 30, 30));
+		c = new CollisionComponent(100, 100, 30, 30);
+		c.id = "Player";
+		player.addComponents(c);
+		player.addComponents(new VelocityComponent());
+		player.tag = "Player";
+		engine.addEntity(player);
+	}
+
 
 
 
@@ -213,14 +221,6 @@ public class DOPVsOOP extends ApplicationAdapter {
 		}*/
 
 
-
-		if (collisionSystem.CollisionWithID((CollisionComponent) player.getComponent(CollisionComponent.class), "Fire")){
-			//java.lang.System.out.println("fire");
-		}
-
-		if (collisionSystem.CollisionWithID((CollisionComponent) player.getComponent(CollisionComponent.class), "Water")){
-			//java.lang.System.out.println("water");
-		}
 
 	}
 

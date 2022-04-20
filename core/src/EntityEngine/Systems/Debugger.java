@@ -20,8 +20,6 @@ public class Debugger extends System {
     public boolean debugBox2D = false;
     public boolean debug = false;
     CollisionDetectionSystem cSystem;
-    float timeStep = 0;
-    float stepValue = 20;
     public HashSet<CollisionComponent> collisionsDebug = new HashSet<>();
     public Debugger(){
         shapeRenderer = new ShapeRenderer();
@@ -34,11 +32,8 @@ public class Debugger extends System {
         if (!debug)
             return;
 
-        if (timeStep >= 1/stepValue){
-            clearCollisions();
-            timeStep = 0;
-        }
-        findCollisions();
+        if (debugBox2D)
+            collisionsDebug = findCollisions();
 
         shapeRenderer.setProjectionMatrix(engine.camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -47,10 +42,6 @@ public class Debugger extends System {
         drawBox2D();
 
         shapeRenderer.end();
-
-        timeStep += dt;
-
-
     }
 
     private void drawCells() {
@@ -75,26 +66,12 @@ public class Debugger extends System {
 
     }
 
-    private void findCollisions(){
-
-        if (!debugBox2D)
-           return;
+    private HashSet<CollisionComponent> findCollisions(){
 
         if (cSystem == null)
             cSystem = (CollisionDetectionSystem) engine.getSystem(CollisionDetectionSystem.class);
 
-        collisionsDebug.addAll(cSystem.collisions);
-    }
-
-    private void clearCollisions(){
-        if (!debugBox2D)
-           return;
-
-
-        if (cSystem == null)
-            cSystem = (CollisionDetectionSystem) engine.getSystem(CollisionDetectionSystem.class);
-
-        collisionsDebug.clear();
+        return cSystem.collisions;
     }
 
     private void drawBox2D(){
@@ -121,9 +98,7 @@ public class Debugger extends System {
 
                     shapeRenderer.rect(c.boundingBox.x, c.boundingBox.y, c.boundingBox.width, c.boundingBox.height);
                 }
-
             }
         }
-
     }
 }

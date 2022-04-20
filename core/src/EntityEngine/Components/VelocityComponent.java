@@ -15,4 +15,7 @@ public class VelocityComponent extends Component{
     public void addVelocity(float x, float y, float z){
         vel.add(x, y, z);
     }
+    public void scaleVelocity(float scale){
+        vel.scl(scale);
+    }
 }

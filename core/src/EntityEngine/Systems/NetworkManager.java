@@ -22,11 +22,7 @@ public class NetworkManager extends System{
     BlockingQueue<Packet> queueOut = new ArrayBlockingQueue<>(1024);
     BlockingQueue<Packet> queueIn = new ArrayBlockingQueue<>(1024);
     boolean isOpen = false;
-
-
     ClientUpdate clientUpdate;
-    NetWorkData data;
-    Gson gson = new Gson();
     public NetworkManager(){
 
     }
@@ -66,28 +62,6 @@ public class NetworkManager extends System{
     @Override
     public void update(float dt) {
         if (isOpen){
-            /*if (isHost){
-                Packet p = getData();
-                if (p != null) {
-                    giveData(p);
-                }
-
-                    /*}String s = p.toString();
-                    if (s!=null){
-                        NetWorkData data = gson.fromJson(s, Data.class);
-
-                        //Handle data
-
-
-                        s = gson.toJson(data, Data.class);
-                        if (s != null)
-                            giveData(new Packet(s));
-                    }
-
-                }
-            }*/
-
-
             clientUpdate.update();
         }
 

@@ -25,16 +25,24 @@ public class CollisionCalculation implements Callable {
     int collidableComponentsDebug = 0;
 
     HashMap<Integer, Entity> componentMap;
-    public CollisionCalculation(Array<Cell> cells, HashMap<Integer, Entity> entities){
+    HashSet<CollisionComponent> oldCollisions;
+    public CollisionCalculation(Array<Cell> cells, HashMap<Integer, Entity> entities, HashSet<CollisionComponent> collisions){
         this.loadedCells = cells;
         this.componentMap = entities;
+        this.oldCollisions = collisions;
 
         run();
 
     }
     public void run() {
+        //lookForNewCollisions();
+
         for (int j = 0; j < loadedCells.size; j++){
             calculateCollisions(loadedCells.get(j));
+        }
+
+        for (CollisionComponent c : collisions){
+            c.setNewCollisions();
         }
 
     }
@@ -53,7 +61,7 @@ public class CollisionCalculation implements Callable {
 
                         c2 = cell.getCollisions().get(j);
 
-                        if (c2 != null && !c2.isSleeping() && !isStatic(c1, c2) && !c2.collisions.contains(c1)){
+                        if (c2 != null && !c2.isSleeping() && !isStatic(c1, c2) && !c2.newCollisions.contains(c1)){
 
                             if (canCollide(c1, c2) && c1.overlaps(c2)){
                                 c1.addCollision(c2);
@@ -68,6 +76,8 @@ public class CollisionCalculation implements Callable {
                 }
             }
         }
+
+
 
 
         collidableComponentsDebug = collidableComponents;

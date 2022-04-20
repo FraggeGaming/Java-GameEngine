@@ -26,7 +26,7 @@ public class Engine {
     public Batch batch;
     int entityId = 0;
 
-    public String user;
+    public String user; // for networking //TODO change this later for more modular implementation
 
     public Engine(Batch batch, TDCamera camera){
         this.batch = batch;

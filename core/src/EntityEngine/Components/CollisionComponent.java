@@ -12,6 +12,8 @@ public class CollisionComponent extends Component{
     public boolean flag = false;
     public boolean isStatic = false;
     public HashSet<CollisionComponent> collisions = new HashSet<>();
+
+    public HashSet<CollisionComponent> newCollisions = new HashSet<>();
     public Array<Float> verticies = new Array<>(7);
 
     public String id;
@@ -73,13 +75,21 @@ public class CollisionComponent extends Component{
     }
 
     public void addCollision(CollisionComponent id){
-        collisions.add(id);
-        flag = true;
+        newCollisions.add(id);
+
+    }
+
+    public void setNewCollisions(){
+        if (newCollisions.isEmpty())
+            return;
+        collisions.clear();
+        collisions.addAll(newCollisions);
+        newCollisions.clear();
     }
 
     public void clearCollisionData(){
         collisions.clear();
-        flag = false;
+
     }
 
 }

@@ -44,7 +44,7 @@ public class DebugStats {
     Array<DebugLabel> labels = new Array<>();
     DebugLabel frameTimeDebug;
 
-    String ip = "94.255.149.44";//"192.168.50.181";
+    String ip = "192.168.50.181"; //"94.255.149.44";
     int port = 1234;
 
 
@@ -104,60 +104,64 @@ public class DebugStats {
             }
         });
 
-        item = new UIItem(stage);
-        item.setMargin(10);
-        item.floatTop();
-        item.floatLeft();
-        item.translate(30, -45*(labelOrder++));
-        debugger = createButton("Host Game: " + ip,  item.getX(), item.getY());
-        debugger.addListener(new ChangeListener() {
+        if(engine.getSystem(NetworkManager.class) != null){
 
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                NetworkManager manager = (NetworkManager) engine.getSystem(NetworkManager.class);
-                manager.openNetwork(true, ip, port);
-            }
-        });
+            item = new UIItem(stage);
+            item.setMargin(10);
+            item.floatTop();
+            item.floatLeft();
+            item.translate(30, -45*(labelOrder++));
+            debugger = createButton("Host Game: " + ip,  item.getX(), item.getY());
+            debugger.addListener(new ChangeListener() {
 
-        item = new UIItem(stage);
-        item.setMargin(10);
-        item.floatTop();
-        item.floatLeft();
-        item.translate(30, -49*(labelOrder++));
-        debugger = createButton("Join game: " + ip,  item.getX(), item.getY());
-        debugger.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                NetworkManager manager = (NetworkManager) engine.getSystem(NetworkManager.class);
-                manager.openNetwork(false, ip, port);
-            }
-        });
+                @Override
+                public void changed(ChangeEvent changeEvent, Actor actor) {
+                    NetworkManager manager = (NetworkManager) engine.getSystem(NetworkManager.class);
+                    manager.openNetwork(true, ip, port);
+                }
+            });
 
-        item = new UIItem(stage);
-        item.setMargin(10);
-        item.floatTop();
-        item.floatLeft();
-        item.translate(30, -50*(labelOrder++));
-        debugger = createButton("Join as Player 1" ,  item.getX(), item.getY());
-        debugger.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                engine.user = "Player";
-            }
-        });
+            item = new UIItem(stage);
+            item.setMargin(10);
+            item.floatTop();
+            item.floatLeft();
+            item.translate(30, -49*(labelOrder++));
+            debugger = createButton("Join game: " + ip,  item.getX(), item.getY());
+            debugger.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent changeEvent, Actor actor) {
+                    NetworkManager manager = (NetworkManager) engine.getSystem(NetworkManager.class);
+                    manager.openNetwork(false, ip, port);
+                }
+            });
 
-        item = new UIItem(stage);
-        item.setMargin(10);
-        item.floatTop();
-        item.floatLeft();
-        item.translate(30, -52*(labelOrder++));
-        debugger = createButton("Join as Player 2",  item.getX(), item.getY());
-        debugger.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                engine.user = "Player2";
-            }
-        });
+            item = new UIItem(stage);
+            item.setMargin(10);
+            item.floatTop();
+            item.floatLeft();
+            item.translate(30, -50*(labelOrder++));
+            debugger = createButton("Join as Player 1" ,  item.getX(), item.getY());
+            debugger.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent changeEvent, Actor actor) {
+                    engine.user = "Player";
+                }
+            });
+
+            item = new UIItem(stage);
+            item.setMargin(10);
+            item.floatTop();
+            item.floatLeft();
+            item.translate(30, -52*(labelOrder++));
+            debugger = createButton("Join as Player 2",  item.getX(), item.getY());
+            debugger.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent changeEvent, Actor actor) {
+                    engine.user = "Player2";
+                }
+            });
+        }
+
 
 
     }

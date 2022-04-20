@@ -12,42 +12,71 @@ public class MovementSystem extends System {
     TransformComponent t;
     CollisionComponent c;
     VelocityComponent v;
+    NetworkManager network;
+    boolean fetchNetwork = false;
+
+    PhysicsSystem physicsSystem;
+    boolean hasPhysicsSystem = false;
     public MovementSystem(){
 
     }
 
     @Override
     public void update(float dt){
-        /*float x = 0, y = 0;
-        if(Gdx.input.isKeyPressed(Input.Keys.A)){
-            //change vertical direction
-            x -= 1;
+
+        if (!fetchNetwork){
+            network = (NetworkManager) engine.getSystem(NetworkManager.class);
+            if (network != null)
+                fetchNetwork = true;
         }
 
-        if(Gdx.input.isKeyPressed(Input.Keys.D)){
-            //change vertical direction
-            x += 1;
+        if (network == null || !network.isOpen){
+            float x = 0, y = 0;
+            if(Gdx.input.isKeyPressed(Input.Keys.A)){
+                //change vertical direction
+                x -= 1;
+            }
+
+            if(Gdx.input.isKeyPressed(Input.Keys.D)){
+                //change vertical direction
+                x += 1;
+            }
+            if(Gdx.input.isKeyPressed(Input.Keys.W)){
+                //change vertical direction
+                y += 1;
+            }
+
+            if(Gdx.input.isKeyPressed(Input.Keys.S)){
+                //change vertical direction
+                y -= 1;
+            }
+
+            if (x != 0 || y != 0){
+                engine.getCamera().translate(x * 300 * dt , y * 300 * dt);
+                addVelocity(engine.getEntity(engine.user), x*300*dt, y*300*dt);
+            }
+
+            if (physicsSystem != null){
+                v = (VelocityComponent) engine.getEntity(engine.user).getComponent(VelocityComponent.class);
+                v.setVelocity(x*300*dt, y*300*dt, 0);
+                physicsSystem.moveBody(engine.getEntity(engine.user));
+                engine.getCamera().translate(v.vel.x , v.vel.y);
+                v.setVelocity(0,0,0);
+
+            }
+
+            engine.getCamera().update();
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.W)){
-            //change vertical direction
-            y += 1;
+
+    }
+
+    private void fetchPhysicsSystem(){
+        if (!hasPhysicsSystem){
+            physicsSystem = (PhysicsSystem) engine.getSystem(PhysicsSystem.class);
+            if (physicsSystem != null)
+                hasPhysicsSystem = true;
         }
 
-        if(Gdx.input.isKeyPressed(Input.Keys.S)){
-            //change vertical direction
-            y -= 1;
-        }
-
-        if (x != 0 || y != 0){
-            engine.getCamera().translate(x * 300 * dt , y * 300 * dt);
-
-            addVelocity(engine.getEntity(engine.user), x*300*dt, y*300*dt);
-
-
-        }
-
-
-        engine.getCamera().update();*/
     }
 
     public void addVelocity(Entity e, float x, float y){

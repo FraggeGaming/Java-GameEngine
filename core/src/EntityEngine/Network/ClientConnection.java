@@ -49,23 +49,22 @@ public class ClientConnection implements Runnable{
 
                     packet = new Packet(byteInput);
                     //if packet comes from host
-                    /*if (client.isHost){
+                    if (client.isHost){
                         //sends pkt to all other clients
                         for (Client client : clientList) {
 
-                            if (client.socket != socket)
-                            packet.sendPacket(client.socket.getOutputStream());
+                            if (!client.isHost)
+                                packet.sendPacket(client.socket.getOutputStream());
                         }
                     }
 
                     else{
-                        //if not from host, send it to the host
-                        packet.sendPacket(socket.getOutputStream());
-                    }*/
+                        for (Client client : clientList) {
 
-                    for (Client client : clientList) {
-                        if (client.socket != socket)
-                        packet.sendPacket(client.socket.getOutputStream());
+                            if (client.isHost)
+                                packet.sendPacket(client.socket.getOutputStream());
+                        }
+
                     }
 
 

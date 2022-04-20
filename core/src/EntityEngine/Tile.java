@@ -50,8 +50,8 @@ public class Tile {
         }
 
         else if (value < 0.1f){
-            //components.add(c);
-            //c.id = "Sand";
+            components.add(c);
+            c.id = "Wall";
             return new TextureRegion(atlas.findRegion("Sand"));
         }
 
@@ -62,8 +62,8 @@ public class Tile {
         }
 
         else if (value < 0.4f){
-            components.add(c);
-            c.id = "DirtTile";
+            //components.add(c);
+            //c.id = "DirtTile";
             return new TextureRegion(atlas.findRegion("DirtTile"));
         }
 
