@@ -21,7 +21,7 @@ public class NetworkManager extends System{
     public boolean isHost;
     BlockingQueue<Packet> queueOut = new ArrayBlockingQueue<>(1024);
     BlockingQueue<Packet> queueIn = new ArrayBlockingQueue<>(1024);
-    boolean isOpen = false;
+    public boolean isOpen = false;
     ClientUpdate clientUpdate;
     public NetworkManager(){
 

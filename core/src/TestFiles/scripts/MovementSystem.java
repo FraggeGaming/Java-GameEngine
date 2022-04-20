@@ -1,9 +1,12 @@
-package EntityEngine.Systems;
+package TestFiles.scripts;
 
 import EntityEngine.Components.CollisionComponent;
 import EntityEngine.Components.TransformComponent;
 import EntityEngine.Components.VelocityComponent;
 import EntityEngine.Entity;
+import EntityEngine.Systems.NetworkManager;
+import EntityEngine.Systems.PhysicsSystem;
+import EntityEngine.Systems.System;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 

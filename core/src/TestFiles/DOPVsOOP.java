@@ -5,19 +5,19 @@ import EntityEngine.Engine;
 import EntityEngine.Entity;
 import EntityEngine.GameClasses.Animation;
 import EntityEngine.GameClasses.TDCamera;
-import EntityEngine.Network.ClientUpdate;
 import EntityEngine.Noise.OpenSimplexNoise;
 import EntityEngine.Systems.*;
 import EntityEngine.Tile;
+import TestFiles.scripts.MovementSystem;
 import TestFiles.scripts.NetWorkClient;
+import TestFiles.scripts.UI;
+import TestFiles.scripts.WorldSystem;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
-
-import java.lang.System;
 
 public class DOPVsOOP extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -26,13 +26,7 @@ public class DOPVsOOP extends ApplicationAdapter {
 	TextureAtlas atlas;
 	Entity player;
 	CollisionDetectionSystem collisionSystem;
-	int tileMapRenderIndexX = 0;
-	int tileMapRenderIndexY = 0;
-	double scale = 0.04f;
-	float z = 1f;
-	int mapSize = 1000;
-	int mapSizeIndex = 0;
-	OpenSimplexNoise noise;
+
 
 
 	@Override
@@ -43,72 +37,15 @@ public class DOPVsOOP extends ApplicationAdapter {
 		TDCamera camera = new TDCamera(width, height);
 		camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
 		batch = new SpriteBatch();
-
-		//engine setup
-		engine = new Engine(batch, camera);
-		engine.addSystem(new SpatialRenderer());
-		engine.addSystem(new NetworkManager());
-		engine.addSystem(new UI());
-		engine.addSystem(new AnimationSystem());
-		collisionSystem = new CollisionDetectionSystem();
-		engine.addSystem(collisionSystem);
-		engine.addSystem(new Debugger());
-		engine.addSystem(new MovementSystem());
-		engine.addSystem(new ComponentManagerSystem());
-		//engine.addSystem(new PhysicsSystem());
-
-
 		atlas = new TextureAtlas("atlas/TexturePack.atlas");
 		TextureAtlas fireAtlas = new TextureAtlas("atlas/Fire.atlas");
+		//engine setup
+		engine = new Engine(batch, camera);
 
-
-		//TODO collision filter
-		//TODO add UpNp
-
-		//TODO create mouse clicking system (perhaps with mouse position? MouseEventComponent? actors? collision component on mouse?)
-
-		//TODO mouseEventSystem
-			//get unprojected mouse position
-			//find correct cell in loadedCells
-			//check every object in the cell that has a onMouseComponent
-			//sort or project components on 1d surface for a correct layered design
-			//component.playEvent(int id);
-			//save component for exit check
-
-
-			//also check UI?? or use stage with ui?
-
-
-
-		//TODO mousecComponent
-			//bounds
-			//eventsArray
-
-			//playEvent(int id)
-
-		//TODO event
-			//onClick
-			//onEnter
-			//onExit
-			//onButtonDown
-			//onButtonUp
-
-			//if id == 0
-				//onClick = true
-			//if id == 1
-				//etc...
-
-
-		//TODO physics component (physics2D system)
-			//TODO Physics system (basic) (use on collision event and transform)
-
-		//TODO raycast component
-		//TODO audio component
-
-		//TODO some kind of particle system (gpu calculated?)
-
-		//TODO navMesh (multithreaded pathfinding)
-
+		engine.addSystem(new UI());
+		engine.addSystem(new MovementSystem());
+		engine.addSystem(new WorldSystem(atlas));
+		collisionSystem = (CollisionDetectionSystem) engine.getSystem(CollisionDetectionSystem.class);
 
 
 		createPlayers(camera);
@@ -118,10 +55,6 @@ public class DOPVsOOP extends ApplicationAdapter {
 			createFireAnimationTest(30 * i, 30*j, fireAtlas );
 		}
 
-		noise = new OpenSimplexNoise(); //for tilemap generation
-
-
-		engine.user = "Player"; //TODO change this later to less shit way
 
 		//to stuff with netWork
 		NetWorkClient client = new NetWorkClient();
@@ -146,34 +79,10 @@ public class DOPVsOOP extends ApplicationAdapter {
 		engine.addEntity(e);
 	}
 
-	public void createTileMap(TextureAtlas atlas){
-		Tile t;
 
-		if (mapSizeIndex > mapSize*mapSize)
-			return;
-
-		for (int i = 0; i < 100; i++){
-			if (tileMapRenderIndexX < mapSize){
-
-				t = new Tile(atlas, noise.eval(tileMapRenderIndexX*scale, tileMapRenderIndexY*scale, z), 15*tileMapRenderIndexX, 15*tileMapRenderIndexY, 0, 15, 15);
-				engine.addEntity(t.getEntity());
-
-				tileMapRenderIndexX++;
-			}
-
-			else {
-				tileMapRenderIndexY++;
-				tileMapRenderIndexX = 0;
-			}
-
-			mapSizeIndex++;
-		}
-
-
-	}
 
 	public void createPlayers(TDCamera camera){
-
+		engine.user = "Player"; //TODO change this later to less shit way
 
 		player = new Entity();
 		player.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion("RedAnt"))));
@@ -201,27 +110,7 @@ public class DOPVsOOP extends ApplicationAdapter {
 
 	@Override
 	public void render() {
-
-		createTileMap(atlas);
-		ScreenUtils.clear(1, 1, 1, 0.7f);
-
 		engine.update(Gdx.graphics.getDeltaTime());
-
-
-
-		//Switch between animations
-		/*if (Gdx.input.isKeyPressed(Input.Keys.Q)){
-			AnimationComponent a = (AnimationComponent)test.getComponent(AnimationComponent.class);
-			a.pickAnimation(1);
-		}
-
-		if (Gdx.input.isKeyPressed(Input.Keys.E)){
-			AnimationComponent a = (AnimationComponent)test.getComponent(AnimationComponent.class);
-			a.pickAnimation(0);
-		}*/
-
-
-
 	}
 
 

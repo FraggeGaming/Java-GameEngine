@@ -1,5 +1,6 @@
-package EntityEngine.Systems;
+package TestFiles.scripts;
 import EntityEngine.Engine;
+import EntityEngine.Systems.System;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;

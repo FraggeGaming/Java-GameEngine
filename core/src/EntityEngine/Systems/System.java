@@ -8,7 +8,7 @@ import EntityEngine.Entity;
 * */
 public class System {
     int priorityOrder = 10;
-    Engine engine;
+    public Engine engine;
     Long startTime;
     Long endTime;
     Long duration = 0L;
