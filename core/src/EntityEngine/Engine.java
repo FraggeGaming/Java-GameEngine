@@ -1,0 +1,213 @@
+package EntityEngine;
+
+import EntityEngine.Components.Component;
+import EntityEngine.GameClasses.TDCamera;
+import EntityEngine.Network.ClientUpdate;
+import EntityEngine.Renderer.Cell;
+import EntityEngine.Renderer.SpatialHashGrid;
+import EntityEngine.Systems.*;
+import EntityEngine.Systems.System;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.utils.Array;
+import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class Engine {
+
+    private final Array<Entity> entities = new Array<>();
+    public final HashMap<Integer, Entity> componentMap = new HashMap();
+    public final HashMap<String, Entity> entityMapper = new HashMap();
+    private final Array<System> systems = new Array<>();
+    private final SpatialHashGrid spatialHashGrid;
+    public ExecutorService pool;
+
+    public TDCamera camera;
+    public Batch batch;
+    int entityId = 0;
+
+    public String user; // for networking //TODO change this later for more modular implementation
+
+    public Engine(Batch batch, TDCamera camera){
+        this.batch = batch;
+        this.camera = camera;
+        spatialHashGrid = new SpatialHashGrid();
+        spatialHashGrid.setData((int) camera.viewportHeight);
+        pool = Executors.newCachedThreadPool();
+
+    }
+
+    public void update(float dt){
+        //TODO: render drawable first, when drawable ends, end batch
+        //Render batches
+        batch.setProjectionMatrix(camera.combined);
+
+        for (int i = 0; i < systems.size; i++){
+            systems.get(i).startTimer();
+            systems.get(i).update(dt);
+            systems.get(i).endTimer();
+        }
+    }
+
+    public void addSystem(System system){
+        systems.add(system);
+        system.addEngine(this);
+
+        //TODO: sort system by priority and drawable
+        //TODO: write comparable interface for that
+    }
+
+    public void addEntity(Entity entity){
+        entities.add(entity); // mby delete
+        entity.setId(entityId++, componentMap); // and add to component map
+
+        for (System s : systems){
+            s.addEntity(entity);
+        }
+
+        if (entity.tag != null){
+            entityMapper.put(entity.tag, entity);
+        }
+
+        spatialHashGrid.addEntity(entity);
+    }
+
+    public void addCamera(TDCamera camera){
+        this.camera = camera;
+    }
+
+    public void removeEntity(Entity entity){
+        componentMap.remove(entity.id);
+    }
+
+    public int getDrawnEntities(){
+        if (getSystem(SpatialRenderer.class) != null){
+            SpatialRenderer s = (SpatialRenderer) getSystem(SpatialRenderer.class);
+            return s.drawnEntities;
+        }
+
+        return -1;
+    }
+
+    public int getAnimations(){
+        if (getSystem(AnimationSystem.class) != null){
+            AnimationSystem s = (AnimationSystem) getSystem(AnimationSystem.class);
+            return s.numOfAnimations;
+        }
+
+        return -1;
+    }
+
+    public long getSystemFunctionTime(Class<?extends System> System){
+        if (getSystem(System) != null)
+        return getSystem(System).getFunctionDuration();
+
+        return -1;
+    }
+
+    public int getCollisions(){
+        if(getSystem(CollisionDetectionSystem.class) != null){
+            CollisionDetectionSystem s = (CollisionDetectionSystem) getSystem(CollisionDetectionSystem.class);
+
+            return s.getNumOfCollisions();
+        }
+
+        return -1;
+    }
+
+    public int getCollidableObjectsInRange(){
+        if(getSystem(CollisionDetectionSystem.class) != null){
+            CollisionDetectionSystem s = (CollisionDetectionSystem) getSystem(CollisionDetectionSystem.class);
+
+            return s.getCollidableComponentsDebug();
+        }
+        return -1;
+    }
+
+    public void setDebug(boolean state){
+        if(getSystem(Debugger.class) != null){
+            Debugger s = (Debugger) getSystem(Debugger.class);
+            s.debug = state;
+        }
+    }
+
+    public void toggleDebug(){
+        if(getSystem(Debugger.class) != null){
+            Debugger s = (Debugger) getSystem(Debugger.class);
+            s.debug = !s.debug;
+            s.debugBox2D = false;
+        }
+    }
+
+    public void toggleDebugBox2D(){
+        if(getSystem(Debugger.class) != null){
+            Debugger s = (Debugger) getSystem(Debugger.class);
+            s.debugBox2D = !s.debugBox2D;
+            s.debug = s.debugBox2D;
+        }
+    }
+
+    public Component getEntityComponent(int id, Class<?extends Component> component){
+        return componentMap.get(id).getComponent(component);
+    }
+
+    public Entity getEntity(int id){
+        return componentMap.get(id);
+    }
+
+    public Entity getEntity(String entityTag){
+        return entityMapper.get(entityTag);
+    }
+
+    public Entity getEntityID(Entity e){
+        return componentMap.get(e.id);
+    }
+
+    public Array<Entity> getEntities(){
+        return entities;
+    }
+
+    public System getSystem(Class<?extends System> System){
+        for (System s : systems){
+            if (s.getClass().equals(System))
+                return s;
+        }
+
+        return null;
+    }
+
+    public Array<Component> getloadedComponents(Class<?extends Component> c){
+        for (System s : systems){
+            if (s.getClass().equals(ComponentManagerSystem.class))
+                return ((ComponentManagerSystem) s).getLoadedComponents(c);
+        }
+
+        return null;
+    }
+
+    public SpatialHashGrid getSpatialHashGrid(){
+        return spatialHashGrid;
+    }
+
+    public Array<Cell> getCellsFromCameraCenter(){
+        return getSpatialHashGrid().getNeighbours(camera.getCameraTransform());
+    }
+
+    /*
+    * Override this when creating custom server client
+    * */
+    public void addNetWorkClientOnUpdate(ClientUpdate client){
+        NetworkManager manager = (NetworkManager) getSystem(NetworkManager.class);
+        manager.addClientOnUpdate(client);
+    }
+
+    public TDCamera getCamera(){
+        return camera;
+    }
+
+    public Batch getBatch(){
+        return batch;
+    }
+
+
+}
