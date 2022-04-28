@@ -19,7 +19,17 @@ public class System {
 
     }
 
+    public void onCreate(){
+
+    }
+
     public void update(float dt){
+
+    }
+
+
+    //mby use for rendering
+    public void render(float dt){
 
     }
 

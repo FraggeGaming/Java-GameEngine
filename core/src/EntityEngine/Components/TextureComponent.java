@@ -9,6 +9,7 @@ public class TextureComponent extends Component{
 
     public TextureComponent(TextureRegion texture){
         this.texture = texture;
+        seperate = true;
     }
 
     public TextureRegion getRegion() {

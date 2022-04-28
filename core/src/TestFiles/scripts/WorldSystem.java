@@ -5,10 +5,18 @@ import EntityEngine.Entity;
 import EntityEngine.GameClasses.Animation;
 import EntityEngine.GameClasses.TDCamera;
 import EntityEngine.Noise.OpenSimplexNoise;
+import EntityEngine.Systems.ComponentManagerSystem;
 import EntityEngine.Systems.System;
 import EntityEngine.Tile;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class WorldSystem extends System {
     int tileMapRenderIndexX = 0;
@@ -19,12 +27,14 @@ public class WorldSystem extends System {
     int mapSizeIndex = 0;
     OpenSimplexNoise noise;
     TextureAtlas atlas;
-
     Entity player;
-    public WorldSystem(){
+    public WorldSystem(TextureAtlas atlas){
         noise = new OpenSimplexNoise(); //for tilemap generation
-        atlas = new TextureAtlas("atlas/TexturePack.atlas");
+        this.atlas = atlas;
+    }
 
+    @Override
+    public void onCreate() {
         TextureAtlas fireAtlas = new TextureAtlas("atlas/Fire.atlas");
         for (int i = 0; i < 5; i++){
             for (int j = 0; j < 5; j++)
@@ -32,8 +42,6 @@ public class WorldSystem extends System {
         }
 
         createPlayers(engine.camera);
-
-
     }
 
     public void createPlayers(TDCamera camera){
@@ -74,12 +82,18 @@ public class WorldSystem extends System {
         e.addComponents(a);
 
         engine.addEntity(e);
+
     }
 
     @Override
     public void update(float dt) {
         createTileMap();
+
+
+
     }
+
+
 
     public void createTileMap(){
         Tile t;
@@ -103,6 +117,8 @@ public class WorldSystem extends System {
 
             mapSizeIndex++;
         }
+
+
 
 
     }

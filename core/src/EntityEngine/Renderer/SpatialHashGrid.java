@@ -4,6 +4,7 @@ import EntityEngine.Components.CollisionComponent;
 import EntityEngine.Components.Component;
 import EntityEngine.Components.TransformComponent;
 import EntityEngine.Entity;
+import EntityEngine.Systems.ComponentManagerSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -17,7 +18,6 @@ public class SpatialHashGrid  {
     TransformComponent center = new TransformComponent(0, 0, 0, 0, 0);
 
     private Array<Cell> loadedCells = new Array<>();
-    private int loadedCellsID = 0; //used for knowing if we need to update loadedCells from other systems
     boolean addCell = false;
 
     int cellSize = 100; // 100 / tile size = number off sprites in a cell, ex: texture size = 15, then cellSize/textureSize = 10 wide and high cell
@@ -25,6 +25,10 @@ public class SpatialHashGrid  {
     int offsetY = 3;
     int radiusY;
     int radiusX;
+    public boolean update = false;
+
+    public int addedEntities = 0;
+    public int addedEntitiesUpdateValue = 100;
 
     public SpatialHashGrid(){
     }
@@ -38,26 +42,17 @@ public class SpatialHashGrid  {
 
     public Array<Cell> getNeighbours(TransformComponent component){
 
-        if (!getKey(center).equals(getKey(component))){
+        if (!getKey(center).equals(getKey(component)) || addedEntities > addedEntitiesUpdateValue){
             loadedCells.clear();
             getSurroundingCells(component);
             sortLoadedCells();
             center.setVec(component.getVector());
-            setLoadedCellID();
+            update = true;
+            addedEntities = 0;
         }
         return loadedCells;
     }
 
-    private void setLoadedCellID(){
-        if (loadedCellsID == 0)
-            loadedCellsID = 1;
-        else
-            loadedCellsID = 0;
-    }
-
-    public int getLoadedCellID(){
-        return loadedCellsID;
-    }
 
     private void sortLoadedCells() {
         loadedCells.sort(new CellComparator());
@@ -95,6 +90,7 @@ public class SpatialHashGrid  {
     }
 
     public void addEntity(Entity entity) {
+        addedEntities++;
         Component x = entity.getComponent(TransformComponent.class);
         if (x != null){
             addToGrid((TransformComponent) x);
@@ -137,7 +133,7 @@ public class SpatialHashGrid  {
 
 
         hashGrid.put(getKey(component),cell);
-
+        //update = true;
 
 
 
@@ -150,6 +146,7 @@ public class SpatialHashGrid  {
         if (x != null){
             if (hashGrid.containsKey(getKey((TransformComponent) x))){
                 hashGrid.get(getKey((TransformComponent) x)).removeComponent((TransformComponent) x);
+
             }
         }
 

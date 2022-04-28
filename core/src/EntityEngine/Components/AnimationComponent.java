@@ -15,7 +15,7 @@ public class AnimationComponent extends Component{
     //add support for multiple different animations
     public AnimationComponent(float frameSpeed, boolean repeat, List<TextureRegion> frames){
         alive = true;
-
+        seperate = true;
         animations.add(new AnimationStruct(frameSpeed, repeat, frames));
     }
 

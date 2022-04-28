@@ -24,11 +24,11 @@ public class CollisionCalculation implements Callable {
     int collidableComponents = 0;
     int collidableComponentsDebug = 0;
 
-    HashMap<Integer, Entity> componentMap;
+
     HashSet<CollisionComponent> oldCollisions;
-    public CollisionCalculation(Array<Cell> cells, HashMap<Integer, Entity> entities, HashSet<CollisionComponent> collisions){
+    public CollisionCalculation(Array<Cell> cells, HashSet<CollisionComponent> collisions){
         this.loadedCells = cells;
-        this.componentMap = entities;
+
         this.oldCollisions = collisions;
 
         run();

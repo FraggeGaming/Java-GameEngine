@@ -73,6 +73,12 @@ public class TransformComponent extends Component {
 
 
     }
+
+    public void addVelocity(Vector3 v){
+        vec.add(v);
+
+
+    }
     public float getOriginX(){
         return (vec.x + dim.x/2);
     }
