@@ -5,18 +5,11 @@ import EntityEngine.Entity;
 import EntityEngine.GameClasses.Animation;
 import EntityEngine.GameClasses.TDCamera;
 import EntityEngine.Noise.OpenSimplexNoise;
-import EntityEngine.Systems.ComponentManagerSystem;
 import EntityEngine.Systems.System;
 import EntityEngine.Tile;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class WorldSystem extends System {
     int tileMapRenderIndexX = 0;
@@ -50,7 +43,7 @@ public class WorldSystem extends System {
         player = new Entity();
         player.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion("RedAnt"))));
         player.addComponents(new TransformComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 5, 30, 30));
-        CollisionComponent c = new CollisionComponent(100, 100, 30, 30);
+        CollisionComponent c = new CollisionComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 30, 30);
         c.id = "Player2";
         player.addComponents(c);
         player.addComponents(new VelocityComponent());
@@ -60,7 +53,7 @@ public class WorldSystem extends System {
         player = new Entity();
         player.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion("BlueAnt"))));
         player.addComponents(new TransformComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 5, 30, 30));
-        c = new CollisionComponent(100, 100, 30, 30);
+        c = new CollisionComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 30, 30);
         c.id = "Player";
         player.addComponents(c);
         player.addComponents(new VelocityComponent());
@@ -88,12 +81,7 @@ public class WorldSystem extends System {
     @Override
     public void update(float dt) {
         createTileMap();
-
-
-
     }
-
-
 
     public void createTileMap(){
         Tile t;
@@ -103,10 +91,8 @@ public class WorldSystem extends System {
 
         for (int i = 0; i < 100; i++){
             if (tileMapRenderIndexX < mapSize){
-
                 t = new Tile(atlas, noise.eval(tileMapRenderIndexX*scale, tileMapRenderIndexY*scale, z), 15*tileMapRenderIndexX, 15*tileMapRenderIndexY, 0, 15, 15);
                 engine.addEntity(t.getEntity());
-
                 tileMapRenderIndexX++;
             }
 
@@ -117,9 +103,5 @@ public class WorldSystem extends System {
 
             mapSizeIndex++;
         }
-
-
-
-
     }
 }
