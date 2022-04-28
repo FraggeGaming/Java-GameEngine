@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 public class Entity {
     public Array<Component> components = new Array<>();
+    public boolean flagForDelete = false;
     public int id;
     public String tag;
     private Array<String> tags = new Array<>();

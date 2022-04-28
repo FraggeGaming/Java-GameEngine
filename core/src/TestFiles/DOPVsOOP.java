@@ -8,12 +8,10 @@ import EntityEngine.GameClasses.TDCamera;
 import EntityEngine.Noise.OpenSimplexNoise;
 import EntityEngine.Systems.*;
 import EntityEngine.Tile;
-import TestFiles.scripts.MovementSystem;
-import TestFiles.scripts.NetWorkClient;
-import TestFiles.scripts.UI;
-import TestFiles.scripts.WorldSystem;
+import TestFiles.scripts.*;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -35,9 +33,11 @@ public class DOPVsOOP extends ApplicationAdapter {
 		//engine setup
 		engine = new Engine(batch, camera);
 
+		TextureAtlas atlas = new TextureAtlas("atlas/TexturePack.atlas");
 		engine.addSystem(new UI());
 		engine.addSystem(new MovementSystem());
-		engine.addSystem(new WorldSystem());
+		engine.addSystem(new WorldSystem(atlas));
+		engine.addSystem(new BulletSystem(atlas));
 
 		//to stuff with netWork
 		NetWorkClient client = new NetWorkClient();
@@ -54,6 +54,8 @@ public class DOPVsOOP extends ApplicationAdapter {
 		//TODO PP
 		//TODO some kind of particle system (gpu calculated?)
 		//TODO navMesh (multithreaded pathfinding)
+
+		engine.buildSystems();
 
 	}
 

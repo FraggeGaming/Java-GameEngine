@@ -4,6 +4,7 @@ import EntityEngine.Components.CollisionComponent;
 import EntityEngine.Components.TransformComponent;
 import EntityEngine.Components.VelocityComponent;
 import EntityEngine.Entity;
+import EntityEngine.Systems.ComponentManagerSystem;
 import EntityEngine.Systems.NetworkManager;
 import EntityEngine.Systems.PhysicsSystem;
 import EntityEngine.Systems.System;
@@ -59,14 +60,6 @@ public class MovementSystem extends System {
                 addVelocity(engine.getEntity(engine.user), x*300*dt, y*300*dt);
             }
 
-            if (physicsSystem != null){
-                v = (VelocityComponent) engine.getEntity(engine.user).getComponent(VelocityComponent.class);
-                v.setVelocity(x*300*dt, y*300*dt, 0);
-                physicsSystem.moveBody(engine.getEntity(engine.user));
-                engine.getCamera().translate(v.vel.x , v.vel.y);
-                v.setVelocity(0,0,0);
-
-            }
 
             engine.getCamera().update();
         }
@@ -92,6 +85,7 @@ public class MovementSystem extends System {
 
 
         engine.getSpatialHashGrid().removeEntity(e);
+
 
         v.setVelocity(x, y, 0);
         t.addVelocity(v);

@@ -30,6 +30,8 @@ public class CollisionComponent extends Component{
         verticies.add(0f, 0f, 0f, 0f);
 
         updateVerticies();
+
+        seperate = true;
     }
 
     private void updateVerticies(){
@@ -53,6 +55,7 @@ public class CollisionComponent extends Component{
         verticies.add(0f, 0f, 0f, 0f);
         updateVerticies();
 
+        seperate = true;
     }
 
     public void followTransform(TransformComponent t){

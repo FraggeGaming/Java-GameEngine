@@ -1,6 +1,7 @@
 package EntityEngine;
 
 import EntityEngine.Components.Component;
+import EntityEngine.Components.VelocityComponent;
 import EntityEngine.GameClasses.TDCamera;
 import EntityEngine.Network.ClientUpdate;
 import EntityEngine.Renderer.Cell;
@@ -11,7 +12,9 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -27,8 +30,9 @@ public class Engine {
     public TDCamera camera;
     public Batch batch;
     int entityId = 0;
-
+    List<Entity> flagedForDelete = new ArrayList<>();
     public String user; // for networking //TODO change this later for more modular implementation
+    boolean running = false;
 
     public Engine(Batch batch, TDCamera camera){
         this.batch = batch;
@@ -61,6 +65,17 @@ public class Engine {
             systems.get(i).update(dt);
             systems.get(i).endTimer();
         }
+
+        deleteFlaged();
+
+    }
+
+    public void buildSystems(){
+        for (int i = 0; i < systems.size; i++){
+            systems.get(i).onCreate();
+        }
+
+        running = true;
     }
 
     public void addSystem(System system){
@@ -84,6 +99,12 @@ public class Engine {
         }
 
         spatialHashGrid.addEntity(entity);
+
+        //for optimized used when deleteing or adding entities
+        if (running){
+            ComponentManagerSystem compManager = (ComponentManagerSystem) getSystem(ComponentManagerSystem.class);
+            compManager.addEntityDynamically(entity);
+        }
     }
 
     public void addCamera(TDCamera camera){
@@ -91,7 +112,12 @@ public class Engine {
     }
 
     public void removeEntity(Entity entity){
-        componentMap.remove(entity.id);
+        flagedForDelete.add(entity);
+        entity.flagForDelete = true;
+
+        ComponentManagerSystem compManager = (ComponentManagerSystem) getSystem(ComponentManagerSystem.class);
+        compManager.deleteEntity(entity);
+
     }
 
     public int getDrawnEntities(){
@@ -224,4 +250,12 @@ public class Engine {
     }
 
 
+    public void deleteFlaged() {
+        for (Entity e : flagedForDelete){
+            spatialHashGrid.removeEntity(e);
+            componentMap.remove(e.id);
+        }
+
+        flagedForDelete.clear();
+    }
 }

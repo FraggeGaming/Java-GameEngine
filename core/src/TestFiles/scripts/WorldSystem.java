@@ -10,6 +10,7 @@ import EntityEngine.Tile;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+
 public class WorldSystem extends System {
     int tileMapRenderIndexX = 0;
     int tileMapRenderIndexY = 0;
@@ -19,12 +20,14 @@ public class WorldSystem extends System {
     int mapSizeIndex = 0;
     OpenSimplexNoise noise;
     TextureAtlas atlas;
-
     Entity player;
-    public WorldSystem(){
+    public WorldSystem(TextureAtlas atlas){
         noise = new OpenSimplexNoise(); //for tilemap generation
-        atlas = new TextureAtlas("atlas/TexturePack.atlas");
+        this.atlas = atlas;
+    }
 
+    @Override
+    public void onCreate() {
         TextureAtlas fireAtlas = new TextureAtlas("atlas/Fire.atlas");
         for (int i = 0; i < 5; i++){
             for (int j = 0; j < 5; j++)
@@ -32,8 +35,6 @@ public class WorldSystem extends System {
         }
 
         createPlayers(engine.camera);
-
-
     }
 
     public void createPlayers(TDCamera camera){
@@ -42,7 +43,7 @@ public class WorldSystem extends System {
         player = new Entity();
         player.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion("RedAnt"))));
         player.addComponents(new TransformComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 5, 30, 30));
-        CollisionComponent c = new CollisionComponent(100, 100, 30, 30);
+        CollisionComponent c = new CollisionComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 30, 30);
         c.id = "Player2";
         player.addComponents(c);
         player.addComponents(new VelocityComponent());
@@ -52,7 +53,7 @@ public class WorldSystem extends System {
         player = new Entity();
         player.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion("BlueAnt"))));
         player.addComponents(new TransformComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 5, 30, 30));
-        c = new CollisionComponent(100, 100, 30, 30);
+        c = new CollisionComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 30, 30);
         c.id = "Player";
         player.addComponents(c);
         player.addComponents(new VelocityComponent());
@@ -74,6 +75,7 @@ public class WorldSystem extends System {
         e.addComponents(a);
 
         engine.addEntity(e);
+
     }
 
     @Override
@@ -89,10 +91,8 @@ public class WorldSystem extends System {
 
         for (int i = 0; i < 100; i++){
             if (tileMapRenderIndexX < mapSize){
-
                 t = new Tile(atlas, noise.eval(tileMapRenderIndexX*scale, tileMapRenderIndexY*scale, z), 15*tileMapRenderIndexX, 15*tileMapRenderIndexY, 0, 15, 15);
                 engine.addEntity(t.getEntity());
-
                 tileMapRenderIndexX++;
             }
 
@@ -103,7 +103,5 @@ public class WorldSystem extends System {
 
             mapSizeIndex++;
         }
-
-
     }
 }

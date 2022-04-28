@@ -2,6 +2,7 @@ package EntityEngine.Systems;
 
 import EntityEngine.Components.Component;
 import EntityEngine.Components.TransformComponent;
+import EntityEngine.Engine;
 import EntityEngine.Entity;
 import EntityEngine.Renderer.Cell;
 import EntityEngine.Renderer.TransformComparator;
@@ -14,7 +15,6 @@ import java.util.concurrent.Future;
 
 public class ComponentManagerSystem extends System {
     Array<Cell> loadedCells;
-    private int loadedCellsID = 0;
     Array<Array<Component>> comp = new Array<>();
     Component c;
     Future< Array<Array<Component>>> components;
@@ -34,10 +34,10 @@ public class ComponentManagerSystem extends System {
         }
 
 
-        if (engine.getSpatialHashGrid().getLoadedCellID() != loadedCellsID){
+        if (engine.getSpatialHashGrid().update){
+            engine.getSpatialHashGrid().update = false;
             loadedCells = engine.getCellsFromCameraCenter();
             components = engine.pool.submit(new ComponentCalculation(loadedCells, engine.componentMap));
-            loadedCellsID = engine.getSpatialHashGrid().getLoadedCellID();
         }
     }
 
@@ -53,6 +53,60 @@ public class ComponentManagerSystem extends System {
 
         return null;
     }
+
+    public void deleteEntity(Entity e){
+        for (int i = 0; i < e.components.size; i++){
+            c = e.components.get(i);
+            for (int j = 0; j < comp.size; j++){
+                if (!comp.get(j).isEmpty()){
+                    if (comp.get(j).get(0).getClass() == c.getClass()){
+                        for (int k = 0; k < comp.get(j).size; k++){
+                            if (comp.get(j).get(k).getId() == c.getId()){
+                                comp.get(j).removeIndex(k);
+                                break;
+                            }
+                        }
+
+                    }
+
+
+                }
+            }
+
+        }
+    }
+
+    public void addEntityDynamically(Entity e){
+
+        if (e != null && !e.flagForDelete){
+            for (int j = 0; j < e.components.size; j++){
+                parseComponents(e.components.get(j));
+            }
+        }
+
+    }
+
+
+    public void parseComponents(Component component){
+        if (!component.seperate)
+            return;
+        for (int i = 0; i < comp.size; i++){
+            if (!comp.get(i).isEmpty()){
+                c = comp.get(i).get(0);
+                if (c.getClass() == component.getClass()){
+                    comp.get(i).add(component);
+                    return;
+                }
+            }
+        }
+
+
+        Array<Component> tempArray = new Array<>();
+        tempArray.add(component);
+        comp.add(tempArray);
+
+    }
+
 }
 
 class ComponentCalculation implements Callable {
@@ -69,7 +123,6 @@ class ComponentCalculation implements Callable {
     public ComponentCalculation(Array<Cell> loadedCells, HashMap<Integer, Entity> entities){
         this.loadedCells = loadedCells;
         this.componentMap = entities;
-
         for (int i = 0; i < loadedCells.size; i++){
             temp.addAll(loadedCells.get(i).getComponents());
         }
@@ -125,8 +178,10 @@ class ComponentCalculation implements Callable {
 
         for (int i = 0; i < temp.size; i++){
             e = componentMap.get(temp.get(i).getId());
-            for (int j = 0; j < e.components.size; j++){
-                parseComponents(e.components.get(j));
+            if (e != null && !e.flagForDelete){
+                for (int j = 0; j < e.components.size; j++){
+                    parseComponents(e.components.get(j));
+                }
             }
         }
 
@@ -134,6 +189,8 @@ class ComponentCalculation implements Callable {
     }
 
     public void parseComponents(Component component){
+        if (!component.seperate)
+            return;
         for (int i = 0; i < comp.size; i++){
             if (!comp.get(i).isEmpty()){
                 c = comp.get(i).get(0);
@@ -150,6 +207,7 @@ class ComponentCalculation implements Callable {
         comp.add(tempArray);
 
     }
+
 
     @Override
     public Array<Array<Component>> call() throws Exception {

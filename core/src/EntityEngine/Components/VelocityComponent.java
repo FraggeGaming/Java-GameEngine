@@ -4,6 +4,10 @@ import com.badlogic.gdx.math.Vector3;
 
 public class VelocityComponent extends Component{
     public Vector3 vel = new Vector3(0, 0, 0);
+    public VelocityComponent(float x, float y, float z){
+        vel.set(x,y,z);
+    }
+
     public VelocityComponent(){
 
     }

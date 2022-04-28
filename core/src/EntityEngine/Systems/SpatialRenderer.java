@@ -36,9 +36,11 @@ public class SpatialRenderer extends System {
 
             for (int i = 0; i < comp.size; i++){
                 t = (TextureComponent) comp.get(i);
+                if (engine.getEntity(t.getId()) != null){
+                    transform = (TransformComponent) engine.getEntityComponent(t.getId(), TransformComponent.class);
+                    drawTexture(t, transform);
+                }
 
-                transform = (TransformComponent) engine.getEntityComponent(t.getId(), TransformComponent.class);
-                drawTexture(t, transform);
 
             }
 

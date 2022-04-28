@@ -64,7 +64,7 @@ public class DebugLabel {
             setText((double)Math.round(Gdx.graphics.getFramesPerSecond()/(double)engine.getDrawnEntities() * 10000f)/10000f);
         }
         else if (whatToDebug == 6){
-            setText(engine.getEntities().size);
+            setText(engine.componentMap.size());
         }
         else if (whatToDebug == 7){
             setText(engine.getAnimations());

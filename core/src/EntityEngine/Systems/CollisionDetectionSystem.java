@@ -54,7 +54,7 @@ public class CollisionDetectionSystem extends System{
 
 
             loadedCells = engine.getCellsFromCameraCenter();
-            computedCollisions = engine.pool.submit(new CollisionCalculation(loadedCells, engine.componentMap, collisions));
+            computedCollisions = engine.pool.submit(new CollisionCalculation(loadedCells, collisions));
 
 
             timeStep = 0;
