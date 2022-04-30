@@ -1,21 +1,13 @@
 package TestFiles;
 
-import EntityEngine.Components.*;
 import EntityEngine.Engine;
-import EntityEngine.Entity;
-import EntityEngine.GameClasses.Animation;
 import EntityEngine.GameClasses.TDCamera;
-import EntityEngine.Noise.OpenSimplexNoise;
-import EntityEngine.Systems.*;
-import EntityEngine.Tile;
 import TestFiles.scripts.*;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.ScreenUtils;
+
 
 public class DOPVsOOP extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -30,10 +22,10 @@ public class DOPVsOOP extends ApplicationAdapter {
 		camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
 		batch = new SpriteBatch();
 
+		TextureAtlas atlas = new TextureAtlas("atlas/TexturePack.atlas");
 		//engine setup
 		engine = new Engine(batch, camera);
 
-		TextureAtlas atlas = new TextureAtlas("atlas/TexturePack.atlas");
 		engine.addSystem(new UI());
 		engine.addSystem(new MovementSystem());
 		engine.addSystem(new WorldSystem(atlas));
@@ -56,7 +48,6 @@ public class DOPVsOOP extends ApplicationAdapter {
 		//TODO navMesh (multithreaded pathfinding)
 
 		engine.buildSystems();
-
 	}
 
 

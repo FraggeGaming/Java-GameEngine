@@ -14,7 +14,7 @@ public class CollisionDetectionSystem extends System{
     public HashSet<CollisionComponent> collisions = new HashSet<>();
     CollisionComponent c1;
     CollisionComponent c2;
-    float stepValue = 60;
+    float stepValue = 144;
     float timeStep = 0;
     int id1, id2;
     int collidableComponents = 0;
@@ -56,10 +56,7 @@ public class CollisionDetectionSystem extends System{
             loadedCells = engine.getCellsFromCameraCenter();
             computedCollisions = engine.pool.submit(new CollisionCalculation(loadedCells, collisions));
 
-
             timeStep = 0;
-
-
 
 
         }
@@ -72,6 +69,10 @@ public class CollisionDetectionSystem extends System{
                     collisionDebugValue = container.collisionDebugValue;
                     collidableComponentsDebug = container.collidableComponentsDebug;
                     collisions = container.collisions;
+
+                    for (CollisionComponent c : collisions){
+                        c.setNewCollisions();
+                    }
 
                 }
 
@@ -144,7 +145,7 @@ public class CollisionDetectionSystem extends System{
         if (collisions.contains(c)){
             for (CollisionComponent c1 : c.collisions){
 
-                if (c1.id.equals(id)){
+                if (c1.id != null && c1.id.equals(id)){
                     return true;
                 }
             }

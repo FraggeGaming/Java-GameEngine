@@ -2,11 +2,13 @@ package TestFiles.scripts;
 
 import EntityEngine.Components.*;
 import EntityEngine.Entity;
+import EntityEngine.Systems.CollisionDetectionSystem;
 import EntityEngine.Systems.System;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
@@ -17,6 +19,17 @@ public class BulletSystem extends System {
     VelocityComponent v;
     TextureAtlas atlas;
     Entity e;
+
+    float fireTimer = 0;
+    float fireRate = 10;
+
+    Vector3 mouseVector = new Vector3();
+    Vector2 bullet = new Vector2();
+
+    Entity player;
+    TransformComponent playerTransform;
+
+
     public BulletSystem(TextureAtlas atlas){
         this.atlas = atlas;
 
@@ -25,23 +38,52 @@ public class BulletSystem extends System {
 
     @Override
     public void update(float dt) {
-        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
-            Entity p = engine.getEntity("Player");
-            TransformComponent t = (TransformComponent) p.getComponent(TransformComponent.class);
-            Entity e = new Entity();
-            e.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion("Spore"))));
-            e.addComponents(new TransformComponent(t.getOriginX(), t.getOriginY(), 5, 20, 20));
-            e.addComponents(new CollisionComponent(t.getOriginX(), t.getOriginY(),20, 20));
-            e.addComponents(new VelocityComponent(90, 0, 1));
-            e.addComponents(new LifeCount(3));
-            e.addComponents(new BulletComponent());
 
-            engine.addEntity(e);
-
-        }
+        fireBullet(dt);
         bulletLogic(dt);
 
     }
+
+    private void fireBullet(float dt){
+        if (player == null){
+            player = engine.getEntity("Player");
+            playerTransform = (TransformComponent) player.getComponent(TransformComponent.class);
+        }
+
+
+        fireTimer += dt;
+
+        if (fireTimer >= 1/fireRate){
+
+            if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
+
+                Projectile proj = new Projectile(0.5f, 600,playerTransform, 20, 20, new TextureRegion(atlas.findRegion("Spore")), getbulletVector());
+                engine.addEntity(proj.getProjectile());
+
+                fireTimer = 0;
+            }
+
+            if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)){
+
+                Projectile proj = new Projectile(3f, 100,playerTransform, 50, 50, new TextureRegion(atlas.findRegion("Stonecrab")), getbulletVector());
+                engine.addEntity(proj.getProjectile());
+
+                fireTimer = 0;
+            }
+        }
+    }
+
+    private Vector2 getbulletVector(){
+        mouseVector.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+        mouseVector = engine.getCamera().unproject(mouseVector);
+
+        bullet.set(playerTransform.getOriginX() - mouseVector.x, playerTransform.getOriginY() - mouseVector.y);
+        bullet.nor();
+        bullet.scl(-1);
+
+        return bullet;
+    }
+
 
     private void bulletLogic(float dt){
         bullets = engine.getloadedComponents(BulletComponent.class);
@@ -58,6 +100,19 @@ public class BulletSystem extends System {
                 if (l.isDead()){
                     engine.removeEntity(e);
                 }
+
+                else {
+
+                    CollisionDetectionSystem col = (CollisionDetectionSystem) engine.getSystem(CollisionDetectionSystem.class);
+                    c = (CollisionComponent) e.getComponent(CollisionComponent.class);
+                    if (col.CollisionWithID(c, "Sand")){
+                        engine.removeEntity(e);
+                    }
+
+
+                }
+
+
             }
         }
     }

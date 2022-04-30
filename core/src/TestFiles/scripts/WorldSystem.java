@@ -6,7 +6,6 @@ import EntityEngine.GameClasses.Animation;
 import EntityEngine.GameClasses.TDCamera;
 import EntityEngine.Noise.OpenSimplexNoise;
 import EntityEngine.Systems.System;
-import EntityEngine.Tile;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 

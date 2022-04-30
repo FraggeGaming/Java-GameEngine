@@ -1,9 +1,10 @@
-package EntityEngine;
+package TestFiles.scripts;
 
 import EntityEngine.Components.CollisionComponent;
 import EntityEngine.Components.Component;
 import EntityEngine.Components.TextureComponent;
 import EntityEngine.Components.TransformComponent;
+import EntityEngine.Entity;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
@@ -51,7 +52,7 @@ public class Tile {
 
         else if (value < 0.1f){
             components.add(c);
-            c.id = "Wall";
+            c.id = "Sand";
             return new TextureRegion(atlas.findRegion("Sand"));
         }
 
