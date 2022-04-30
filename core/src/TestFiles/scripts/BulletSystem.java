@@ -28,6 +28,8 @@ public class BulletSystem extends System {
 
     Entity player;
     TransformComponent playerTransform;
+    CollisionDetectionSystem col;
+    LifeCount l;
 
 
     public BulletSystem(TextureAtlas atlas){
@@ -57,7 +59,7 @@ public class BulletSystem extends System {
 
             if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
 
-                Projectile proj = new Projectile(0.5f, 600,playerTransform, 20, 20, new TextureRegion(atlas.findRegion("Spore")), getbulletVector());
+                Projectile proj = new Projectile(2, 200,playerTransform, 20, 20, new TextureRegion(atlas.findRegion("Spore")), getbulletVector());
                 engine.addEntity(proj.getProjectile());
 
                 fireTimer = 0;
@@ -65,7 +67,7 @@ public class BulletSystem extends System {
 
             if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)){
 
-                Projectile proj = new Projectile(3f, 100,playerTransform, 50, 50, new TextureRegion(atlas.findRegion("Stonecrab")), getbulletVector());
+                Projectile proj = new Projectile(0.5f, 700,playerTransform, 15, 15, new TextureRegion(atlas.findRegion("SpiderEgg")), getbulletVector());
                 engine.addEntity(proj.getProjectile());
 
                 fireTimer = 0;
@@ -84,7 +86,6 @@ public class BulletSystem extends System {
         return bullet;
     }
 
-
     private void bulletLogic(float dt){
         bullets = engine.getloadedComponents(BulletComponent.class);
         if (bullets == null)
@@ -95,7 +96,7 @@ public class BulletSystem extends System {
             if (e != null && !e.flagForDelete){
 
                 addVelocity(e, dt);
-                LifeCount l = (LifeCount) e.getComponent(LifeCount.class);
+                l = (LifeCount) e.getComponent(LifeCount.class);
                 l.live(dt);
                 if (l.isDead()){
                     engine.removeEntity(e);
@@ -103,7 +104,9 @@ public class BulletSystem extends System {
 
                 else {
 
-                    CollisionDetectionSystem col = (CollisionDetectionSystem) engine.getSystem(CollisionDetectionSystem.class);
+                    if (col == null)
+                        col = (CollisionDetectionSystem) engine.getSystem(CollisionDetectionSystem.class);
+
                     c = (CollisionComponent) e.getComponent(CollisionComponent.class);
                     if (col.CollisionWithID(c, "Sand")){
                         engine.removeEntity(e);
