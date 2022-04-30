@@ -28,22 +28,16 @@ public class CollisionCalculation implements Callable {
     HashSet<CollisionComponent> oldCollisions;
     public CollisionCalculation(Array<Cell> cells, HashSet<CollisionComponent> collisions){
         this.loadedCells = cells;
-
         this.oldCollisions = collisions;
-
-        run();
 
     }
     public void run() {
-        //lookForNewCollisions();
 
         for (int j = 0; j < loadedCells.size; j++){
             calculateCollisions(loadedCells.get(j));
         }
 
-        for (CollisionComponent c : collisions){
-            c.setNewCollisions();
-        }
+
 
     }
 
@@ -95,7 +89,7 @@ public class CollisionCalculation implements Callable {
 
     @Override
     public CollisionContainer call() throws Exception {
-
+        run();
         return new CollisionContainer(collisions, collisionDebugValue, collidableComponentsDebug);
     }
 }

@@ -126,9 +126,7 @@ class ComponentCalculation implements Callable {
         for (int i = 0; i < loadedCells.size; i++){
             temp.addAll(loadedCells.get(i).getComponents());
         }
-
-        parseCells();
-
+        temp.sort(new TransformComparator());
     }
 
     private void checkForDublicates(Class<?extends Component> component){
@@ -174,8 +172,6 @@ class ComponentCalculation implements Callable {
 
     private void parseCells() {
 
-        temp.sort(new TransformComparator());
-
         for (int i = 0; i < temp.size; i++){
             e = componentMap.get(temp.get(i).getId());
             if (e != null && !e.flagForDelete){
@@ -185,7 +181,7 @@ class ComponentCalculation implements Callable {
             }
         }
 
-        temp.clear();
+
     }
 
     public void parseComponents(Component component){
@@ -211,6 +207,8 @@ class ComponentCalculation implements Callable {
 
     @Override
     public Array<Array<Component>> call() throws Exception {
+        parseCells();
+        temp.clear();
         return comp;
     }
 }
