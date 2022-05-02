@@ -21,7 +21,7 @@ public class BulletSystem extends System {
     Entity e;
 
     float fireTimer = 0;
-    float fireRate = 10;
+    float fireRate = 50;
 
     Vector3 mouseVector = new Vector3();
     Vector2 bullet = new Vector2();
@@ -118,6 +118,7 @@ public class BulletSystem extends System {
 
             }
         }
+
     }
 
     public void addVelocity(Entity e, float dt){

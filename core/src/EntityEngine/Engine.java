@@ -20,7 +20,6 @@ import java.util.concurrent.Executors;
 
 public class Engine {
 
-    private final Array<Entity> entities = new Array<>();
     public final HashMap<Integer, Entity> componentMap = new HashMap();
     public final HashMap<String, Entity> entityMapper = new HashMap();
     private final Array<System> systems = new Array<>();
@@ -30,7 +29,7 @@ public class Engine {
     public TDCamera camera;
     public Batch batch;
     int entityId = 0;
-    List<Entity> flagedForDelete = new ArrayList<>();
+    public List<Entity> flagedForDelete = new ArrayList<>();
     public String user; // for networking //TODO change this later for more modular implementation
     boolean running = false;
 
@@ -55,8 +54,11 @@ public class Engine {
     }
 
     public void update(float dt){
+        deleteFlaged();
+        getSpatialHashGrid().calculateSpatialGrid(camera.getCameraTransform());
         ScreenUtils.clear(1, 1, 1, 0.7f);
         //TODO: render drawable first, when drawable ends, end batch
+
         //Render batches
         batch.setProjectionMatrix(camera.combined);
 
@@ -66,7 +68,6 @@ public class Engine {
             systems.get(i).endTimer();
         }
 
-        deleteFlaged();
 
     }
 
@@ -87,7 +88,6 @@ public class Engine {
     }
 
     public void addEntity(Entity entity){
-        entities.add(entity); // mby delete
         entity.setId(entityId++, componentMap); // and add to component map
 
         for (System s : systems){
@@ -100,11 +100,6 @@ public class Engine {
 
         spatialHashGrid.addEntity(entity);
 
-        //for optimized used when deleteing or adding entities
-        if (running){
-            ComponentManagerSystem compManager = (ComponentManagerSystem) getSystem(ComponentManagerSystem.class);
-            compManager.addEntityDynamically(entity);
-        }
     }
 
     public void addCamera(TDCamera camera){
@@ -114,9 +109,6 @@ public class Engine {
     public void removeEntity(Entity entity){
         flagedForDelete.add(entity);
         entity.flagForDelete = true;
-
-        ComponentManagerSystem compManager = (ComponentManagerSystem) getSystem(ComponentManagerSystem.class);
-        compManager.deleteEntity(entity);
 
     }
 
@@ -203,9 +195,6 @@ public class Engine {
         return componentMap.get(e.id);
     }
 
-    public Array<Entity> getEntities(){
-        return entities;
-    }
 
     public System getSystem(Class<?extends System> System){
         for (System s : systems){
@@ -230,7 +219,7 @@ public class Engine {
     }
 
     public Array<Cell> getCellsFromCameraCenter(){
-        return getSpatialHashGrid().getNeighbours(camera.getCameraTransform());
+        return getSpatialHashGrid().getNeighbours();
     }
 
     /*
@@ -251,11 +240,18 @@ public class Engine {
 
 
     public void deleteFlaged() {
+
+        //TODO delete flaged enteties once every x frames, before threads start with inacurate data.
         for (Entity e : flagedForDelete){
             spatialHashGrid.removeEntity(e);
             componentMap.remove(e.id);
+
         }
 
         flagedForDelete.clear();
+
+
     }
+
+
 }
