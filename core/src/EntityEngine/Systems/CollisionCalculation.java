@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 public class CollisionCalculation implements Callable {
     Array<Cell> loadedCells;
@@ -25,24 +26,25 @@ public class CollisionCalculation implements Callable {
     int collidableComponentsDebug = 0;
 
 
-    HashSet<CollisionComponent> oldCollisions;
-    public CollisionCalculation(Array<Cell> cells, HashSet<CollisionComponent> collisions){
+    public CollisionCalculation(Array<Cell> cells){
         this.loadedCells = cells;
-        this.oldCollisions = collisions;
 
     }
+
+
     public void run() {
 
         for (int j = 0; j < loadedCells.size; j++){
-            calculateCollisions(loadedCells.get(j));
+            try {
+                calculateCollisions(loadedCells.get(j));
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
         }
-
-
-
     }
 
 
-    private void calculateCollisions(Cell cell) {
+    private void calculateCollisions(Cell cell) throws ExecutionException {
         for (int i = 0; i < cell.getCollisions().size; i++){
 
             c1 = cell.getCollisions().get(i);
@@ -55,6 +57,8 @@ public class CollisionCalculation implements Callable {
 
                         c2 = cell.getCollisions().get(j);
 
+                        //TODO fix exeption bugg
+                        //TODO add velocity vector to collision component and use that to check if next frame collisions will jump over a box.
                         if (c2 != null && !c2.isSleeping() && !isStatic(c1, c2) && !c2.newCollisions.contains(c1)){
 
                             if (canCollide(c1, c2) && c1.overlaps(c2)){
@@ -71,11 +75,9 @@ public class CollisionCalculation implements Callable {
             }
         }
 
-
-
-
         collidableComponentsDebug = collidableComponents;
         collisionDebugValue = detectedCollisions;
+
     }
 
     private boolean isStatic(CollisionComponent c1, CollisionComponent c2){
@@ -89,6 +91,7 @@ public class CollisionCalculation implements Callable {
 
     @Override
     public CollisionContainer call() throws Exception {
+
         run();
         return new CollisionContainer(collisions, collisionDebugValue, collidableComponentsDebug);
     }

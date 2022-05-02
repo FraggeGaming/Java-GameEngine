@@ -18,17 +18,17 @@ public class SpatialHashGrid  {
     TransformComponent center = new TransformComponent(0, 0, 0, 0, 0);
 
     private Array<Cell> loadedCells = new Array<>();
+    private Array<Cell> loadedCellsTemp = new Array<>();
     boolean addCell = false;
 
-    int cellSize = 100; // 100 / tile size = number off sprites in a cell, ex: texture size = 15, then cellSize/textureSize = 10 wide and high cell
+    int cellSize = 40; // 100 / tile size = number off sprites in a cell, ex: texture size = 15, then cellSize/textureSize = 10 wide and high cell
     int offsetX = 0; //make this changeable in GUI
     int offsetY = 3;
     int radiusY;
     int radiusX;
     public boolean update = false;
 
-    public int addedEntities = 0;
-    public int addedEntitiesUpdateValue = 100;
+
 
     public SpatialHashGrid(){
     }
@@ -40,17 +40,20 @@ public class SpatialHashGrid  {
 
 
 
-    public Array<Cell> getNeighbours(TransformComponent component){
+    public Array<Cell> getNeighbours(){
 
-        if (!getKey(center).equals(getKey(component)) || addedEntities > addedEntitiesUpdateValue){
+        return loadedCellsTemp;
+    }
+
+    public void calculateSpatialGrid(TransformComponent component){
             loadedCells.clear();
             getSurroundingCells(component);
             sortLoadedCells();
             center.setVec(component.getVector());
             update = true;
-            addedEntities = 0;
-        }
-        return loadedCells;
+
+            loadedCellsTemp.clear();
+            loadedCellsTemp.addAll(loadedCells);
     }
 
 
@@ -90,7 +93,6 @@ public class SpatialHashGrid  {
     }
 
     public void addEntity(Entity entity) {
-        addedEntities++;
         Component x = entity.getComponent(TransformComponent.class);
         if (x != null){
             addToGrid((TransformComponent) x);
@@ -157,11 +159,10 @@ public class SpatialHashGrid  {
                 if (hashGrid.containsKey(keys.get(i))){
                     hashGrid.get(keys.get(i)).removeCollisionComponent((CollisionComponent) y);
                 }
-
             }
         }
-
     }
+
 
     private String getKey(TransformComponent component){
         return  (int)(component.getOriginX() / cellSize) + ", " + (int)(component.getOriginY() / cellSize);

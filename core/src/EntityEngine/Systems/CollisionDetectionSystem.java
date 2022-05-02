@@ -14,7 +14,7 @@ public class CollisionDetectionSystem extends System{
     public HashSet<CollisionComponent> collisions = new HashSet<>();
     CollisionComponent c1;
     CollisionComponent c2;
-    float stepValue = 144;
+    float stepValue = 60;
     float timeStep = 0;
     int id1, id2;
     int collidableComponents = 0;
@@ -24,7 +24,9 @@ public class CollisionDetectionSystem extends System{
     CollisionContainer container;
     Future<CollisionContainer> computedCollisions;
 
-    private int loadedCellsID = 0;
+    boolean calculateCollisions = true;
+
+    Array<Cell> loadedCellsTemp = new Array<>();
     public CollisionDetectionSystem(){
 
 
@@ -33,38 +35,39 @@ public class CollisionDetectionSystem extends System{
     @Override
     public void update(float dt) {
 
-        collisionMultiThread(dt);
+        //collisionMultiThread(dt);
 
-        //collisionNonThreaded(dt);
+        collisionNonThreaded(dt);
+
+
+    }
+
+    private void collisionNonThreaded(float dt) {
+        collisions = new HashSet<>();
+
+        loadedCells = engine.getCellsFromCameraCenter();
+        collidableComponents = 0;
+        detectedCollisions = 0;
+
+        for (int j = 0; j < loadedCells.size; j++){
+            calculateCollisions(loadedCells.get(j));
+        }
+
+        for (CollisionComponent c : collisions){
+            c.setNewCollisions();
+        }
 
 
     }
 
     private void collisionMultiThread(float dt){
-        loadedCells = engine.getCellsFromCameraCenter();
 
-        //gett loaded collision cells
-
-
-        timeStep += dt;
-
-
-        if (timeStep >= 1/stepValue){
-
-
-
-            loadedCells = engine.getCellsFromCameraCenter();
-            computedCollisions = engine.pool.submit(new CollisionCalculation(loadedCells, collisions));
-
-            timeStep = 0;
-
-
-        }
 
         try{
             if (computedCollisions != null){
                 if (computedCollisions.isDone()){
                     container = computedCollisions.get();
+
 
                     collisionDebugValue = container.collisionDebugValue;
                     collidableComponentsDebug = container.collidableComponentsDebug;
@@ -74,39 +77,54 @@ public class CollisionDetectionSystem extends System{
                         c.setNewCollisions();
                     }
 
+                    calculateCollisions = true;
+
                 }
 
             }
+
         }catch (Exception e){
             e.printStackTrace();
+        }
+
+        if (calculateCollisions){
+
+
+            loadedCells = engine.getCellsFromCameraCenter();
+
+
+            computedCollisions = engine.pool.submit(new CollisionCalculation(loadedCells));
+            calculateCollisions = false;
         }
 
     }
 
     private void calculateCollisions(Cell cell) {
-        for (int i = 0; i < cell.getComponents().size; i++){
-            id1 = cell.getComponents().get(i).getId();
-            c1 = (CollisionComponent) engine.getEntityComponent(id1, CollisionComponent.class);
-            if (c1 != null){
+
+
+        for (int i = 0; i < cell.getCollisions().size; i++){
+
+            c1 = cell.getCollisions().get(i);
+            if (c1 != null && !c1.isSleeping()){
                 collidableComponents++;
 
-                for (int j = 0; j < cell.getComponents().size; j++){
+                for (int j = 0; j < cell.getCollisions().size; j++){
 
                     if (i != j){
-                        id2 = cell.getComponents().get(j).getId();
-                        c2 = (CollisionComponent) engine.getEntityComponent(id2, CollisionComponent.class);
 
-                        if (c2 != null && !isStatic(c1, c2) && !c2.collisions.contains(c1)){
+                        c2 = cell.getCollisions().get(j);
 
-                            if (c1.overlaps(c2)){
+                        //TODO fix exeption bugg
+                        //TODO add velocity vector to collision component and use that to check if next frame collisions will jump over a box.
+                        if (c2 != null && !c2.isSleeping() && !isStatic(c1, c2) && !c2.newCollisions.contains(c1)){
+
+                            if (canCollide(c1, c2) && c1.overlaps(c2)){
                                 c1.addCollision(c2);
                                 c2.addCollision(c1);
                                 collisions.add(c1);
                                 collisions.add(c2);
 
-
                                 detectedCollisions++;
-
                             }
                         }
                     }
@@ -115,8 +133,13 @@ public class CollisionDetectionSystem extends System{
         }
 
 
-        collidableComponentsDebug = collidableComponents;
-        collisionDebugValue = detectedCollisions;
+        collidableComponentsDebug =+ collidableComponents;
+        collisionDebugValue =+ detectedCollisions;
+    }
+
+    private boolean canCollide(CollisionComponent c1, CollisionComponent c2){
+        //if their filter are compatible, then collide
+        return true;
     }
 
     private boolean isStatic(CollisionComponent c1, CollisionComponent c2){

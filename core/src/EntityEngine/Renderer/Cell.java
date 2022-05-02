@@ -56,7 +56,7 @@ public class Cell {
 
     }
 
-    public  Array<CollisionComponent> getCollisions(){
+    public Array<CollisionComponent> getCollisions(){
         return collision;
     }
 
