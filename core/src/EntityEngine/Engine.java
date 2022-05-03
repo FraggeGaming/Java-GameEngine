@@ -180,7 +180,10 @@ public class Engine {
     }
 
     public Component getEntityComponent(int id, Class<?extends Component> component){
-        return componentMap.get(id).getComponent(component);
+        if (componentMap.get(id) != null)
+            return componentMap.get(id).getComponent(component);
+
+        return null;
     }
 
     public Entity getEntity(int id){

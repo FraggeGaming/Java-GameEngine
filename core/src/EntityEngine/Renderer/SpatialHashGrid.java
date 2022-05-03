@@ -21,7 +21,7 @@ public class SpatialHashGrid  {
     private Array<Cell> loadedCellsTemp = new Array<>();
     boolean addCell = false;
 
-    int cellSize = 40; // 100 / tile size = number off sprites in a cell, ex: texture size = 15, then cellSize/textureSize = 10 wide and high cell
+    int cellSize = 50; // 100 / tile size = number off sprites in a cell, ex: texture size = 15, then cellSize/textureSize = 10 wide and high cell
     int offsetX = 0; //make this changeable in GUI
     int offsetY = 3;
     int radiusY;
@@ -90,6 +90,25 @@ public class SpatialHashGrid  {
 
     private Cell findCell(float x, float y){
         return hashGrid.get((int) x + ", " + (int) y);
+    }
+
+    public Array<Cell> getCells(TransformComponent component, int radius){
+        Array<Cell> cells = new Array<>();
+        for (int i = 0; i < radius; i++){
+            for (int j = 0; j < radius; j++){
+                cell = findCell(component.getOriginX()/cellSize -  radius/2f +i, component.getOriginY()/cellSize - radius/2f +j );
+                if (cell != null)
+                    cells.add(cell);
+            }
+        }
+        return cells;
+    }
+
+    public Cell getCell(TransformComponent component){
+
+        return cell = findCell(component.getOriginX()/cellSize, component.getOriginY()/cellSize );
+
+
     }
 
     public void addEntity(Entity entity) {

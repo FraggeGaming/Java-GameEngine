@@ -15,7 +15,7 @@ public class DOPVsOOP extends ApplicationAdapter {
 
 	@Override
 	public void create () {
-		float height = 500;
+		float height = 300;
 		float width = height*16/9;
 
 		TDCamera camera = new TDCamera(width, height);
@@ -35,7 +35,8 @@ public class DOPVsOOP extends ApplicationAdapter {
 		NetWorkClient client = new NetWorkClient();
 		engine.addNetWorkClientOnUpdate(client);
 
-		//TODO sorting system for systems based on priority order
+		//TODO assetmanager
+
 		//TODO collision filter
 		//TODO add UpNp
 		//TODO UDP support
@@ -46,6 +47,9 @@ public class DOPVsOOP extends ApplicationAdapter {
 		//TODO PP
 		//TODO some kind of particle system (gpu calculated?)
 		//TODO navMesh (multithreaded pathfinding)
+
+		//MBY
+		//TODO sorting system for systems based on priority order
 
 		engine.buildSystems();
 	}

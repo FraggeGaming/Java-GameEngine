@@ -1,6 +1,7 @@
 package EntityEngine.Systems;
 
 import EntityEngine.Components.*;
+import EntityEngine.Entity;
 import EntityEngine.Renderer.Cell;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -63,6 +64,10 @@ public class AnimationSystem extends System{
             numOfAnimations++;
         }
 
+        else {
+
+        }
+
     }
 
     private TextureRegion getNextFrame(AnimationComponent a){
@@ -71,6 +76,9 @@ public class AnimationSystem extends System{
         if (a.getCurrentFrameNumber() >= a.animationSize()){
             if (!a.isRepeat()){
                 a.setAlive(false);
+                //TODO maby fix this and put as parameter if user wants to delete animation after played
+                Entity e = engine.getEntity(a.getId());
+                engine.removeEntity(e);
             }
 
             a.setCurrentFrameNumber(0);
