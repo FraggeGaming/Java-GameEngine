@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 
 public class DOPVsOOP extends ApplicationAdapter {
-	SpriteBatch batch;
+
 	Engine engine;
 
 	@Override
@@ -20,11 +20,11 @@ public class DOPVsOOP extends ApplicationAdapter {
 
 		TDCamera camera = new TDCamera(width, height);
 		camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-		batch = new SpriteBatch();
+
 
 		TextureAtlas atlas = new TextureAtlas("atlas/TexturePack.atlas");
 		//engine setup
-		engine = new Engine(batch, camera);
+		engine = new Engine(camera);
 
 		engine.addSystem(new UI());
 		engine.addSystem(new MovementSystem());
@@ -35,18 +35,21 @@ public class DOPVsOOP extends ApplicationAdapter {
 		NetWorkClient client = new NetWorkClient();
 		engine.addNetWorkClientOnUpdate(client);
 
-		//TODO assetmanager
-
-		//TODO collision filter
-		//TODO add UpNp
-		//TODO UDP support
-		//TODO create mouse clicking system
-		//TODO raycast component
 		//TODO audio component
+		//TODO assetmanager
+		//TODO add dispose on stuff
+		//TODO collision filter
+
+		//TODO create mouse clicking system (ClickableComponent)
+		//TODO raycast component
 		//TODO Physics system
-		//TODO PP
+
 		//TODO some kind of particle system (gpu calculated?)
 		//TODO navMesh (multithreaded pathfinding)
+
+		//TODO PP
+		//TODO add UpNp
+		//TODO UDP support
 
 		//MBY
 		//TODO sorting system for systems based on priority order
@@ -62,7 +65,7 @@ public class DOPVsOOP extends ApplicationAdapter {
 
 	@Override
 	public void dispose () {
-		batch.dispose();
+		engine.dispose();
 	}
 
 

@@ -61,36 +61,41 @@ public class WorldSystem extends System {
         createHouse(300+15*7, 500);
 
         createTile(300 , 400, "MushroomBig", 60, 140, 10);
+
+        createTile(530 , 200, "Branch", 140, 20, 1);
     }
 
     private void createHouse(float x, float y){
+
         //floor
-        for (int i = 1; i < 10; i++){
+        for (int i = 0; i < 11; i++){
             float xCord = x+15*i;
             float yCord = y;
-            createTile(xCord, yCord, "Grassfloor", "Wall");
+            createTile(xCord, yCord, "StoneWallBottom1", "Wall");
 
         }
 
         //right wall
-        for (int i = 0; i < 10; i++){
+        for (int i = 1; i < 10; i++){
             float xCord = x;
             float yCord = y +15*i;
-            createTile(xCord, yCord, "Grassfloor", "Wall");
+            createTile(xCord, yCord, "StoneWallSideLeft", "Wall");
         }
 
         //Left wall
-        for (int i = 0; i < 10; i++){
+        for (int i = 1; i < 10; i++){
             float xCord = x + 15*10;
             float yCord = y +15*i;
-            createTile(xCord, yCord, "Grassfloor", "Wall");
+            createTile(xCord, yCord, "StoneWallSideRight", "Wall");
         }
 
+
+
         //Roof
-        for (int i = 0; i < 11; i++){
+        for (int i = 1; i < 10; i++){
             float xCord = x + 15*i;
             float yCord = y + 15*10;
-            createTile(xCord, yCord, "Grassfloor", "Wall");
+            createTile(xCord, yCord, "StoneWallTop", "Wall");
         }
 
         for (int i = 1; i < 10; i++){
@@ -103,6 +108,12 @@ public class WorldSystem extends System {
             }
         }
 
+        //corners
+        createTile(x, y + 15*10, "StoneCornerUpperLeft", "Wall");
+        createTile(x + 15*10, y + 15*10, "StoneCornerUpperRight", "Wall");
+
+
+        //Random stuff
         createTile(x + 5*15, y+15, "CrystalTile", "Crystal");
 
         createTile(x + 2*15, y+7*15, "CrystalTile", "Crystal");
@@ -117,13 +128,18 @@ public class WorldSystem extends System {
         e = new Entity();
         e.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion(name))));
         e.addComponents(new TransformComponent(x, y, 1, 15, 15));
-        CollisionComponent c = new CollisionComponent(x, y, 15, 15);
-        c.id = id;
-        c.isStatic = true;
-        e.addComponents(c);
+
+        if (id.equals("Wall")){
+            CollisionComponent c = new CollisionComponent(x, y, 15, 15);
+            c.id = id;
+            c.isStatic = true;
+            e.addComponents(c);
+        }
+
 
         engine.addEntity(e);
     }
+
 
     public void createTile(float x, float y, String name, float width, float height, float z){
         e = new Entity();

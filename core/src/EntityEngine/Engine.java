@@ -9,6 +9,7 @@ import EntityEngine.Renderer.SpatialHashGrid;
 import EntityEngine.Systems.*;
 import EntityEngine.Systems.System;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -33,8 +34,8 @@ public class Engine {
     public String user; // for networking //TODO change this later for more modular implementation
     boolean running = false;
 
-    public Engine(Batch batch, TDCamera camera){
-        this.batch = batch;
+    public Engine(TDCamera camera){
+        batch = new SpriteBatch();
         this.camera = camera;
         spatialHashGrid = new SpatialHashGrid();
         spatialHashGrid.setData((int) camera.viewportHeight);
@@ -257,4 +258,7 @@ public class Engine {
     }
 
 
+    public void dispose() {
+        batch.dispose();
+    }
 }
