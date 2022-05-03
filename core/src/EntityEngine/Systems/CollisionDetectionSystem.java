@@ -182,7 +182,7 @@ public class CollisionDetectionSystem extends System{
         if (collisions.contains(c)){
             for (CollisionComponent c1 : c.collisions){
 
-                if (c1.id.equals(id)){
+                if (c1.id != null && c1.id.equals(id)){
                    comp.add(c1);
                 }
             }

@@ -45,8 +45,8 @@ public class Tile {
         }
 
         if (value < 0f){
-            //components.add(c);
-            //c.id = "Water";
+            components.add(c);
+            c.id = "Water";
             return new TextureRegion(atlas.findRegion("Water"));
         }
 

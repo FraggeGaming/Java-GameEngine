@@ -2,6 +2,8 @@ package TestFiles.scripts;
 
 import EntityEngine.Components.*;
 import EntityEngine.Entity;
+import EntityEngine.GameClasses.Animation;
+import EntityEngine.Renderer.Cell;
 import EntityEngine.Systems.CollisionDetectionSystem;
 import EntityEngine.Systems.System;
 import com.badlogic.gdx.Gdx;
@@ -21,7 +23,7 @@ public class BulletSystem extends System {
     Entity e;
 
     float fireTimer = 0;
-    float fireRate = 50;
+    float fireRate = 10;
 
     Vector3 mouseVector = new Vector3();
     Vector2 bullet = new Vector2();
@@ -30,11 +32,11 @@ public class BulletSystem extends System {
     TransformComponent playerTransform;
     CollisionDetectionSystem col;
     LifeCount l;
-
+    TextureAtlas fireAtlas;
 
     public BulletSystem(TextureAtlas atlas){
         this.atlas = atlas;
-
+        fireAtlas = new TextureAtlas("atlas/Fire.atlas");
 
     }
 
@@ -59,20 +61,33 @@ public class BulletSystem extends System {
 
             if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
 
-                Projectile proj = new Projectile(2, 200,playerTransform, 20, 20, new TextureRegion(atlas.findRegion("Spore")), getbulletVector());
-                engine.addEntity(proj.getProjectile());
+                e = createProjectile(2, 200,playerTransform, 20, 20, new TextureRegion(atlas.findRegion("Spore")), getbulletVector());
+                engine.addEntity(e);
 
                 fireTimer = 0;
             }
 
             if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)){
 
-                Projectile proj = new Projectile(0.5f, 700,playerTransform, 15, 15, new TextureRegion(atlas.findRegion("SpiderEgg")), getbulletVector());
-                engine.addEntity(proj.getProjectile());
+                e = createProjectile(0.5f, 300,playerTransform, 15, 15, new TextureRegion(atlas.findRegion("SpiderEgg")), getbulletVector());
+                engine.addEntity(e);
 
                 fireTimer = 0;
             }
         }
+    }
+
+    private Entity createProjectile(float life, float speed, TransformComponent position, float width, float height, TextureRegion textureRegion, Vector2 bulletVector){
+        e = new Entity();
+
+        e.addComponents(new TextureComponent(textureRegion));
+        e.addComponents(new TransformComponent(position.getX() , position.getY()+ 10, 5, width, height));
+        e.addComponents(new CollisionComponent(position.getX(), position.getY()+ 10,width, height));
+        e.addComponents(new VelocityComponent(bulletVector.x * speed, bulletVector.y * speed, 1));
+        e.addComponents(new LifeCount(life));
+        e.addComponents(new BulletComponent());
+
+        return e;
     }
 
     private Vector2 getbulletVector(){
@@ -108,7 +123,16 @@ public class BulletSystem extends System {
                         col = (CollisionDetectionSystem) engine.getSystem(CollisionDetectionSystem.class);
 
                     c = (CollisionComponent) e.getComponent(CollisionComponent.class);
-                    if (col.CollisionWithID(c, "Sand")){
+                    if (col.CollisionWithID(c, "Water") || col.CollisionWithID(c, "Sand")){
+
+                        engine.removeEntity(e);
+                    }
+
+                    if (col.CollisionWithID(c, "Wall")){
+                        t = (TransformComponent) e.getComponent(TransformComponent.class);
+
+                        exploadCell();
+
                         engine.removeEntity(e);
                     }
 
@@ -118,6 +142,66 @@ public class BulletSystem extends System {
 
             }
         }
+
+    }
+
+    private void exploadCells(){
+        Array<Cell> cells = engine.getSpatialHashGrid().getCells(t, 1);
+        TextureComponent newTex;
+        Entity temp;
+
+        if (cells != null){
+            for (int j = 0; j < cells.size; j++){
+                for (int i = 0; i < cells.get(j).getComponents().size; i++){
+                    temp = engine.getEntity(cells.get(j).getComponents().get(i).getId());
+
+                    if (temp.getComponent(BulletComponent.class) == null){
+                        newTex = (TextureComponent) temp.getComponent(TextureComponent.class);
+                        newTex.setTexture(new TextureRegion(atlas.findRegion("ForrestTile1")));
+
+                        engine.getSpatialHashGrid().removeEntity(temp);
+                        temp.removeComponent(CollisionComponent.class);
+                        engine.getSpatialHashGrid().addEntity(temp);
+                    }
+
+
+                }
+            }
+
+            java.lang.System.out.println("TEST");
+
+        }
+    }
+
+    private void exploadCell(){
+        Array<CollisionComponent> toExpload = col.getCollisision(c, "Wall");
+        for (int k = 0; k < toExpload.size; k++){
+
+            Entity temp = engine.getEntity(toExpload.get(k).getId());
+            TextureComponent newTex = (TextureComponent) temp.getComponent(TextureComponent.class);
+            t = (TransformComponent) temp.getComponent(TransformComponent.class);
+
+            newTex.setTexture(new TextureRegion(atlas.findRegion("ForrestTile1")));
+
+            engine.getSpatialHashGrid().removeEntity(temp);
+            temp.removeComponent(CollisionComponent.class);
+            engine.getSpatialHashGrid().addEntity(temp);
+
+
+            createFireAnimationTest(t.getOriginX(), t.getOriginY(), fireAtlas);
+        }
+    }
+
+    public void createFireAnimationTest(float x, float y, TextureAtlas fireAtlas){
+        Entity i = new Entity();
+        i.addComponents(new TextureComponent(new TextureRegion(fireAtlas.findRegion("fire", 0))));
+        i.addComponents(new TransformComponent(x -50, y -25, 2, 100, 100));
+
+        Animation animation = new Animation(fireAtlas, "fire", 109);
+        AnimationComponent a = new AnimationComponent(0.02f, false, animation.getFrames());
+        i.addComponents(a);
+
+        engine.addEntity(i);
 
     }
 
@@ -137,6 +221,8 @@ public class BulletSystem extends System {
 
         engine.getSpatialHashGrid().addEntity(e);
     }
+
+
 
 
 }

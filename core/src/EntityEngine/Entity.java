@@ -54,7 +54,9 @@ public class Entity {
 
     public void removeComponent(Class<?extends Component> component){
         for (int i = 0; i < components.size; i++){
-            if (components.get(i) == c){
+            if (components.get(i).getClass() == component){
+                components.removeIndex(i);
+                return;
 
             }
         }

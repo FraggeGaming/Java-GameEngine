@@ -88,6 +88,10 @@ public class TransformComponent extends Component {
         return (vec.y + dim.y/2);
     }
 
+    public boolean equals(TransformComponent transformComponent){
+        return transformComponent.vec.equals(vec);
+    }
+
     public String toString(){
         return vec.toString();
     }
