@@ -1,4 +1,4 @@
-package TestFiles.scripts;
+package TestFiles.scripts.Network;
 
 import EntityEngine.Components.Component;
 import EntityEngine.Components.TransformComponent;

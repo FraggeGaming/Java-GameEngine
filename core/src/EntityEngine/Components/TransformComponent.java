@@ -7,18 +7,23 @@ public class TransformComponent extends Component {
 
     Vector3 vec = new Vector3();
     Vector3 dim = new Vector3();
+    public float rotation = 0;
 
     public TransformComponent(float x, float y, float z, float width, float height){
 
+        dim.x = width;
+        dim.y = height;
+        vec.set(x, y, z);
 
+    }
 
+    public TransformComponent(float x, float y, float z, float width, float height, float rotation){
 
         dim.x = width;
-
-
         dim.y = height;
-
         vec.set(x, y, z);
+
+        this.rotation = rotation;
 
     }
 
@@ -97,4 +102,7 @@ public class TransformComponent extends Component {
     }
 
 
+    public float getRotation() {
+        return rotation;
+    }
 }

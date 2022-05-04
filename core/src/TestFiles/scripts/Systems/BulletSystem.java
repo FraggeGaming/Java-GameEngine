@@ -1,4 +1,4 @@
-package TestFiles.scripts;
+package TestFiles.scripts.Systems;
 
 import EntityEngine.Components.*;
 import EntityEngine.Entity;
@@ -6,8 +6,11 @@ import EntityEngine.GameClasses.Animation;
 import EntityEngine.Renderer.Cell;
 import EntityEngine.Systems.CollisionDetectionSystem;
 import EntityEngine.Systems.System;
+import TestFiles.scripts.Components.BulletComponent;
+import TestFiles.scripts.Components.LifeCount;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -34,9 +37,9 @@ public class BulletSystem extends System {
     LifeCount l;
     TextureAtlas fireAtlas;
 
-    public BulletSystem(TextureAtlas atlas){
-        this.atlas = atlas;
-        fireAtlas = new TextureAtlas("atlas/Fire.atlas");
+    public BulletSystem(AssetManager manager){
+        atlas = manager.get("atlas/TexturePack.atlas");
+        fireAtlas = manager.get("atlas/Fire.atlas");
 
     }
 

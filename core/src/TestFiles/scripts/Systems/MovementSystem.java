@@ -1,4 +1,4 @@
-package TestFiles.scripts;
+package TestFiles.scripts.Systems;
 
 import EntityEngine.Components.CollisionComponent;
 import EntityEngine.Components.TransformComponent;

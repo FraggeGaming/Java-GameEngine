@@ -1,4 +1,4 @@
-package TestFiles.scripts;
+package TestFiles.scripts.Components;
 
 import EntityEngine.Components.Component;
 

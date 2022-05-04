@@ -1,13 +1,7 @@
 package EntityEngine.Systems;
 
-import EntityEngine.Components.TransformComponent;
-import EntityEngine.Entity;
 import EntityEngine.Network.*;
 import EntityEngine.NetworkClient.Client;
-import TestFiles.scripts.Data;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.google.gson.Gson;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
