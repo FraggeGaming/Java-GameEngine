@@ -1,4 +1,4 @@
-package TestFiles.scripts;
+package TestFiles.scripts.Systems;
 import EntityEngine.Engine;
 import EntityEngine.Systems.System;
 import com.badlogic.gdx.Gdx;

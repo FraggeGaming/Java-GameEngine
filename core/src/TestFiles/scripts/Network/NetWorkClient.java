@@ -1,4 +1,4 @@
-package TestFiles.scripts;
+package TestFiles.scripts.Network;
 
 import EntityEngine.Components.CollisionComponent;
 import EntityEngine.Components.TransformComponent;
@@ -6,6 +6,7 @@ import EntityEngine.Components.VelocityComponent;
 import EntityEngine.Entity;
 import EntityEngine.Network.ClientUpdate;
 import EntityEngine.Network.NetWorkData;
+import TestFiles.scripts.Network.Data;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.Array;

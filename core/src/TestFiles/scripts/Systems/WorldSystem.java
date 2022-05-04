@@ -1,4 +1,4 @@
-package TestFiles.scripts;
+package TestFiles.scripts.Systems;
 
 import EntityEngine.Components.*;
 import EntityEngine.Entity;
@@ -7,12 +7,16 @@ import EntityEngine.GameClasses.TDCamera;
 import EntityEngine.Noise.OpenSimplexNoise;
 import EntityEngine.Systems.System;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
+import imgui.ImGui;
+
+import java.util.HashMap;
 
 
 public class WorldSystem extends System {
@@ -24,29 +28,26 @@ public class WorldSystem extends System {
     int mapSizeIndex = 0;
     OpenSimplexNoise noise;
     TextureAtlas atlas;
+    TextureAtlas fireAtlas;
     Entity player;
-
     Entity e;
 
-    Array<Array<Entity>> home;
-    public WorldSystem(TextureAtlas atlas){
+    public WorldSystem(AssetManager manager){
         noise = new OpenSimplexNoise(); //for tilemap generation
-        this.atlas = atlas;
+        atlas = manager.get("atlas/TexturePack.atlas");
+        fireAtlas = manager.get("atlas/Fire.atlas");
+
+        Pixmap cursorPm = new Pixmap(Gdx.files.internal("tempcursor.png"));
+        int xHotSpot = cursorPm.getWidth() ;
+        int yHotSpot = cursorPm.getHeight();
+        Cursor cursor = Gdx.graphics.newCursor(cursorPm, xHotSpot /2, yHotSpot /2);
+        Gdx.graphics.setCursor(cursor);
+        cursorPm.dispose();
     }
 
     @Override
     public void onCreate() {
 
-        Pixmap cursorPm = new Pixmap(Gdx.files.internal("tempcursor.png"));
-        int xHotSpot = cursorPm.getWidth() ;
-        int yHotSpot = cursorPm.getHeight();
-        Cursor cursor = Gdx.graphics.newCursor(cursorPm, xHotSpot - 1, yHotSpot -1);
-
-        Gdx.graphics.setCursor(cursor);
-        cursorPm.dispose();
-
-
-        TextureAtlas fireAtlas = new TextureAtlas("atlas/Fire.atlas");
         for (int i = 0; i < 5; i++){
             for (int j = 0; j < 5; j++)
                 createFireAnimationTest(30 * i, 30*j, fireAtlas );
@@ -63,6 +64,56 @@ public class WorldSystem extends System {
         createTile(300 , 400, "MushroomBig", 60, 140, 10);
 
         createTile(530 , 200, "Branch", 140, 20, 1);
+    }
+
+    private void createTileWithNoise(float x, float y, double noise){
+        e = new Entity();
+        e.addComponents(new TextureComponent(generateWithNoise(noise)));
+        e.addComponents(new TransformComponent(x, y, 0, 15, 15));
+
+        engine.addEntity(e);
+
+    }
+
+    private TextureRegion generateWithNoise(double value){
+        //System.out.println(value);
+        if (value < -0.3f){
+            return new TextureRegion(atlas.findRegion("DeepWater"));
+        }
+
+        if (value < -0.2f){
+            return new TextureRegion(atlas.findRegion("TransitionWater"));
+        }
+
+        if (value < 0f){
+
+            return new TextureRegion(atlas.findRegion("Water"));
+        }
+
+        else if (value < 0.1f){
+
+            return new TextureRegion(atlas.findRegion("Sand"));
+        }
+
+        else if (value < 0.2f){
+            //components.add(c);
+            //c.id = "Podsol";
+            return new TextureRegion(atlas.findRegion("Podsol"));
+        }
+
+        else if (value < 0.4f){
+            //components.add(c);
+            //c.id = "DirtTile";
+            return new TextureRegion(atlas.findRegion("DirtTile"));
+        }
+
+        else if (value < 0.70f){
+
+            return new TextureRegion(atlas.findRegion("RockyTile"));
+        }
+        else
+            return new TextureRegion(atlas.findRegion("RockyTile"));
+
     }
 
     private void createHouse(float x, float y){
@@ -103,7 +154,7 @@ public class WorldSystem extends System {
 
             for (int j = 1; j < 10; j++){
                 float yCord = y + 15*j;
-                createTile(xCord, yCord, "MushroomFloor", "Floor");
+                createTile(xCord, yCord, "StoneTile", "Floor");
 
             }
         }
@@ -122,6 +173,8 @@ public class WorldSystem extends System {
 
         createTile(x + 9*15, y+8*15, "BlueTorch", "Torch");
 
+        createTile(x + 6*15, y+7*15, "Quartz", "Quartz");
+
     }
 
     public void createTile(float x, float y, String name, String id){
@@ -139,7 +192,6 @@ public class WorldSystem extends System {
 
         engine.addEntity(e);
     }
-
 
     public void createTile(float x, float y, String name, float width, float height, float z){
         e = new Entity();
@@ -196,15 +248,14 @@ public class WorldSystem extends System {
     }
 
     public void createTileMap(){
-        Tile t;
+
 
         if (mapSizeIndex > mapSize*mapSize)
             return;
 
         for (int i = 0; i < 100; i++){
             if (tileMapRenderIndexX < mapSize){
-                t = new Tile(atlas, noise.eval(tileMapRenderIndexX*scale, tileMapRenderIndexY*scale, z), 15*tileMapRenderIndexX, 15*tileMapRenderIndexY, 0, 15, 15);
-                engine.addEntity(t.getEntity());
+                createTileWithNoise(15*tileMapRenderIndexX, 15*tileMapRenderIndexY,noise.eval( tileMapRenderIndexX*scale, tileMapRenderIndexY*scale, z) );
                 tileMapRenderIndexX++;
             }
 

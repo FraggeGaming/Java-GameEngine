@@ -1,13 +1,7 @@
 package EntityEngine.Network;
 
-import EntityEngine.Components.Component;
-import EntityEngine.Components.TransformComponent;
 import EntityEngine.Engine;
-import EntityEngine.Entity;
 import EntityEngine.Systems.NetworkManager;
-import TestFiles.scripts.Data;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.google.gson.Gson;
 
 public class ClientUpdate {
