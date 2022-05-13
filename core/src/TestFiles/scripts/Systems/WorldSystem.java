@@ -32,10 +32,9 @@ public class WorldSystem extends System {
     Entity player;
     Entity e;
 
-    public WorldSystem(AssetManager manager){
+    public WorldSystem(){
         noise = new OpenSimplexNoise(); //for tilemap generation
-        atlas = manager.get("atlas/TexturePack.atlas");
-        fireAtlas = manager.get("atlas/Fire.atlas");
+
 
         Pixmap cursorPm = new Pixmap(Gdx.files.internal("tempcursor.png"));
         int xHotSpot = cursorPm.getWidth() ;
@@ -47,6 +46,9 @@ public class WorldSystem extends System {
 
     @Override
     public void onCreate() {
+
+        atlas = engine.assetManager.get("atlas/TexturePack.atlas");
+        fireAtlas = engine.assetManager.get("atlas/Fire.atlas");
 
         for (int i = 0; i < 5; i++){
             for (int j = 0; j < 5; j++)

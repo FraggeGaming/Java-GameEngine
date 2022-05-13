@@ -15,7 +15,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 
 public class DOPVsOOP extends ApplicationAdapter {
-
 	Engine engine;
 
 	@Override
@@ -26,26 +25,23 @@ public class DOPVsOOP extends ApplicationAdapter {
 		TDCamera camera = new TDCamera(width, height);
 		camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
 
-		/*Asset manager stuff, mby put in seperate class*/
-		AssetManager assetManager = new AssetManager();
-
-		AssetDescriptor<TextureAtlas> atlasAssetDescriptor = new AssetDescriptor<>("atlas/TexturePack.atlas", TextureAtlas.class);
-		AssetDescriptor<TextureAtlas> bulletAssetDescriptor = new AssetDescriptor<>("atlas/Fire.atlas", TextureAtlas.class);
-
-		assetManager.load(atlasAssetDescriptor);
-		assetManager.load(bulletAssetDescriptor);
-		assetManager.finishLoading();
 
 		//engine setup
 		engine = new Engine(camera);
+
+		engine.addAsset(new AssetDescriptor<>("atlas/TexturePack.atlas", TextureAtlas.class));
+		engine.addAsset(new AssetDescriptor<>("atlas/Fire.atlas", TextureAtlas.class));
+
 		engine.addSystem(new UI());
 		engine.addSystem(new MovementSystem());
-		engine.addSystem(new WorldSystem(assetManager));
-		engine.addSystem(new BulletSystem(assetManager));
+		engine.addSystem(new WorldSystem());
+		engine.addSystem(new BulletSystem());
 
 		//to stuff with netWork
 		NetWorkClient client = new NetWorkClient();
 		engine.addNetWorkClientOnUpdate(client);
+
+		engine.buildSystems();
 
 		//TODO audio component
 		//TODO assetmanager
@@ -66,7 +62,7 @@ public class DOPVsOOP extends ApplicationAdapter {
 		//MBY
 		//TODO sorting system for systems based on priority order
 
-		engine.buildSystems();
+
 	}
 
 

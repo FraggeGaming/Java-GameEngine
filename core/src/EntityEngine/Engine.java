@@ -8,8 +8,11 @@ import EntityEngine.Renderer.Cell;
 import EntityEngine.Renderer.SpatialHashGrid;
 import EntityEngine.Systems.*;
 import EntityEngine.Systems.System;
+import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -33,6 +36,7 @@ public class Engine {
     public List<Entity> flagedForDelete = new ArrayList<>();
     public String user; // for networking //TODO change this later for more modular implementation
     boolean running = false;
+    public AssetManager assetManager;
 
     public Engine(TDCamera camera){
         batch = new SpriteBatch();
@@ -40,6 +44,9 @@ public class Engine {
         spatialHashGrid = new SpatialHashGrid();
         spatialHashGrid.setData((int) camera.viewportHeight);
         pool = Executors.newCachedThreadPool();
+
+        assetManager = new AssetManager();
+
 
         initSetup();
 
@@ -73,6 +80,9 @@ public class Engine {
     }
 
     public void buildSystems(){
+
+        assetManager.finishLoading();
+
         for (int i = 0; i < systems.size; i++){
             systems.get(i).onCreate();
         }
@@ -260,5 +270,9 @@ public class Engine {
 
     public void dispose() {
         batch.dispose();
+    }
+
+    public void addAsset(AssetDescriptor<TextureAtlas> asset) {
+        assetManager.load(asset);
     }
 }

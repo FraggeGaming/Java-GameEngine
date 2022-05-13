@@ -37,10 +37,15 @@ public class BulletSystem extends System {
     LifeCount l;
     TextureAtlas fireAtlas;
 
-    public BulletSystem(AssetManager manager){
-        atlas = manager.get("atlas/TexturePack.atlas");
-        fireAtlas = manager.get("atlas/Fire.atlas");
+    public BulletSystem(){
 
+
+    }
+
+    @Override
+    public void onCreate() {
+        atlas = engine.assetManager.get("atlas/TexturePack.atlas");
+        fireAtlas = engine.assetManager.get("atlas/Fire.atlas");
     }
 
     @Override
