@@ -1,7 +1,6 @@
 package TestFiles;
 
 import EntityEngine.Engine;
-import EntityEngine.GameClasses.TDCamera;
 import TestFiles.scripts.Network.NetWorkClient;
 import TestFiles.scripts.Systems.BulletSystem;
 import TestFiles.scripts.Systems.MovementSystem;
@@ -10,24 +9,17 @@ import TestFiles.scripts.Systems.WorldSystem;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 
 public class DOPVsOOP extends ApplicationAdapter {
 	Engine engine;
+	float height = 500;
+	float width = height*16/9;
 
 	@Override
 	public void create () {
-		float height = 300;
-		float width = height*16/9;
-
-		TDCamera camera = new TDCamera(width, height);
-		camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-
-
-		//engine setup
-		engine = new Engine(camera);
+		engine = new Engine(width, height);
 
 		engine.addAsset(new AssetDescriptor<>("atlas/TexturePack.atlas", TextureAtlas.class));
 		engine.addAsset(new AssetDescriptor<>("atlas/Fire.atlas", TextureAtlas.class));
@@ -44,7 +36,6 @@ public class DOPVsOOP extends ApplicationAdapter {
 		engine.buildSystems();
 
 		//TODO audio component
-		//TODO assetmanager
 		//TODO add dispose on stuff
 		//TODO collision filter
 

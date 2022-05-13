@@ -69,7 +69,7 @@ public class BulletSystem extends System {
 
             if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
 
-                e = createProjectile(2, 200,playerTransform, 20, 20, new TextureRegion(atlas.findRegion("Spore")), getbulletVector());
+                e = createProjectile(1, 200,playerTransform, 20, 20, new TextureRegion(atlas.findRegion("Spore")), getbulletVector());
                 engine.addEntity(e);
 
                 fireTimer = 0;

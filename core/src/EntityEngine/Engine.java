@@ -38,9 +38,11 @@ public class Engine {
     boolean running = false;
     public AssetManager assetManager;
 
-    public Engine(TDCamera camera){
+    public Engine(float width, float height){
+
+        camera = new TDCamera(width, height);
+        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         batch = new SpriteBatch();
-        this.camera = camera;
         spatialHashGrid = new SpatialHashGrid();
         spatialHashGrid.setData((int) camera.viewportHeight);
         pool = Executors.newCachedThreadPool();
@@ -81,6 +83,7 @@ public class Engine {
 
     public void buildSystems(){
 
+        //TODO loadingscreen
         assetManager.finishLoading();
 
         for (int i = 0; i < systems.size; i++){
@@ -236,9 +239,6 @@ public class Engine {
         return getSpatialHashGrid().getNeighbours();
     }
 
-    /*
-    * Override this when creating custom server client
-    * */
     public void addNetWorkClientOnUpdate(ClientUpdate client){
         NetworkManager manager = (NetworkManager) getSystem(NetworkManager.class);
         manager.addClientOnUpdate(client);
@@ -270,6 +270,7 @@ public class Engine {
 
     public void dispose() {
         batch.dispose();
+        assetManager.dispose();
     }
 
     public void addAsset(AssetDescriptor<TextureAtlas> asset) {

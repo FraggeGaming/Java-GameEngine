@@ -21,7 +21,7 @@ public class SpatialHashGrid  {
     private Array<Cell> loadedCellsTemp = new Array<>();
     boolean addCell = false;
 
-    int cellSize = 50; // 100 / tile size = number off sprites in a cell, ex: texture size = 15, then cellSize/textureSize = 10 wide and high cell
+    int cellSize = 30;
     int offsetX = 1; //make this changeable in GUI
     int offsetY = 3;
     int radiusY;

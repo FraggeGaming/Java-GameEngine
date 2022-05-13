@@ -24,7 +24,7 @@ public class WorldSystem extends System {
     int tileMapRenderIndexY = 0;
     double scale = 0.04f;
     float z = 1f;
-    int mapSize = 1000;
+    int mapSize = 500;
     int mapSizeIndex = 0;
     OpenSimplexNoise noise;
     TextureAtlas atlas;
@@ -255,7 +255,7 @@ public class WorldSystem extends System {
         if (mapSizeIndex > mapSize*mapSize)
             return;
 
-        for (int i = 0; i < 100; i++){
+        for (int i = 0; i < 300; i++){
             if (tileMapRenderIndexX < mapSize){
                 createTileWithNoise(15*tileMapRenderIndexX, 15*tileMapRenderIndexY,noise.eval( tileMapRenderIndexX*scale, tileMapRenderIndexY*scale, z) );
                 tileMapRenderIndexX++;
