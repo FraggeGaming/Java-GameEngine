@@ -47,7 +47,7 @@ public class BulletSystem extends System {
 
     @Override
     public void onCreate() {
-        atlas = engine.assetManager.get("atlas/TexturePack.atlas");
+        atlas = engine.assetManager.get("atlas/TP.atlas");
         fireAtlas = engine.assetManager.get("atlas/Fire.atlas");
     }
 

@@ -57,7 +57,7 @@ public class WorldSystem extends System {
     @Override
     public void onCreate() {
 
-        atlas = engine.assetManager.get("atlas/TexturePack.atlas");
+        atlas = engine.assetManager.get("atlas/TP.atlas");
         fireAtlas = engine.assetManager.get("atlas/Fire.atlas");
 
         for (int i = 0; i < 5; i++){
@@ -73,23 +73,22 @@ public class WorldSystem extends System {
 
         createHouse(300+15*7, 500);
 
-
-        createHouse(500, 500);
-
         createHouse(500+15*14, 500);
 
         createHouse(500+15*7, 700);
 
-
         createHouse(800, 800);
 
-        createHouse(800+15*14, 800);
 
-        createHouse(800+15*7, 900);
+
 
         createTile(300 , 400, "MushroomBig", 60, 140, 10);
 
         createTile(530 , 200, "Branch", 140, 20, 1);
+
+        createTile(830 , 1200, "WaterTower", 64, 75, 1);
+
+
 
 
         createTileMapOnCreate();
@@ -138,7 +137,7 @@ public class WorldSystem extends System {
 
         else if (value < 0.70f){
 
-            return new TextureRegion(atlas.findRegion("RockyTile"));
+            return new TextureRegion(atlas.findRegion("GrassSmooth"));
         }
         else
             return new TextureRegion(atlas.findRegion("RockyTile"));
@@ -194,15 +193,16 @@ public class WorldSystem extends System {
 
 
         //Random stuff
-        createTile(x + 5*16, y+16, "CrystalTile", "Crystal");
-
-        createTile(x + 2*16, y+7*16, "CrystalTile", "Crystal");
-
         createTile(x + 6*16, y+3*16, "BlueTorch", "Torch");
 
         createTile(x + 9*16, y+8*16, "BlueTorch", "Torch");
 
         createTile(x + 6*16, y+7*16, "Quartz", "Quartz");
+
+        createTile(x + 4*16, y+5*16, "Table", 32,29, 2);
+        createTile(x + 6*16, y+5*16, "ChairRight", 16,32, 2);
+        createTile(x + 3*16, y+5*16, "ChairLeft",16,32, 2);
+
 
     }
 
@@ -244,8 +244,8 @@ public class WorldSystem extends System {
         engine.addEntity(player);
 
         player = new Entity();
-        player.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion("CaterpillarGun"))));
-        player.addComponents(new TransformComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 5, 30, 30));
+        player.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion("GreenCar"))));
+        player.addComponents(new TransformComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 5, 34, 26));
         c = new CollisionComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 30, 30);
         c.id = "Player";
         player.addComponents(c);

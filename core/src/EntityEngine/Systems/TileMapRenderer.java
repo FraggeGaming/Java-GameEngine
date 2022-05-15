@@ -15,7 +15,7 @@ public class TileMapRenderer extends System{
         if (tiledMapRenderer == null)
             return;
 
-        tiledMapRenderer.setView(engine.getCamera());
+        tiledMapRenderer.setView(engine.camera);
         tiledMapRenderer.render();
     }
 

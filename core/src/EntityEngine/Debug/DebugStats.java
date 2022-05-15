@@ -52,7 +52,7 @@ public class DebugStats {
         this.engine = engine;
         this.stage = stage;
         font = new BitmapFont();
-        buttonAtlas = new TextureAtlas("atlas/TexturePack.atlas");
+        buttonAtlas = new TextureAtlas("atlas/TP.atlas");
         style = new Label.LabelStyle(font, Color.BLACK);
         frameTimeLabel = new Label(" ", style);
         stage.addActor(frameTimeLabel);
@@ -172,7 +172,7 @@ public class DebugStats {
         b.font = font;
         Skin skin = new Skin();
         skin.addRegions(buttonAtlas);
-        b.up = skin.getDrawable("Stonecrab");
+        b.up = skin.getDrawable("ZombieAnt");
         TextButton button = new TextButton(text, b);
         stage.addActor(button);
 

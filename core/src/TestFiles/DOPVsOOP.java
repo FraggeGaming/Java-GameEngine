@@ -21,8 +21,8 @@ public class DOPVsOOP extends ApplicationAdapter {
 	public void create () {
 		engine = new Engine(width, height);
 
-		engine.addAsset(new AssetDescriptor<>("atlas/TexturePack.atlas", TextureAtlas.class));
 		engine.addAsset(new AssetDescriptor<>("atlas/Fire.atlas", TextureAtlas.class));
+		engine.addAsset(new AssetDescriptor<>("atlas/TP.atlas", TextureAtlas.class));
 
 		engine.addSystem(new UI());
 		engine.addSystem(new MovementSystem());
@@ -38,12 +38,12 @@ public class DOPVsOOP extends ApplicationAdapter {
 		//TODO audio component
 		//TODO add dispose on stuff
 
+		//TODO navMesh (multithreaded pathfinding) //Navmeshcomponents
 		//TODO create mouse clicking system (ClickableComponent)
-		//TODO raycast component
 		//TODO Physics system //use box2d
-
+		//TODO raycast component
+		//TODO Lightning
 		//TODO some kind of particle system (gpu calculated?)
-		//TODO navMesh (multithreaded pathfinding)
 
 		//TODO PP
 		//TODO add UpNp
