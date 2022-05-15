@@ -13,6 +13,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -38,6 +39,7 @@ public class Engine {
     boolean running = false;
     public AssetManager assetManager;
 
+
     public Engine(float width, float height){
 
         camera = new TDCamera(width, height);
@@ -55,6 +57,7 @@ public class Engine {
     }
 
     public void initSetup(){
+        addSystem(new TileMapRenderer());
         addSystem(new SpatialRenderer());
         addSystem(new NetworkManager());
         addSystem(new AnimationSystem());

@@ -94,6 +94,10 @@ public class DebugLabel {
             setText(engine.getSystemFunctionTime(ComponentManagerSystem.class));
         }
 
+        else if (whatToDebug == 20){
+            setText(engine.getSystemFunctionTime(TileMapRenderer.class));
+        }
+
 
     }
 

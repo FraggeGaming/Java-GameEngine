@@ -14,7 +14,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 public class DOPVsOOP extends ApplicationAdapter {
 	Engine engine;
-	float height = 500;
+	float height = 300;
 	float width = height*16/9;
 
 	@Override
@@ -37,11 +37,10 @@ public class DOPVsOOP extends ApplicationAdapter {
 
 		//TODO audio component
 		//TODO add dispose on stuff
-		//TODO collision filter
 
 		//TODO create mouse clicking system (ClickableComponent)
 		//TODO raycast component
-		//TODO Physics system
+		//TODO Physics system //use box2d
 
 		//TODO some kind of particle system (gpu calculated?)
 		//TODO navMesh (multithreaded pathfinding)

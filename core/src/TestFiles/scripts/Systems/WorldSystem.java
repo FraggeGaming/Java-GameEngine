@@ -6,6 +6,8 @@ import EntityEngine.GameClasses.Animation;
 import EntityEngine.GameClasses.TDCamera;
 import EntityEngine.Noise.OpenSimplexNoise;
 import EntityEngine.Systems.System;
+import EntityEngine.Systems.TileMapRenderer;
+import TestFiles.scripts.Components.PerformanceTestComp;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Cursor;
@@ -13,6 +15,11 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.utils.Array;
 import imgui.ImGui;
 
@@ -32,6 +39,9 @@ public class WorldSystem extends System {
     Entity player;
     Entity e;
 
+    TiledMap tileMap;
+    TiledMapTileLayer.Cell cell;
+    TiledMapTileLayer layer;
     public WorldSystem(){
         noise = new OpenSimplexNoise(); //for tilemap generation
 
@@ -63,17 +73,34 @@ public class WorldSystem extends System {
 
         createHouse(300+15*7, 500);
 
+
+        createHouse(500, 500);
+
+        createHouse(500+15*14, 500);
+
+        createHouse(500+15*7, 700);
+
+
+        createHouse(800, 800);
+
+        createHouse(800+15*14, 800);
+
+        createHouse(800+15*7, 900);
+
         createTile(300 , 400, "MushroomBig", 60, 140, 10);
 
         createTile(530 , 200, "Branch", 140, 20, 1);
+
+
+        createTileMapOnCreate();
+
+
     }
 
     private void createTileWithNoise(float x, float y, double noise){
-        e = new Entity();
-        e.addComponents(new TextureComponent(generateWithNoise(noise)));
-        e.addComponents(new TransformComponent(x, y, 0, 15, 15));
-
-        engine.addEntity(e);
+        cell = new TiledMapTileLayer.Cell();
+        cell.setTile(new StaticTiledMapTile(generateWithNoise(noise)));
+        layer.setCell((int)(x/16), (int)(y/16), cell);
 
     }
 
@@ -122,7 +149,7 @@ public class WorldSystem extends System {
 
         //floor
         for (int i = 0; i < 11; i++){
-            float xCord = x+15*i;
+            float xCord = x+16*i;
             float yCord = y;
             createTile(xCord, yCord, "StoneWallBottom1", "Wall");
 
@@ -131,14 +158,14 @@ public class WorldSystem extends System {
         //right wall
         for (int i = 1; i < 10; i++){
             float xCord = x;
-            float yCord = y +15*i;
+            float yCord = y +16*i;
             createTile(xCord, yCord, "StoneWallSideLeft", "Wall");
         }
 
         //Left wall
         for (int i = 1; i < 10; i++){
-            float xCord = x + 15*10;
-            float yCord = y +15*i;
+            float xCord = x + 16*10;
+            float yCord = y +16*i;
             createTile(xCord, yCord, "StoneWallSideRight", "Wall");
         }
 
@@ -146,46 +173,46 @@ public class WorldSystem extends System {
 
         //Roof
         for (int i = 1; i < 10; i++){
-            float xCord = x + 15*i;
-            float yCord = y + 15*10;
+            float xCord = x + 16*i;
+            float yCord = y + 16*10;
             createTile(xCord, yCord, "StoneWallTop", "Wall");
         }
 
         for (int i = 1; i < 10; i++){
-            float xCord = x + 15*i;
+            float xCord = x + 16*i;
 
             for (int j = 1; j < 10; j++){
-                float yCord = y + 15*j;
+                float yCord = y + 16*j;
                 createTile(xCord, yCord, "StoneTile", "Floor");
 
             }
         }
 
         //corners
-        createTile(x, y + 15*10, "StoneCornerUpperLeft", "Wall");
-        createTile(x + 15*10, y + 15*10, "StoneCornerUpperRight", "Wall");
+        createTile(x, y + 16*10, "StoneCornerUpperLeft", "Wall");
+        createTile(x + 16*10, y + 16*10, "StoneCornerUpperRight", "Wall");
 
 
         //Random stuff
-        createTile(x + 5*15, y+15, "CrystalTile", "Crystal");
+        createTile(x + 5*16, y+16, "CrystalTile", "Crystal");
 
-        createTile(x + 2*15, y+7*15, "CrystalTile", "Crystal");
+        createTile(x + 2*16, y+7*16, "CrystalTile", "Crystal");
 
-        createTile(x + 6*15, y+3*15, "BlueTorch", "Torch");
+        createTile(x + 6*16, y+3*16, "BlueTorch", "Torch");
 
-        createTile(x + 9*15, y+8*15, "BlueTorch", "Torch");
+        createTile(x + 9*16, y+8*16, "BlueTorch", "Torch");
 
-        createTile(x + 6*15, y+7*15, "Quartz", "Quartz");
+        createTile(x + 6*16, y+7*16, "Quartz", "Quartz");
 
     }
 
     public void createTile(float x, float y, String name, String id){
         e = new Entity();
         e.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion(name))));
-        e.addComponents(new TransformComponent(x, y, 1, 15, 15));
+        e.addComponents(new TransformComponent(x, y, 1, 16, 16));
 
         if (id.equals("Wall")){
-            CollisionComponent c = new CollisionComponent(x, y, 15, 15);
+            CollisionComponent c = new CollisionComponent(x, y, 16, 16);
             c.id = id;
             c.isStatic = true;
             e.addComponents(c);
@@ -199,7 +226,6 @@ public class WorldSystem extends System {
         e = new Entity();
         e.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion(name))));
         e.addComponents(new TransformComponent(x, y, z, width, height));
-
 
         engine.addEntity(e);
     }
@@ -246,7 +272,7 @@ public class WorldSystem extends System {
 
     @Override
     public void update(float dt) {
-        createTileMap();
+        //createTileMap();
     }
 
     public void createTileMap(){
@@ -268,5 +294,23 @@ public class WorldSystem extends System {
 
             mapSizeIndex++;
         }
+    }
+
+    private void createTileMapOnCreate(){
+        tileMap = new TiledMap();
+        MapLayers layers = tileMap.getLayers();
+        layer = new TiledMapTileLayer(mapSize, mapSize, 16, 16);
+        layer.setName("map");
+
+
+        for (int i = 0; i < mapSize; i++){
+            for (int j = 0; j < mapSize; j++){
+                createTileWithNoise(16*i, 16*j,noise.eval( i*scale, j*scale, z) );
+            }
+        }
+
+        layers.add(layer);
+        TileMapRenderer renderer = (TileMapRenderer) engine.getSystem(TileMapRenderer.class);
+        renderer.addTilemap(tileMap);
     }
 }

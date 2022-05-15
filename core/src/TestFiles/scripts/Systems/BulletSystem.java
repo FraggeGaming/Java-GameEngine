@@ -1,6 +1,7 @@
 package TestFiles.scripts.Systems;
 
 import EntityEngine.Components.*;
+import EntityEngine.Engine;
 import EntityEngine.Entity;
 import EntityEngine.GameClasses.Animation;
 import EntityEngine.Renderer.Cell;
@@ -18,7 +19,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
 public class BulletSystem extends System {
-    Array<Component> bullets;
     TransformComponent t;
     CollisionComponent c;
     VelocityComponent v;
@@ -26,7 +26,7 @@ public class BulletSystem extends System {
     Entity e;
 
     float fireTimer = 0;
-    float fireRate = 10;
+    float fireRate = 100;
 
     Vector3 mouseVector = new Vector3();
     Vector2 bullet = new Vector2();
@@ -36,6 +36,9 @@ public class BulletSystem extends System {
     CollisionDetectionSystem col;
     LifeCount l;
     TextureAtlas fireAtlas;
+
+    Array<Entity> firedbullets = new Array<>();
+    Array<Entity> firedbulletsToRemove = new Array<>();
 
     public BulletSystem(){
 
@@ -71,7 +74,7 @@ public class BulletSystem extends System {
 
                 e = createProjectile(1, 200,playerTransform, 20, 20, new TextureRegion(atlas.findRegion("Spore")), getbulletVector());
                 engine.addEntity(e);
-
+                firedbullets.add(e);
                 fireTimer = 0;
             }
 
@@ -79,6 +82,8 @@ public class BulletSystem extends System {
 
                 e = createProjectile(0.5f, 300,playerTransform, 15, 15, new TextureRegion(atlas.findRegion("SpiderEgg")), getbulletVector());
                 engine.addEntity(e);
+
+                firedbullets.add(e);
 
                 fireTimer = 0;
             }
@@ -110,18 +115,22 @@ public class BulletSystem extends System {
     }
 
     private void bulletLogic(float dt){
-        bullets = engine.getloadedComponents(BulletComponent.class);
-        if (bullets == null)
-            return;
 
-        for (int i = 0; i < bullets.size; i++){
-            e = engine.getEntity(bullets.get(i).getId());
+
+        firedbullets.removeAll(firedbulletsToRemove, true);
+        firedbulletsToRemove.clear();
+
+
+
+        for (int i = 0; i < firedbullets.size; i++){
+            e = firedbullets.get(i);
             if (e != null && !e.flagForDelete){
 
                 addVelocity(e, dt);
                 l = (LifeCount) e.getComponent(LifeCount.class);
                 l.live(dt);
                 if (l.isDead()){
+                    firedbulletsToRemove.add(e);
                     engine.removeEntity(e);
                 }
 
@@ -140,16 +149,17 @@ public class BulletSystem extends System {
                         t = (TransformComponent) e.getComponent(TransformComponent.class);
 
                         exploadCell();
-
+                        firedbulletsToRemove.add(e);
                         engine.removeEntity(e);
+
                     }
-
-
                 }
-
-
             }
+
         }
+
+
+
 
     }
 
@@ -210,6 +220,7 @@ public class BulletSystem extends System {
         i.addComponents(a);
 
         engine.addEntity(i);
+
 
     }
 

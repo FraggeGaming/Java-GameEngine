@@ -49,18 +49,21 @@ public class Debugger extends System {
         if (debugBox2D)
             return;
 
-        comp = engine.getloadedComponents(TransformComponent.class);
-        if (comp != null){
+        loadedCells = engine.getCellsFromCameraCenter();
+        if (loadedCells != null){
 
-            for (int i = 0; i < comp.size; i++){
-              t = (TransformComponent) comp.get(i);
+            for (int i = 0; i < loadedCells.size; i++){
+                for (int j = 0; j < loadedCells.get(i).getComponents().size; j++){
+                    t =  loadedCells.get(i).getComponents().get(j);
 
-                if (t.getZ() < 1)
-                    shapeRenderer.setColor(Color.GREEN);
-                else{
-                    shapeRenderer.setColor(Color.BLUE);
+                    if (t.getZ() < 1)
+                        shapeRenderer.setColor(Color.GREEN);
+                    else{
+                        shapeRenderer.setColor(Color.BLUE);
+                    }
+                    shapeRenderer.rect(t.getX(), t.getY(), t.getWidth(), t.getHeight());
                 }
-                shapeRenderer.rect(t.getX(), t.getY(), t.getWidth(), t.getHeight());
+
             }
         }
 

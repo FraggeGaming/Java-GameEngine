@@ -15,7 +15,6 @@ public class SpatialHashGrid  {
 
     private final HashMap<String, Cell> hashGrid = new HashMap();
     private Cell cell;
-    TransformComponent center = new TransformComponent(0, 0, 0, 0, 0);
 
     private Array<Cell> loadedCells = new Array<>();
     private Array<Cell> loadedCellsTemp = new Array<>();
@@ -49,7 +48,6 @@ public class SpatialHashGrid  {
             loadedCells.clear();
             getSurroundingCells(component);
             sortLoadedCells();
-            center.setVec(component.getVector());
             update = true;
 
             loadedCellsTemp.clear();
