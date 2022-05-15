@@ -8,8 +8,12 @@ import EntityEngine.Renderer.Cell;
 import EntityEngine.Renderer.SpatialHashGrid;
 import EntityEngine.Systems.*;
 import EntityEngine.Systems.System;
+import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -33,19 +37,27 @@ public class Engine {
     public List<Entity> flagedForDelete = new ArrayList<>();
     public String user; // for networking //TODO change this later for more modular implementation
     boolean running = false;
+    public AssetManager assetManager;
 
-    public Engine(TDCamera camera){
+
+    public Engine(float width, float height){
+
+        camera = new TDCamera(width, height);
+        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         batch = new SpriteBatch();
-        this.camera = camera;
         spatialHashGrid = new SpatialHashGrid();
         spatialHashGrid.setData((int) camera.viewportHeight);
         pool = Executors.newCachedThreadPool();
+
+        assetManager = new AssetManager();
+
 
         initSetup();
 
     }
 
     public void initSetup(){
+        addSystem(new TileMapRenderer());
         addSystem(new SpatialRenderer());
         addSystem(new NetworkManager());
         addSystem(new AnimationSystem());
@@ -73,6 +85,10 @@ public class Engine {
     }
 
     public void buildSystems(){
+
+        //TODO loadingscreen
+        assetManager.finishLoading();
+
         for (int i = 0; i < systems.size; i++){
             systems.get(i).onCreate();
         }
@@ -226,9 +242,6 @@ public class Engine {
         return getSpatialHashGrid().getNeighbours();
     }
 
-    /*
-    * Override this when creating custom server client
-    * */
     public void addNetWorkClientOnUpdate(ClientUpdate client){
         NetworkManager manager = (NetworkManager) getSystem(NetworkManager.class);
         manager.addClientOnUpdate(client);
@@ -260,5 +273,10 @@ public class Engine {
 
     public void dispose() {
         batch.dispose();
+        assetManager.dispose();
+    }
+
+    public void addAsset(AssetDescriptor<TextureAtlas> asset) {
+        assetManager.load(asset);
     }
 }

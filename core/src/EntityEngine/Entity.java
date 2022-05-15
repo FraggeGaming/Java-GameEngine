@@ -28,6 +28,8 @@ public class Entity {
     }
 
     public Component getComponent(Class<?extends Component> component){
+
+
         for (int i = 0; i < components.size; i++){
             c = components.get(i);
             if (c.getClass().equals(component))

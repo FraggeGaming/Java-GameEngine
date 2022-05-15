@@ -20,25 +20,20 @@ public class AnimationSystem extends System{
 
     @Override
     public void update(float dt) {
-        /*loadedCells = parentEngine.getCellsFromCameraCenter();
-
         numOfAnimations = 0;
+
+
+        /*loadedCells = engine.getCellsFromCameraCenter();
         for (int j = 0; j < loadedCells.size; j++){
-
             animateCell(loadedCells.get(j));
-
         }*/
 
         comp = engine.getloadedComponents(AnimationComponent.class);
-        numOfAnimations = 0;
         if (comp != null){
             for (int i = 0; i < comp.size; i++){
                 setUpAnimation(comp.get(i).getId());
             }
-
         }
-
-
     }
 
     private void animateCell(Cell cell){
@@ -63,11 +58,6 @@ public class AnimationSystem extends System{
 
             numOfAnimations++;
         }
-
-        else {
-
-        }
-
     }
 
     private TextureRegion getNextFrame(AnimationComponent a){

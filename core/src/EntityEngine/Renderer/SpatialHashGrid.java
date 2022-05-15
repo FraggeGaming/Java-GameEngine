@@ -15,13 +15,12 @@ public class SpatialHashGrid  {
 
     private final HashMap<String, Cell> hashGrid = new HashMap();
     private Cell cell;
-    TransformComponent center = new TransformComponent(0, 0, 0, 0, 0);
 
     private Array<Cell> loadedCells = new Array<>();
     private Array<Cell> loadedCellsTemp = new Array<>();
     boolean addCell = false;
 
-    int cellSize = 50; // 100 / tile size = number off sprites in a cell, ex: texture size = 15, then cellSize/textureSize = 10 wide and high cell
+    int cellSize = 30;
     int offsetX = 1; //make this changeable in GUI
     int offsetY = 3;
     int radiusY;
@@ -49,7 +48,6 @@ public class SpatialHashGrid  {
             loadedCells.clear();
             getSurroundingCells(component);
             sortLoadedCells();
-            center.setVec(component.getVector());
             update = true;
 
             loadedCellsTemp.clear();

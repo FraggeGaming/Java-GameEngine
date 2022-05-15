@@ -61,6 +61,7 @@ public class DebugStats {
 
         frameTimeDebug = new DebugLabel(style, stage, -dbB*(labelOrder++), "FrameTime", profiler, engine, -1);
         labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Renderer function time", profiler, engine, 10 ));
+        labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Tilemap function time", profiler, engine, 20 ));
         labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Collision detection function time", profiler, engine, 11 ));
         labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Debugger function time", profiler, engine, 12 ));
         labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Animation function time", profiler, engine, 13 ));

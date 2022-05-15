@@ -3,13 +3,13 @@ package EntityEngine.Systems;
 import EntityEngine.Components.*;
 import EntityEngine.Entity;
 import EntityEngine.Renderer.Cell;
+import EntityEngine.Renderer.TransformComparator;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 public class SpatialRenderer extends System {
 
-    SpriteCache cache = new SpriteCache();
     Vector2 worldSize = new Vector2(0, 0);
     public int drawnEntities;
     TextureComponent t;
@@ -18,20 +18,69 @@ public class SpatialRenderer extends System {
     Component x;
 
     Array<Component> comp;
+    Array<TransformComponent> transformComp;
+
+    Array<Cell> cells;
+    Array<TransformComponent> compt = new Array<>();
+
     public SpatialRenderer(){
 
     }
 
     @Override
     public void update(float dt){
+        drawnEntities = 0;
         renderWithCMS();
+    }
+
+    private void renderWiothoutCMS(){
+
+
+        cells = engine.getCellsFromCameraCenter();
+        for (int i = 0; i < cells.size; i++){
+            compt.addAll(cells.get(i).getComponents());
+        }
+        compt.sort(new TransformComparator());
+
+
+
+        engine.getBatch().begin();
+        for (int i = 0; i < compt.size; i++){
+
+            transform = compt.get(i);
+            t = (TextureComponent) engine.getEntityComponent(transform.getId(), TextureComponent.class);
+            drawTexture(t, transform);
+
+        }
+        engine.getBatch().end();
+
+        compt.clear();
+    }
+    private void renderwithLayers(){
+        cells = engine.getCellsFromCameraCenter();
+        engine.getBatch().begin();
+
+        for (int k = 0; k < 5; k++){
+            for (int i = 0; i < cells.size; i++){
+
+                transformComp = cells.get(i).getLayers().get(k);
+
+                if (transformComp != null){
+                    renderArray(transformComp);
+                }
+
+
+            }
+        }
+
+        engine.getBatch().end();
     }
 
     private void renderWithCMS() {
 
         comp = engine.getloadedComponents(TextureComponent.class);
         if (comp != null){
-            drawnEntities = 0;
+
             engine.getBatch().begin();
 
             for (int i = 0; i < comp.size; i++){
@@ -46,7 +95,18 @@ public class SpatialRenderer extends System {
 
             engine.getBatch().end();
         }
+    }
 
+    private void renderArray(Array<TransformComponent> comp){
+        if (comp != null){
+            for (int i = 0; i < comp.size; i++){
+
+                transform = comp.get(i);
+                t = (TextureComponent) engine.getEntityComponent(transform.getId(), TextureComponent.class);
+                drawTexture(t, transform);
+
+            }
+        }
     }
 
     private void drawTexture(TextureComponent texture, TransformComponent transform){
