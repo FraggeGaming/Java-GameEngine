@@ -40,7 +40,7 @@ public class Engine {
     public AssetManager assetManager;
 
 
-    public Engine(float width, float height){
+    public Engine(float width, float height, Script scriptLoader){
 
         camera = new TDCamera(width, height);
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
@@ -50,10 +50,13 @@ public class Engine {
         pool = Executors.newCachedThreadPool();
 
         assetManager = new AssetManager();
-
-
         initSetup();
 
+        scriptLoader.addEngine(this);
+        scriptLoader.loadAssets();
+        scriptLoader.onCreate();
+
+        buildSystems();
     }
 
     public void initSetup(){
