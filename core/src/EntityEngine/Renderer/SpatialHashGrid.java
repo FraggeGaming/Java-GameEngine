@@ -3,33 +3,32 @@ package EntityEngine.Renderer;
 import EntityEngine.Components.CollisionComponent;
 import EntityEngine.Components.Component;
 import EntityEngine.Components.TransformComponent;
+import EntityEngine.Engine;
 import EntityEngine.Entity;
-import EntityEngine.Systems.ComponentManagerSystem;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import java.util.HashMap;
 
 public class SpatialHashGrid  {
 
-    private final HashMap<String, Cell> hashGrid = new HashMap();
+    private final HashMap<String, Cell> hashGrid = new HashMap<>();
     private Cell cell;
 
-    private Array<Cell> loadedCells = new Array<>();
-    private Array<Cell> loadedCellsTemp = new Array<>();
+    private final Array<Cell> loadedCells = new Array<>();
+    private final Array<Cell> loadedCellsTemp = new Array<>();
     boolean addCell = false;
 
-    int cellSize = 30;
+    int cellSize = 100;
     int offsetX = 1; //make this changeable in GUI
     int offsetY = 3;
     int radiusY;
     int radiusX;
     public boolean update = false;
+    Engine engine;
 
 
-
-    public SpatialHashGrid(){
+    public SpatialHashGrid(Engine engine){
+        this.engine = engine;
     }
 
     public void setData(int height){
@@ -112,7 +111,7 @@ public class SpatialHashGrid  {
     public void addEntity(Entity entity) {
         Component x = entity.getComponent(TransformComponent.class);
         if (x != null){
-            addToGrid((TransformComponent) x);
+            addToGrid((TransformComponent) x, entity);
         }
 
         Component y = entity.getComponent(CollisionComponent.class);
@@ -126,7 +125,7 @@ public class SpatialHashGrid  {
         for (int i = 0; i < keys.size; i++){
             cell = hashGrid.get(keys.get(i));
             if (cell == null){
-                cell = new Cell(keys.get(i));
+                cell = new Cell(keys.get(i), engine.threadedParsing);
             }
 
             cell.addToCell(x);
@@ -137,14 +136,14 @@ public class SpatialHashGrid  {
 
     }
 
-    private void addToGrid(TransformComponent component){
+    private void addToGrid(TransformComponent component, Entity entity){
 
         cell = hashGrid.get(getKey(component));
         if (cell == null){
-            cell = new Cell(getKey(component));
+            cell = new Cell(getKey(component), engine.threadedParsing);
         }
 
-        cell.addToCell(component);
+        cell.addToCell(component, entity);
 
         if (cell != null && component.getZ() > cell.order){
             cell.order = component.getZ();
@@ -164,7 +163,7 @@ public class SpatialHashGrid  {
 
         if (x != null){
             if (hashGrid.containsKey(getKey((TransformComponent) x))){
-                hashGrid.get(getKey((TransformComponent) x)).removeComponent((TransformComponent) x);
+                hashGrid.get(getKey((TransformComponent) x)).removeComponent((TransformComponent) x, entity);
 
             }
         }

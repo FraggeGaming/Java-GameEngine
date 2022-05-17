@@ -1,7 +1,9 @@
 package TestFiles;
 
 import EntityEngine.Engine;
+import EntityEngine.Script;
 import TestFiles.scripts.Network.NetWorkClient;
+import TestFiles.scripts.ScriptLoader;
 import TestFiles.scripts.Systems.BulletSystem;
 import TestFiles.scripts.Systems.MovementSystem;
 import TestFiles.scripts.Systems.UI;
@@ -19,39 +21,7 @@ public class DOPVsOOP extends ApplicationAdapter {
 
 	@Override
 	public void create () {
-		engine = new Engine(width, height);
-
-		engine.addAsset(new AssetDescriptor<>("atlas/TexturePack.atlas", TextureAtlas.class));
-		engine.addAsset(new AssetDescriptor<>("atlas/Fire.atlas", TextureAtlas.class));
-
-		engine.addSystem(new UI());
-		engine.addSystem(new MovementSystem());
-		engine.addSystem(new WorldSystem());
-		engine.addSystem(new BulletSystem());
-
-		//to stuff with netWork
-		NetWorkClient client = new NetWorkClient();
-		engine.addNetWorkClientOnUpdate(client);
-
-		engine.buildSystems();
-
-		//TODO audio component
-		//TODO add dispose on stuff
-
-		//TODO create mouse clicking system (ClickableComponent)
-		//TODO raycast component
-		//TODO Physics system //use box2d
-
-		//TODO some kind of particle system (gpu calculated?)
-		//TODO navMesh (multithreaded pathfinding)
-
-		//TODO PP
-		//TODO add UpNp
-		//TODO UDP support
-
-		//MBY
-		//TODO sorting system for systems based on priority order
-
+		engine = new Engine(width, height, new ScriptLoader());
 
 	}
 

@@ -1,7 +1,6 @@
 package EntityEngine;
 
 import EntityEngine.Components.Component;
-import EntityEngine.Components.VelocityComponent;
 import EntityEngine.GameClasses.TDCamera;
 import EntityEngine.Network.ClientUpdate;
 import EntityEngine.Renderer.Cell;
@@ -13,7 +12,6 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -25,8 +23,8 @@ import java.util.concurrent.Executors;
 
 public class Engine {
 
-    public final HashMap<Integer, Entity> componentMap = new HashMap();
-    public final HashMap<String, Entity> entityMapper = new HashMap();
+    public final HashMap<Integer, Entity> componentMap = new HashMap<>();
+    public final HashMap<String, Entity> entityMapper = new HashMap<>();
     private final Array<System> systems = new Array<>();
     private final SpatialHashGrid spatialHashGrid;
     public ExecutorService pool;
@@ -39,21 +37,26 @@ public class Engine {
     boolean running = false;
     public AssetManager assetManager;
 
+    public boolean threadedParsing = true;
 
-    public Engine(float width, float height){
+
+    public Engine(float width, float height, Script scriptLoader){
 
         camera = new TDCamera(width, height);
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         batch = new SpriteBatch();
-        spatialHashGrid = new SpatialHashGrid();
+        spatialHashGrid = new SpatialHashGrid(this);
         spatialHashGrid.setData((int) camera.viewportHeight);
         pool = Executors.newCachedThreadPool();
 
         assetManager = new AssetManager();
-
-
         initSetup();
 
+        scriptLoader.addEngine(this);
+        scriptLoader.loadAssets();
+        scriptLoader.onCreate();
+
+        buildSystems();
     }
 
     public void initSetup(){
@@ -107,8 +110,8 @@ public class Engine {
     public void addEntity(Entity entity){
         entity.setId(entityId++, componentMap); // and add to component map
 
-        for (System s : systems){
-            s.addEntity(entity);
+        for (int i = 0; i < systems.size; i++){
+            systems.get(i).addEntity(entity);
         }
 
         if (entity.tag != null){
@@ -211,25 +214,37 @@ public class Engine {
         return entityMapper.get(entityTag);
     }
 
-    public Entity getEntityID(Entity e){
-        return componentMap.get(e.id);
-    }
-
-
     public System getSystem(Class<?extends System> System){
-        for (System s : systems){
-            if (s.getClass().equals(System))
-                return s;
+
+        for (int i = 0; i < systems.size; i++){
+            if(systems.get(i).getClass().equals(System))
+                return systems.get(i);
         }
 
         return null;
     }
 
     public Array<Component> getloadedComponents(Class<?extends Component> c){
-        for (System s : systems){
-            if (s.getClass().equals(ComponentManagerSystem.class))
-                return ((ComponentManagerSystem) s).getLoadedComponents(c);
+        if (threadedParsing){
+            for (int i = 0; i < systems.size; i++){
+                if (systems.get(i).getClass().equals(ComponentManagerSystem.class))
+                    return ((ComponentManagerSystem) systems.get(i)).getLoadedComponents(c);
+            }
         }
+
+        else {
+            Array<Component> componentArray = new Array<>();
+            Array<Cell> cells = getCellsFromCameraCenter();
+            for (int i = 0; i < cells.size; i++){
+                if (cells.get(i).getComponents(c) != null){
+                    componentArray.addAll( cells.get(i).getComponents(c), 0, cells.get(i).getComponents(c).length );
+
+                }
+            }
+
+            return componentArray;
+        }
+
 
         return null;
     }
