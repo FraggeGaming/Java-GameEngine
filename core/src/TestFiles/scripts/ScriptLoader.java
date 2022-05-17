@@ -1,11 +1,7 @@
 package TestFiles.scripts;
 
 import EntityEngine.Script;
-import TestFiles.scripts.Network.NetWorkClient;
-import TestFiles.scripts.Systems.BulletSystem;
-import TestFiles.scripts.Systems.MovementSystem;
-import TestFiles.scripts.Systems.UI;
-import TestFiles.scripts.Systems.WorldSystem;
+import TestFiles.scripts.Systems.*;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
@@ -26,10 +22,8 @@ public class ScriptLoader extends Script {
         engine.addSystem(new MovementSystem());
         engine.addSystem(new WorldSystem());
         engine.addSystem(new BulletSystem());
+        //engine.addSystem(new NetworkScript());
 
-        //to stuff with netWork
-        NetWorkClient client = new NetWorkClient();
-        engine.addNetWorkClientOnUpdate(client);
     }
 
     //TODO add reversed animation

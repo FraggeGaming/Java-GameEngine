@@ -241,19 +241,9 @@ public class WorldSystem extends System {
         engine.user = "Player"; //TODO change this later to less shit way
 
         player = new Entity();
-        player.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion("RedAnt"))));
-        player.addComponents(new TransformComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 5, 30, 30));
-        CollisionComponent c = new CollisionComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 30, 30);
-        c.id = "Player2";
-        player.addComponents(c);
-        player.addComponents(new VelocityComponent());
-        player.tag = "Player2";
-        engine.addEntity(player);
-
-        player = new Entity();
         player.addComponents(new TextureComponent(new TextureRegion(larvMovement.findRegion("CaterpillarGun"))));
         player.addComponents(new TransformComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 5, 32, 32));
-        c = new CollisionComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 32, 32);
+        CollisionComponent c = new CollisionComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 32, 32);
         c.id = "Player";
         player.addComponents(c);
         player.addComponents(new VelocityComponent());

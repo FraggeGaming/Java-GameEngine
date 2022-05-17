@@ -100,9 +100,16 @@ public class DebugStats {
             }
         });
 
+
+
+
+
+    }
+
+    public void addNetworkButtons(){
         if(engine.getSystem(NetworkManager.class) != null){
 
-            item = new UIItem(stage);
+            UIItem item = new UIItem(stage);
             item.setMargin(10);
             item.floatTop();
             item.floatLeft();
@@ -157,9 +164,6 @@ public class DebugStats {
                 }
             });
         }
-
-
-
     }
     private TextButton createButton(String text, float x, float y){
 

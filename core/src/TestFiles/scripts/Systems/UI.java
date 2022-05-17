@@ -28,4 +28,8 @@ public class UI extends System {
 
         debugStats.render();
     }
+
+    public void addNetworkButtons(){
+        debugStats.addNetworkButtons();
+    }
 }
