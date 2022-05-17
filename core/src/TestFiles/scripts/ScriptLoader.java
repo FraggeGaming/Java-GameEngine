@@ -16,6 +16,8 @@ public class ScriptLoader extends Script {
         engine.addAsset(new AssetDescriptor<>("atlas/Fire.atlas", TextureAtlas.class));
         engine.addAsset(new AssetDescriptor<>("atlas/TP.atlas", TextureAtlas.class));
         engine.addAsset(new AssetDescriptor<>("atlas/StoneCrab.atlas", TextureAtlas.class));
+        engine.addAsset(new AssetDescriptor<>("atlas/LarvMovement.atlas", TextureAtlas.class));
+
     }
 
     @Override

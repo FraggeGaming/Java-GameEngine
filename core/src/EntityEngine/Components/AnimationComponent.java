@@ -46,6 +46,11 @@ public class AnimationComponent extends Component{
         alive = bool;
     }
 
+    public void resetAnimation(){
+        animations.get(animationID).currentFrame = 0;
+        resetFrameTime();
+    }
+
     public boolean isAlive(){
         return alive;
     }

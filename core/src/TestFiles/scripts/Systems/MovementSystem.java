@@ -1,9 +1,8 @@
 package TestFiles.scripts.Systems;
 
-import EntityEngine.Components.CollisionComponent;
-import EntityEngine.Components.TransformComponent;
-import EntityEngine.Components.VelocityComponent;
+import EntityEngine.Components.*;
 import EntityEngine.Entity;
+import EntityEngine.GameClasses.Animation;
 import EntityEngine.Systems.ComponentManagerSystem;
 import EntityEngine.Systems.NetworkManager;
 import EntityEngine.Systems.PhysicsSystem;
@@ -56,8 +55,26 @@ public class MovementSystem extends System {
             }
 
             if (x != 0 || y != 0){
-                engine.getCamera().translate(x * 300 * dt , y * 300 * dt);
-                addVelocity(engine.getEntity(engine.user), x*300*dt, y*300*dt);
+                engine.getCamera().translate(x * 150 * dt , y * 150 * dt);
+                addVelocity(engine.getEntity(engine.user), x*150*dt, y*150*dt);
+                AnimationComponent a = (AnimationComponent) engine.getEntity(engine.user).getComponent(AnimationComponent.class);
+                if (!a.isAlive()){
+                    a.setAlive(true);
+                }
+            }
+
+            else{
+                AnimationComponent a = (AnimationComponent) engine.getEntity(engine.user).getComponent(AnimationComponent.class);
+                if (a.isAlive()){
+                    a.resetAnimation();
+                    a.setAlive(false);
+
+                    TextureComponent t = (TextureComponent) engine.getEntity(engine.user).getComponent(TextureComponent.class);
+
+                    t.setTexture(a.getCurrentFrame());
+
+
+                }
             }
 
 

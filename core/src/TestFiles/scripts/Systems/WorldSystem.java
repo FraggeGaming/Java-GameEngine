@@ -30,6 +30,7 @@ public class WorldSystem extends System {
     TextureAtlas atlas;
     TextureAtlas fireAtlas;
     TextureAtlas sC;
+    TextureAtlas larvMovement;
     Entity player;
     Entity e;
 
@@ -56,6 +57,7 @@ public class WorldSystem extends System {
         sC = engine.assetManager.get("atlas/StoneCrab.atlas");
         atlas = engine.assetManager.get("atlas/TP.atlas");
         fireAtlas = engine.assetManager.get("atlas/Fire.atlas");
+        larvMovement = engine.assetManager.get("atlas/LarvMovement.atlas");
 
         for (int i = 0; i < 5; i++){
             for (int j = 0; j < 5; j++)
@@ -64,8 +66,8 @@ public class WorldSystem extends System {
 
         StoneCrab = new Entity();
         StoneCrab.addComponents(new TextureComponent(new TextureRegion(sC.findRegion("Stonepile", 0))));
-        StoneCrab.addComponents(new TransformComponent(200, 250, 2, 64, 64));
-        CollisionComponent c = new CollisionComponent(200 - 32, 250 - 32, 128, 128);
+        StoneCrab.addComponents(new TransformComponent(200, 250, 2, 34, 34));
+        CollisionComponent c = new CollisionComponent(200 - 16, 250 - 16, 64, 64);
         c.id = "StoneCrab";
         StoneCrab.addComponents(c);
         Animation animation = new Animation(sC, "Stonepile", 13);
@@ -249,13 +251,18 @@ public class WorldSystem extends System {
         engine.addEntity(player);
 
         player = new Entity();
-        player.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion("RedAnt"))));
-        player.addComponents(new TransformComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 5, 30, 30));
-        c = new CollisionComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 30, 30);
+        player.addComponents(new TextureComponent(new TextureRegion(larvMovement.findRegion("CaterpillarGun"))));
+        player.addComponents(new TransformComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 5, 32, 32));
+        c = new CollisionComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 32, 32);
         c.id = "Player";
         player.addComponents(c);
         player.addComponents(new VelocityComponent());
         player.tag = "Player";
+
+        Animation animation = new Animation(larvMovement, "CaterpillarGun", 6);
+        AnimationComponent a = new AnimationComponent(0.07f, false, animation.getFrames(), false);
+        a.setAlive(false);
+        player.addComponents(a);
         engine.addEntity(player);
     }
 
