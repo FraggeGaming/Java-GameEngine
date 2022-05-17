@@ -1,7 +1,6 @@
 package TestFiles.scripts.Systems;
 
 import EntityEngine.Components.*;
-import EntityEngine.Engine;
 import EntityEngine.Entity;
 import EntityEngine.GameClasses.Animation;
 import EntityEngine.Renderer.Cell;
@@ -11,7 +10,6 @@ import TestFiles.scripts.Components.BulletComponent;
 import TestFiles.scripts.Components.LifeCount;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -163,34 +161,6 @@ public class BulletSystem extends System {
 
     }
 
-    private void exploadCells(){
-        Array<Cell> cells = engine.getSpatialHashGrid().getCells(t, 1);
-        TextureComponent newTex;
-        Entity temp;
-
-        if (cells != null){
-            for (int j = 0; j < cells.size; j++){
-                for (int i = 0; i < cells.get(j).getComponents().size; i++){
-                    temp = engine.getEntity(cells.get(j).getComponents().get(i).getId());
-
-                    if (temp.getComponent(BulletComponent.class) == null){
-                        newTex = (TextureComponent) temp.getComponent(TextureComponent.class);
-                        newTex.setTexture(new TextureRegion(atlas.findRegion("ForrestTile1")));
-
-                        engine.getSpatialHashGrid().removeEntity(temp);
-                        temp.removeComponent(CollisionComponent.class);
-                        engine.getSpatialHashGrid().addEntity(temp);
-                    }
-
-
-                }
-            }
-
-            java.lang.System.out.println("TEST");
-
-        }
-    }
-
     private void exploadCell(){
         Array<CollisionComponent> toExpload = col.getCollisision(c, "Wall");
         for (int k = 0; k < toExpload.size; k++){
@@ -216,7 +186,7 @@ public class BulletSystem extends System {
         i.addComponents(new TransformComponent(x -50, y -25, 2, 100, 100));
 
         Animation animation = new Animation(fireAtlas, "fire", 109);
-        AnimationComponent a = new AnimationComponent(0.02f, false, animation.getFrames());
+        AnimationComponent a = new AnimationComponent(0.02f, false, animation.getFrames(), true);
         i.addComponents(a);
 
         engine.addEntity(i);

@@ -15,6 +15,7 @@ public class ScriptLoader extends Script {
     public void loadAssets() {
         engine.addAsset(new AssetDescriptor<>("atlas/Fire.atlas", TextureAtlas.class));
         engine.addAsset(new AssetDescriptor<>("atlas/TP.atlas", TextureAtlas.class));
+        engine.addAsset(new AssetDescriptor<>("atlas/StoneCrab.atlas", TextureAtlas.class));
     }
 
     @Override
@@ -29,6 +30,9 @@ public class ScriptLoader extends Script {
         engine.addNetWorkClientOnUpdate(client);
     }
 
+    //TODO add reversed animation
+    //TODO fix large collision //multiple collision boxes
+    //TODO fix so animation gets synced //Synced animation parameter
     //TODO audio component
     //TODO add dispose on stuff
 

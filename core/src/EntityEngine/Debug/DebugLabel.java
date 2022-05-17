@@ -1,7 +1,7 @@
 package EntityEngine.Debug;
 
 import EntityEngine.Engine;
-import EntityEngine.GameClasses.UIItem;
+import TestFiles.scripts.UIItem;
 import EntityEngine.Systems.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;

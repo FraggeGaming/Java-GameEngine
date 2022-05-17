@@ -5,43 +5,39 @@ import EntityEngine.Entity;
 import EntityEngine.GameClasses.Animation;
 import EntityEngine.GameClasses.TDCamera;
 import EntityEngine.Noise.OpenSimplexNoise;
+import EntityEngine.Systems.CollisionDetectionSystem;
 import EntityEngine.Systems.System;
 import EntityEngine.Systems.TileMapRenderer;
-import TestFiles.scripts.Components.PerformanceTestComp;
+import TestFiles.scripts.Components.StoneCrabLogic;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
-import com.badlogic.gdx.utils.Array;
-import imgui.ImGui;
 
-import java.util.HashMap;
 
 
 public class WorldSystem extends System {
-    int tileMapRenderIndexX = 0;
-    int tileMapRenderIndexY = 0;
-    double scale = 0.04f;
+    double scale = 0.06f;
     float z = 1f;
     int mapSize = 500;
-    int mapSizeIndex = 0;
     OpenSimplexNoise noise;
     TextureAtlas atlas;
     TextureAtlas fireAtlas;
+    TextureAtlas sC;
     Entity player;
     Entity e;
 
     TiledMap tileMap;
     TiledMapTileLayer.Cell cell;
     TiledMapTileLayer layer;
+    Entity StoneCrab;
+    CollisionDetectionSystem col;
     public WorldSystem(){
         noise = new OpenSimplexNoise(); //for tilemap generation
 
@@ -56,7 +52,8 @@ public class WorldSystem extends System {
 
     @Override
     public void onCreate() {
-
+        col = (CollisionDetectionSystem) engine.getSystem(CollisionDetectionSystem.class);
+        sC = engine.assetManager.get("atlas/StoneCrab.atlas");
         atlas = engine.assetManager.get("atlas/TP.atlas");
         fireAtlas = engine.assetManager.get("atlas/Fire.atlas");
 
@@ -64,6 +61,20 @@ public class WorldSystem extends System {
             for (int j = 0; j < 5; j++)
                 createFireAnimationTest(30 * i, 30*j, fireAtlas );
         }
+
+        StoneCrab = new Entity();
+        StoneCrab.addComponents(new TextureComponent(new TextureRegion(sC.findRegion("Stonepile", 0))));
+        StoneCrab.addComponents(new TransformComponent(200, 250, 2, 64, 64));
+        CollisionComponent c = new CollisionComponent(200 - 32, 250 - 32, 128, 128);
+        c.id = "StoneCrab";
+        StoneCrab.addComponents(c);
+        Animation animation = new Animation(sC, "Stonepile", 13);
+        AnimationComponent a = new AnimationComponent(0.04f, false, animation.getFrames(), false);
+        a.setAlive(false);
+        StoneCrab.addComponents(a);
+        StoneCrab.addComponents(new StoneCrabLogic());
+        engine.addEntity(StoneCrab);
+
 
         createPlayers(engine.camera);
 
@@ -124,14 +135,10 @@ public class WorldSystem extends System {
         }
 
         else if (value < 0.2f){
-            //components.add(c);
-            //c.id = "Podsol";
             return new TextureRegion(atlas.findRegion("Podsol"));
         }
 
         else if (value < 0.4f){
-            //components.add(c);
-            //c.id = "DirtTile";
             return new TextureRegion(atlas.findRegion("DirtTile"));
         }
 
@@ -149,16 +156,14 @@ public class WorldSystem extends System {
         //floor
         for (int i = 0; i < 11; i++){
             float xCord = x+16*i;
-            float yCord = y;
-            createTile(xCord, yCord, "StoneWallBottom1", "Wall");
+            createTile(xCord, y, "StoneWallBottom1", "Wall");
 
         }
 
         //right wall
         for (int i = 1; i < 10; i++){
-            float xCord = x;
             float yCord = y +16*i;
-            createTile(xCord, yCord, "StoneWallSideLeft", "Wall");
+            createTile(x, yCord, "StoneWallSideLeft", "Wall");
         }
 
         //Left wall
@@ -244,8 +249,8 @@ public class WorldSystem extends System {
         engine.addEntity(player);
 
         player = new Entity();
-        player.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion("GreenCar"))));
-        player.addComponents(new TransformComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 5, 34, 26));
+        player.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion("RedAnt"))));
+        player.addComponents(new TransformComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 5, 30, 30));
         c = new CollisionComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 30, 30);
         c.id = "Player";
         player.addComponents(c);
@@ -272,28 +277,33 @@ public class WorldSystem extends System {
 
     @Override
     public void update(float dt) {
-        //createTileMap();
-    }
 
-    public void createTileMap(){
+        e = engine.getEntity("Player");
+        CollisionComponent StoneCol = (CollisionComponent) StoneCrab.getComponent(CollisionComponent.class);
+        AnimationComponent a = (AnimationComponent) StoneCrab.getComponent(AnimationComponent.class);
+        StoneCrabLogic logic = (StoneCrabLogic) StoneCrab.getComponent(StoneCrabLogic.class);
 
+        if (col.CollisionWithID(StoneCol, "Player")){
 
-        if (mapSizeIndex > mapSize*mapSize)
-            return;
-
-        for (int i = 0; i < 300; i++){
-            if (tileMapRenderIndexX < mapSize){
-                createTileWithNoise(15*tileMapRenderIndexX, 15*tileMapRenderIndexY,noise.eval( tileMapRenderIndexX*scale, tileMapRenderIndexY*scale, z) );
-                tileMapRenderIndexX++;
+            if (!logic.isScared){
+                a.setAlive(true);
+                logic.setScared(true);
             }
-
-            else {
-                tileMapRenderIndexY++;
-                tileMapRenderIndexX = 0;
-            }
-
-            mapSizeIndex++;
         }
+
+        if (!a.isAlive() && logic.isScared){
+            TextureComponent t = (TextureComponent) StoneCrab.getComponent(TextureComponent.class);
+            t.setTexture(new TextureRegion(sC.findRegion("Stonepile", 12)));
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Q)){
+            logic.setScared(false);
+
+            TextureComponent t = (TextureComponent) StoneCrab.getComponent(TextureComponent.class);
+            t.setTexture(new TextureRegion(sC.findRegion("Stonepile")));
+
+        }
+
     }
 
     private void createTileMapOnCreate(){

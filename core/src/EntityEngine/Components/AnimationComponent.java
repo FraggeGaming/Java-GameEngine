@@ -9,13 +9,20 @@ import java.util.List;
 public class AnimationComponent extends Component{
 
     public boolean alive;
-
+    public boolean killAfterAnimate = false;
     public List<AnimationStruct> animations = new ArrayList<>();
     int animationID = 0;
     //add support for multiple different animations
     public AnimationComponent(float frameSpeed, boolean repeat, List<TextureRegion> frames){
         alive = true;
         seperate = true;
+        animations.add(new AnimationStruct(frameSpeed, repeat, frames));
+    }
+
+    public AnimationComponent(float frameSpeed, boolean repeat, List<TextureRegion> frames, boolean killAfterAnimate){
+        alive = true;
+        seperate = true;
+        this.killAfterAnimate = killAfterAnimate;
         animations.add(new AnimationStruct(frameSpeed, repeat, frames));
     }
 
