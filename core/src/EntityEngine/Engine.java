@@ -1,6 +1,7 @@
 package EntityEngine;
 
 import EntityEngine.Components.Component;
+import EntityEngine.Components.RigidBody2D;
 import EntityEngine.GameClasses.TDCamera;
 import EntityEngine.Network.ClientUpdate;
 import EntityEngine.Renderer.Cell;
@@ -12,6 +13,8 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -33,9 +36,12 @@ public class Engine {
     public Batch batch;
     int entityId = 0;
     public List<Entity> flagedForDelete = new ArrayList<>();
+    public List<Entity> flagedRigidBodyforDelete = new ArrayList<>();
     public String user; // for networking //TODO change this later for more modular implementation
     boolean running = false;
     public AssetManager assetManager;
+
+    public World world;
 
     public boolean threadedParsing = true;
 
@@ -44,12 +50,15 @@ public class Engine {
 
         camera = new TDCamera(width, height);
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
+        camera.zoom = 1;
         batch = new SpriteBatch();
         spatialHashGrid = new SpatialHashGrid(this);
         spatialHashGrid.setData((int) camera.viewportHeight);
         pool = Executors.newCachedThreadPool();
 
         assetManager = new AssetManager();
+        world = new World(new Vector2(0, 0f),true);
+
         initSetup();
 
         scriptLoader.addEngine(this);
@@ -67,6 +76,7 @@ public class Engine {
         addSystem(new CollisionDetectionSystem());
         addSystem(new ComponentManagerSystem());
         addSystem(new Debugger());
+        addSystem(new PhysicsSystem());
     }
 
     public void update(float dt){
@@ -83,6 +93,8 @@ public class Engine {
             systems.get(i).update(dt);
             systems.get(i).endTimer();
         }
+
+
 
 
     }
@@ -274,14 +286,27 @@ public class Engine {
     public void deleteFlaged() {
 
         //TODO delete flaged enteties once every x frames, before threads start with inacurate data.
+        if (!world.isLocked()){
+            for (Entity e : flagedRigidBodyforDelete){
+                RigidBody2D rigidBody2D = (RigidBody2D) e.getComponent(RigidBody2D.class);
+                if (rigidBody2D != null && !rigidBody2D.destroyed){
+                    rigidBody2D.destroyed = true;
+                    world.destroyBody(rigidBody2D.getBody());
+                }
+            }
+
+            flagedRigidBodyforDelete.clear();
+        }
+
         for (Entity e : flagedForDelete){
+            RigidBody2D rigidBody2D = (RigidBody2D) e.getComponent(RigidBody2D.class);
+            if (rigidBody2D != null)
+                world.destroyBody(rigidBody2D.getBody());
             spatialHashGrid.removeEntity(e);
             componentMap.remove(e.id);
-
         }
 
         flagedForDelete.clear();
-
 
     }
 
@@ -293,5 +318,9 @@ public class Engine {
 
     public void addAsset(AssetDescriptor<TextureAtlas> asset) {
         assetManager.load(asset);
+    }
+
+    public void deleteRigidBody(Entity temp) {
+        flagedRigidBodyforDelete.add(temp);
     }
 }

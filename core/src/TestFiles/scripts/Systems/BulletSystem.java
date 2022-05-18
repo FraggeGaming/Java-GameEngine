@@ -3,7 +3,6 @@ package TestFiles.scripts.Systems;
 import EntityEngine.Components.*;
 import EntityEngine.Entity;
 import EntityEngine.GameClasses.Animation;
-import EntityEngine.Renderer.Cell;
 import EntityEngine.Systems.CollisionDetectionSystem;
 import EntityEngine.Systems.System;
 import TestFiles.scripts.Components.BulletComponent;
@@ -24,7 +23,7 @@ public class BulletSystem extends System {
     Entity e;
 
     float fireTimer = 0;
-    float fireRate = 100;
+    float fireRate = 50;
 
     Vector3 mouseVector = new Vector3();
     Vector2 bullet = new Vector2();
@@ -37,11 +36,6 @@ public class BulletSystem extends System {
 
     Array<Entity> firedbullets = new Array<>();
     Array<Entity> firedbulletsToRemove = new Array<>();
-
-    public BulletSystem(){
-
-
-    }
 
     @Override
     public void onCreate() {
@@ -174,6 +168,8 @@ public class BulletSystem extends System {
             engine.getSpatialHashGrid().removeEntity(temp);
             temp.removeComponent(CollisionComponent.class);
             engine.getSpatialHashGrid().addEntity(temp);
+
+            engine.deleteRigidBody(temp);
 
 
             createFireAnimationTest(t.getOriginX(), t.getOriginY(), fireAtlas);

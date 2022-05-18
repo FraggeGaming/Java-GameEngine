@@ -98,7 +98,9 @@ public class DebugLabel {
             setText(engine.getSystemFunctionTime(TileMapRenderer.class));
         }
 
-
+        else if (whatToDebug == 21){
+            setText(engine.getSystemFunctionTime(PhysicsSystem.class));
+        }
     }
 
     private void createStat(com.badlogic.gdx.scenes.scene2d.ui.Label label, int y){

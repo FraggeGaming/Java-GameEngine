@@ -1,11 +1,8 @@
 package TestFiles.scripts;
 
+import TestFiles.scripts.Systems.DebugStats;
 import EntityEngine.Script;
-import TestFiles.scripts.Network.NetWorkClient;
-import TestFiles.scripts.Systems.BulletSystem;
-import TestFiles.scripts.Systems.MovementSystem;
-import TestFiles.scripts.Systems.UI;
-import TestFiles.scripts.Systems.WorldSystem;
+import TestFiles.scripts.Systems.*;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
@@ -17,19 +14,16 @@ public class ScriptLoader extends Script {
         engine.addAsset(new AssetDescriptor<>("atlas/TP.atlas", TextureAtlas.class));
         engine.addAsset(new AssetDescriptor<>("atlas/StoneCrab.atlas", TextureAtlas.class));
         engine.addAsset(new AssetDescriptor<>("atlas/LarvMovement.atlas", TextureAtlas.class));
-
     }
 
     @Override
     public void onCreate() {
-        engine.addSystem(new UI());
+        engine.addSystem(new DebugStats());
         engine.addSystem(new MovementSystem());
         engine.addSystem(new WorldSystem());
         engine.addSystem(new BulletSystem());
+        //engine.addSystem(new NetworkScript());
 
-        //to stuff with netWork
-        NetWorkClient client = new NetWorkClient();
-        engine.addNetWorkClientOnUpdate(client);
     }
 
     //TODO add reversed animation
@@ -40,7 +34,6 @@ public class ScriptLoader extends Script {
 
     //TODO navMesh (multithreaded pathfinding) //Navmeshcomponents
     //TODO create mouse clicking system (ClickableComponent)
-    //TODO Physics system //use box2d
     //TODO raycast component
     //TODO Lightning
     //TODO some kind of particle system (gpu calculated?)

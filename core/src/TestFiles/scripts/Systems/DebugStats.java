@@ -1,6 +1,8 @@
-package EntityEngine.Debug;
+package TestFiles.scripts.Systems;
 
+import EntityEngine.Debug.DebugLabel;
 import EntityEngine.Engine;
+import EntityEngine.Systems.System;
 import TestFiles.scripts.UIItem;
 import EntityEngine.Systems.NetworkManager;
 import com.badlogic.gdx.Gdx;
@@ -16,9 +18,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 
-public class DebugStats {
+public class DebugStats extends System {
     Stage stage;
     Label frameTimeLabel;
 
@@ -34,7 +37,6 @@ public class DebugStats {
 
     TextButton debugger;
     TextureAtlas buttonAtlas;
-    Engine engine;
     private GLProfiler profiler;
     Array<DebugLabel> labels = new Array<>();
     DebugLabel frameTimeDebug;
@@ -43,9 +45,15 @@ public class DebugStats {
     int port = 1234;
 
 
-    public DebugStats(Stage stage, final Engine engine){
-        this.engine = engine;
-        this.stage = stage;
+    public DebugStats(){
+
+    }
+
+    @Override
+    public void onCreate() {
+        stage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(stage);
+
         font = new BitmapFont();
         buttonAtlas = new TextureAtlas("atlas/TP.atlas");
         style = new Label.LabelStyle(font, Color.BLACK);
@@ -61,10 +69,12 @@ public class DebugStats {
         labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Debugger function time", profiler, engine, 12 ));
         labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Animation function time", profiler, engine, 13 ));
         labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Component manager function time", profiler, engine, 14 ));
+        labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Physics function time", profiler, engine, 21 ));
+
         labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Fps", profiler, engine, 0 ));
         //labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"DrawCalls", profiler, engine, 1 ));
         //labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Gl Calls", profiler, engine, 2 ));
-        //labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"VertexCount", profiler, engine, 3 ));
+        labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"VertexCount", profiler, engine, 3 ));
         labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Drawn Entities", profiler, engine, 4 ));
         //labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"FPS per entity", profiler, engine, 5 ));
         labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Total Entities", profiler, engine, 6 ));
@@ -100,9 +110,22 @@ public class DebugStats {
             }
         });
 
+
+
+    }
+
+    @Override
+    public void update(float dt) {
+        stage.draw();
+        stage.act(dt);
+
+        render();
+    }
+
+    public void addNetworkButtons(){
         if(engine.getSystem(NetworkManager.class) != null){
 
-            item = new UIItem(stage);
+            UIItem item = new UIItem(stage);
             item.setMargin(10);
             item.floatTop();
             item.floatLeft();
@@ -157,10 +180,8 @@ public class DebugStats {
                 }
             });
         }
-
-
-
     }
+
     private TextButton createButton(String text, float x, float y){
 
         TextButton.TextButtonStyle b = new TextButton.TextButtonStyle();
