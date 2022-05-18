@@ -1,6 +1,5 @@
 package TestFiles.scripts;
 
-import EntityEngine.Systems.PhysicsSystem;
 import TestFiles.scripts.Systems.DebugStats;
 import EntityEngine.Script;
 import TestFiles.scripts.Systems.*;
@@ -15,7 +14,6 @@ public class ScriptLoader extends Script {
         engine.addAsset(new AssetDescriptor<>("atlas/TP.atlas", TextureAtlas.class));
         engine.addAsset(new AssetDescriptor<>("atlas/StoneCrab.atlas", TextureAtlas.class));
         engine.addAsset(new AssetDescriptor<>("atlas/LarvMovement.atlas", TextureAtlas.class));
-
     }
 
     @Override
@@ -36,7 +34,6 @@ public class ScriptLoader extends Script {
 
     //TODO navMesh (multithreaded pathfinding) //Navmeshcomponents
     //TODO create mouse clicking system (ClickableComponent)
-    //TODO Physics system //use box2d
     //TODO raycast component
     //TODO Lightning
     //TODO some kind of particle system (gpu calculated?)

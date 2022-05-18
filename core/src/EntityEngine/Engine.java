@@ -95,6 +95,8 @@ public class Engine {
         }
 
 
+
+
     }
 
     public void buildSystems(){
@@ -287,8 +289,10 @@ public class Engine {
         if (!world.isLocked()){
             for (Entity e : flagedRigidBodyforDelete){
                 RigidBody2D rigidBody2D = (RigidBody2D) e.getComponent(RigidBody2D.class);
-                if (rigidBody2D != null)
+                if (rigidBody2D != null && !rigidBody2D.destroyed){
+                    rigidBody2D.destroyed = true;
                     world.destroyBody(rigidBody2D.getBody());
+                }
             }
 
             flagedRigidBodyforDelete.clear();

@@ -257,7 +257,7 @@ public class WorldSystem extends System {
         a.setAlive(false);
         player.addComponents(a);
 
-        RigidBody2D box2d = new RigidBody2D(camera.viewportWidth / 2, camera.viewportHeight / 2, 16, 16, 0);
+        RigidBody2D box2d = new RigidBody2D(camera.viewportWidth / 2, camera.viewportHeight / 2, 14, 10, 0);
         box2d.addToWorld(engine.world);
         box2d.getBody().setFixedRotation(true);
         player.addComponents(box2d);

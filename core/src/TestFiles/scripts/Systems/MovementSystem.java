@@ -2,10 +2,7 @@ package TestFiles.scripts.Systems;
 
 import EntityEngine.Components.*;
 import EntityEngine.Entity;
-import EntityEngine.GameClasses.Animation;
-import EntityEngine.Systems.ComponentManagerSystem;
 import EntityEngine.Systems.NetworkManager;
-import EntityEngine.Systems.PhysicsSystem;
 import EntityEngine.Systems.System;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -19,8 +16,6 @@ public class MovementSystem extends System {
     NetworkManager network;
     boolean fetchNetwork = false;
 
-    PhysicsSystem physicsSystem;
-    boolean hasPhysicsSystem = false;
     public MovementSystem(){
 
     }
@@ -84,14 +79,6 @@ public class MovementSystem extends System {
 
     }
 
-    private void fetchPhysicsSystem(){
-        if (!hasPhysicsSystem){
-            physicsSystem = (PhysicsSystem) engine.getSystem(PhysicsSystem.class);
-            if (physicsSystem != null)
-                hasPhysicsSystem = true;
-        }
-
-    }
 
     public void addVelocity(Entity e, float x, float y){
 

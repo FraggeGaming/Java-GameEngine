@@ -7,6 +7,7 @@ import EntityEngine.Components.TransformComponent;
 import EntityEngine.Renderer.Cell;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.HashSet;
@@ -21,9 +22,12 @@ public class Debugger extends System {
     public boolean debug = false;
     CollisionDetectionSystem cSystem;
     public HashSet<CollisionComponent> collisionsDebug = new HashSet<>();
+    Box2DDebugRenderer debugRenderer;
     public Debugger(){
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setAutoShapeType(true);
+
+        debugRenderer = new Box2DDebugRenderer();
     }
 
     @Override
@@ -42,6 +46,9 @@ public class Debugger extends System {
         drawBox2D();
 
         shapeRenderer.end();
+
+        if (debugBox2D)
+            debugRenderer.render(engine.world, engine.camera.combined);
     }
 
     private void drawCells() {

@@ -8,6 +8,7 @@ public class RigidBody2D extends Component{
     PolygonShape shape;
     FixtureDef fixtureDef;
     BodyDef bodyDef;
+    public boolean destroyed = false;
 
     public RigidBody2D(float x, float y, float width, float height, int staticBody){
         seperate = true;
