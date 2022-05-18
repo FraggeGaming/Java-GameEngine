@@ -1,17 +1,9 @@
 package TestFiles;
 
 import EntityEngine.Engine;
-import EntityEngine.Script;
-import TestFiles.scripts.Network.NetWorkClient;
 import TestFiles.scripts.ScriptLoader;
-import TestFiles.scripts.Systems.BulletSystem;
-import TestFiles.scripts.Systems.MovementSystem;
-import TestFiles.scripts.Systems.UI;
-import TestFiles.scripts.Systems.WorldSystem;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetDescriptor;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 
 public class DOPVsOOP extends ApplicationAdapter {

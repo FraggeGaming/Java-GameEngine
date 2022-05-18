@@ -1,5 +1,6 @@
 package TestFiles.scripts;
 
+import TestFiles.scripts.Systems.DebugStats;
 import EntityEngine.Script;
 import TestFiles.scripts.Systems.*;
 import com.badlogic.gdx.assets.AssetDescriptor;
@@ -18,7 +19,7 @@ public class ScriptLoader extends Script {
 
     @Override
     public void onCreate() {
-        engine.addSystem(new UI());
+        engine.addSystem(new DebugStats());
         engine.addSystem(new MovementSystem());
         engine.addSystem(new WorldSystem());
         engine.addSystem(new BulletSystem());

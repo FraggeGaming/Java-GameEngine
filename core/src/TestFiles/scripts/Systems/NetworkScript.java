@@ -4,7 +4,6 @@ import EntityEngine.Components.CollisionComponent;
 import EntityEngine.Components.TextureComponent;
 import EntityEngine.Components.TransformComponent;
 import EntityEngine.Components.VelocityComponent;
-import EntityEngine.Engine;
 import EntityEngine.Entity;
 import EntityEngine.Systems.System;
 import TestFiles.scripts.Network.NetWorkClient;
@@ -22,8 +21,8 @@ public class NetworkScript extends System {
         NetWorkClient client = new NetWorkClient();
         engine.addNetWorkClientOnUpdate(client);
 
-        UI ui = (UI) engine.getSystem(UI.class);
-        ui.addNetworkButtons();
+        DebugStats debugStats = (DebugStats) engine.getSystem(DebugStats.class);
+        debugStats.addNetworkButtons();
 
         TextureAtlas atlas = engine.assetManager.get("atlas/TP.atlas");
 
