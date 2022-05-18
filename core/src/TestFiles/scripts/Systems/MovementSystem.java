@@ -15,6 +15,7 @@ public class MovementSystem extends System {
     TransformComponent t;
     CollisionComponent c;
     VelocityComponent v;
+    RigidBody2D rigidBody2D;
     NetworkManager network;
     boolean fetchNetwork = false;
 
@@ -54,9 +55,9 @@ public class MovementSystem extends System {
                 y -= 1;
             }
 
+            addVelocity(engine.getEntity(engine.user), x*150 * dt, y*150 * dt);
             if (x != 0 || y != 0){
-                engine.getCamera().translate(x * 150 * dt , y * 150 * dt);
-                addVelocity(engine.getEntity(engine.user), x*150*dt, y*150*dt);
+
                 AnimationComponent a = (AnimationComponent) engine.getEntity(engine.user).getComponent(AnimationComponent.class);
                 if (!a.isAlive()){
                     a.setAlive(true);
@@ -99,13 +100,16 @@ public class MovementSystem extends System {
         t = (TransformComponent) e.getComponent( TransformComponent.class);
         c = (CollisionComponent) e.getComponent(CollisionComponent.class);
         v = (VelocityComponent) e.getComponent(VelocityComponent.class);
-
+        rigidBody2D = (RigidBody2D) e.getComponent(RigidBody2D.class);
 
         engine.getSpatialHashGrid().removeEntity(e);
 
 
-        v.setVelocity(x, y, 0);
-        t.addVelocity(v);
+        rigidBody2D.getBody().setLinearVelocity(x*140,y*140);
+        engine.getCamera().position.set(rigidBody2D.getBody().getPosition().x, rigidBody2D.getBody().getPosition().y, 0);
+
+
+        t.setPosition(rigidBody2D.getBody().getPosition().x - 16, rigidBody2D.getBody().getPosition().y - 16 );
         c.followTransform(t);
 
         engine.getSpatialHashGrid().addEntity(e);

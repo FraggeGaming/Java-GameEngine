@@ -113,7 +113,6 @@ public class WorldSystem extends System {
         cell = new TiledMapTileLayer.Cell();
         cell.setTile(new StaticTiledMapTile(generateWithNoise(noise)));
         layer.setCell((int)(x/16), (int)(y/16), cell);
-
     }
 
     private TextureRegion generateWithNoise(double value){
@@ -223,6 +222,10 @@ public class WorldSystem extends System {
             c.id = id;
             c.isStatic = true;
             e.addComponents(c);
+
+            RigidBody2D box2d = new RigidBody2D(x + 8, y + 8, 8, 8, 1);
+            box2d.addToWorld(engine.world);
+            e.addComponents(box2d);
         }
 
 
@@ -253,6 +256,12 @@ public class WorldSystem extends System {
         AnimationComponent a = new AnimationComponent(0.07f, false, animation.getFrames(), false);
         a.setAlive(false);
         player.addComponents(a);
+
+        RigidBody2D box2d = new RigidBody2D(camera.viewportWidth / 2, camera.viewportHeight / 2, 16, 16, 0);
+        box2d.addToWorld(engine.world);
+        box2d.getBody().setFixedRotation(true);
+        player.addComponents(box2d);
+
         engine.addEntity(player);
     }
 

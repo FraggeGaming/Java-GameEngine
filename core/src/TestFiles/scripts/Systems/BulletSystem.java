@@ -24,7 +24,7 @@ public class BulletSystem extends System {
     Entity e;
 
     float fireTimer = 0;
-    float fireRate = 100;
+    float fireRate = 5;
 
     Vector3 mouseVector = new Vector3();
     Vector2 bullet = new Vector2();
@@ -174,6 +174,8 @@ public class BulletSystem extends System {
             engine.getSpatialHashGrid().removeEntity(temp);
             temp.removeComponent(CollisionComponent.class);
             engine.getSpatialHashGrid().addEntity(temp);
+
+            engine.deleteRigidBody(temp);
 
 
             createFireAnimationTest(t.getOriginX(), t.getOriginY(), fireAtlas);

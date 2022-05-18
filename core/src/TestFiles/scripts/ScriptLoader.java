@@ -1,5 +1,6 @@
 package TestFiles.scripts;
 
+import EntityEngine.Systems.PhysicsSystem;
 import TestFiles.scripts.Systems.DebugStats;
 import EntityEngine.Script;
 import TestFiles.scripts.Systems.*;
