@@ -9,8 +9,10 @@ import EntityEngine.Systems.CollisionDetectionSystem;
 import EntityEngine.Systems.System;
 import EntityEngine.Systems.TileMapRenderer;
 import TestFiles.scripts.Components.StoneCrabLogic;
+import box2dLight.PointLight;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -91,6 +93,10 @@ public class WorldSystem extends System {
         createHouse(500+15*7, 700);
 
         createHouse(800, 800);
+
+
+
+
 
 
 
@@ -199,9 +205,9 @@ public class WorldSystem extends System {
 
 
         //Random stuff
-        createTile(x + 6*16, y+3*16, "BlueTorch", "Torch");
+        createTile(x + 6*16, y+3*16, "BlueTorch", "Light");
 
-        createTile(x + 9*16, y+8*16, "BlueTorch", "Torch");
+        createTile(x + 9*16, y+8*16, "BlueTorch", "Light");
 
         createTile(x + 6*16, y+7*16, "Quartz", "Quartz");
 
@@ -226,7 +232,17 @@ public class WorldSystem extends System {
             RigidBody2D box2d = new RigidBody2D(x + 8, y + 8, 8, 8, 1);
             box2d.addToWorld(engine.world);
             e.addComponents(box2d);
+
         }
+
+        else if (id.equals("Light")){
+            Light light = new Light(new PointLight(engine.lightning, 15, null, 40, x + 8, y + 8));
+            light.colorAndSoftnessLength(new Color(0.1f,0.3f,0.4f,0.8f), 2f);
+            light.setStatic(true);
+            e.addComponents(light);
+        }
+
+
 
 
         engine.addEntity(e);
@@ -261,6 +277,14 @@ public class WorldSystem extends System {
         box2d.addToWorld(engine.world);
         box2d.getBody().setFixedRotation(true);
         player.addComponents(box2d);
+
+
+
+        Light light = new Light(new PointLight(engine.lightning, 20, Color.WHITE, 80, 300, 300));
+        light.attachToBody(box2d.getBody(), true);
+        light.colorAndSoftnessLength(new Color(0.8f,0.4f,0.7f,0.8f), 10f);
+        light.activate(false);
+        player.addComponents(light);
 
         engine.addEntity(player);
     }

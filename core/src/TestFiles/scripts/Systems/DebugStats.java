@@ -70,6 +70,7 @@ public class DebugStats extends System {
         labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Animation function time", profiler, engine, 13 ));
         labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Component manager function time", profiler, engine, 14 ));
         labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Physics function time", profiler, engine, 21 ));
+        labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Light function time", profiler, engine, 22 ));
 
         labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Fps", profiler, engine, 0 ));
         //labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"DrawCalls", profiler, engine, 1 ));

@@ -5,6 +5,7 @@ import EntityEngine.Components.TextureComponent;
 import EntityEngine.Components.TransformComponent;
 import EntityEngine.Components.VelocityComponent;
 import EntityEngine.Entity;
+import EntityEngine.Systems.NetworkManager;
 import EntityEngine.Systems.System;
 import TestFiles.scripts.Network.NetWorkClient;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -19,7 +20,8 @@ public class NetworkScript extends System {
     public void onCreate() {
         //to stuff with netWork
         NetWorkClient client = new NetWorkClient();
-        engine.addNetWorkClientOnUpdate(client);
+        NetworkManager manager = (NetworkManager) engine.getSystem(NetworkManager.class);
+        manager.addClientOnUpdate(client);
 
         DebugStats debugStats = (DebugStats) engine.getSystem(DebugStats.class);
         debugStats.addNetworkButtons();

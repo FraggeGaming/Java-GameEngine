@@ -63,4 +63,10 @@ public class Entity {
             }
         }
     }
+
+    public void dispose() {
+        for (int i = 0; i < components.size; i++){
+            components.get(i).dispose();
+        }
+    }
 }

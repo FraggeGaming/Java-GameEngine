@@ -14,7 +14,6 @@ public class DOPVsOOP extends ApplicationAdapter {
 	@Override
 	public void create () {
 		engine = new Engine(width, height, new ScriptLoader());
-
 	}
 
 

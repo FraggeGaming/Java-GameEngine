@@ -7,8 +7,10 @@ import EntityEngine.Systems.CollisionDetectionSystem;
 import EntityEngine.Systems.System;
 import TestFiles.scripts.Components.BulletComponent;
 import TestFiles.scripts.Components.LifeCount;
+import box2dLight.PointLight;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -184,6 +186,12 @@ public class BulletSystem extends System {
         Animation animation = new Animation(fireAtlas, "fire", 109);
         AnimationComponent a = new AnimationComponent(0.02f, false, animation.getFrames(), true);
         i.addComponents(a);
+
+        Light light = new Light(new PointLight(engine.lightning, 20, null, 40, x,y));
+        light.colorAndSoftnessLength(new Color(0.7f,0.4f,0.4f,0.8f), 2f);
+        light.setStatic(true);
+        light.setXray(true);
+        i.addComponents(light);
 
         engine.addEntity(i);
 

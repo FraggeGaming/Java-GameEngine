@@ -92,7 +92,7 @@ public class MovementSystem extends System {
         engine.getSpatialHashGrid().removeEntity(e);
 
 
-        rigidBody2D.getBody().setLinearVelocity(x*140,y*140);
+        rigidBody2D.getBody().setLinearVelocity(x*100,y*100);
         engine.getCamera().position.set(rigidBody2D.getBody().getPosition().x, rigidBody2D.getBody().getPosition().y, 0);
 
 
