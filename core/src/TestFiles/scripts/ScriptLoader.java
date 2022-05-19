@@ -26,22 +26,26 @@ public class ScriptLoader extends Script {
 
     }
 
-    //TODO add reversed animation
-    //TODO fix large collision //multiple collision boxes
-    //TODO fix so animation gets synced //Synced animation parameter
+    //TODO lightning filter
     //TODO audio component
+    //TODO different screen support, loading, settings etc
+    //TODO navMesh (multithreaded pathfinding) //Navmeshcomponents
+    //TODO optimized physics simulation
+    //TODO add reversed animation
+    //TODO fix so animation gets synced //Synced animation parameter
     //TODO add dispose on stuff
 
-    //TODO navMesh (multithreaded pathfinding) //Navmeshcomponents
     //TODO create mouse clicking system (ClickableComponent)
-    //TODO raycast component
-    //TODO Lightning
-    //TODO some kind of particle system (gpu calculated?)
 
     //TODO PP
-    //TODO add UpNp
-    //TODO UDP support
+
 
     //MBY
     //TODO sorting system for systems based on priority order
+    //TODO fix large collision //multiple collision boxes
+    //TODO add UpNp
+    //TODO UDP support
+    //TODO some kind of particle system (gpu calculated?)
+    //TODO raycast component
+
 }

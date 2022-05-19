@@ -101,6 +101,10 @@ public class DebugLabel {
         else if (whatToDebug == 21){
             setText(engine.getSystemFunctionTime(PhysicsSystem.class));
         }
+
+        else if (whatToDebug == 22){
+            setText(engine.getSystemFunctionTime(LightningSystem.class));
+        }
     }
 
     private void createStat(com.badlogic.gdx.scenes.scene2d.ui.Label label, int y){
