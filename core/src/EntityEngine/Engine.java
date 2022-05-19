@@ -3,11 +3,11 @@ package EntityEngine;
 import EntityEngine.Components.Component;
 import EntityEngine.Components.RigidBody2D;
 import EntityEngine.GameClasses.TDCamera;
-import EntityEngine.Network.ClientUpdate;
 import EntityEngine.Renderer.Cell;
 import EntityEngine.Renderer.SpatialHashGrid;
 import EntityEngine.Systems.*;
 import EntityEngine.Systems.System;
+import EntityEngine.Systems.TimerSystem;
 import box2dLight.RayHandler;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
@@ -52,7 +52,7 @@ public class Engine {
 
         camera = new TDCamera(width, height);
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-        camera.zoom = 1;
+        camera.zoom = 5;
         batch = new SpriteBatch();
         spatialHashGrid = new SpatialHashGrid(this);
         spatialHashGrid.setData((int) camera.viewportHeight);
@@ -81,6 +81,7 @@ public class Engine {
         addSystem(new Debugger());
         addSystem(new PhysicsSystem());
         addSystem(new LightningSystem());
+        addSystem(new TimerSystem());
     }
 
     public void update(float dt){

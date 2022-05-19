@@ -5,6 +5,7 @@ import EntityEngine.Entity;
 import EntityEngine.GameClasses.Animation;
 import EntityEngine.Systems.CollisionDetectionSystem;
 import EntityEngine.Systems.System;
+import EntityEngine.Systems.TimerSystem;
 import TestFiles.scripts.Components.BulletComponent;
 import TestFiles.scripts.Components.LifeCount;
 import box2dLight.PointLight;
@@ -39,10 +40,14 @@ public class BulletSystem extends System {
     Array<Entity> firedbullets = new Array<>();
     Array<Entity> firedbulletsToRemove = new Array<>();
 
+    TimerSystem timerSystem;
+
     @Override
     public void onCreate() {
         atlas = engine.assetManager.get("atlas/TP.atlas");
+
         fireAtlas = engine.assetManager.get("atlas/Fire.atlas");
+        timerSystem = (TimerSystem) engine.getSystem(TimerSystem.class);
     }
 
     @Override
@@ -91,7 +96,7 @@ public class BulletSystem extends System {
         e.addComponents(new TransformComponent(position.getX() , position.getY()+ 10, 5, width, height));
         e.addComponents(new CollisionComponent(position.getX(), position.getY()+ 10,width, height));
         e.addComponents(new VelocityComponent(bulletVector.x * speed, bulletVector.y * speed, 1));
-        e.addComponents(new LifeCount(life));
+        e.addComponents(new TimerComponent(life));
         e.addComponents(new BulletComponent());
 
         return e;
@@ -110,50 +115,31 @@ public class BulletSystem extends System {
 
     private void bulletLogic(float dt){
 
-
-        firedbullets.removeAll(firedbulletsToRemove, true);
-        firedbulletsToRemove.clear();
-
-
-
-        for (int i = 0; i < firedbullets.size; i++){
-            e = firedbullets.get(i);
-            if (e != null && !e.flagForDelete){
-
+        for (int i = 0; i < timerSystem.entities().size; i++){
+            e = timerSystem.entities().get(i);
+            if (e.getComponent(BulletComponent.class) != null) {
                 addVelocity(e, dt);
-                l = (LifeCount) e.getComponent(LifeCount.class);
-                l.live(dt);
-                if (l.isDead()){
-                    firedbulletsToRemove.add(e);
+
+
+                if (col == null)
+                    col = (CollisionDetectionSystem) engine.getSystem(CollisionDetectionSystem.class);
+
+                c = (CollisionComponent) e.getComponent(CollisionComponent.class);
+                if (col.CollisionWithID(c, "Water") || col.CollisionWithID(c, "Sand")){
+
                     engine.removeEntity(e);
                 }
 
-                else {
+                if (col.CollisionWithID(c, "Wall")){
+                    t = (TransformComponent) e.getComponent(TransformComponent.class);
 
-                    if (col == null)
-                        col = (CollisionDetectionSystem) engine.getSystem(CollisionDetectionSystem.class);
-
-                    c = (CollisionComponent) e.getComponent(CollisionComponent.class);
-                    if (col.CollisionWithID(c, "Water") || col.CollisionWithID(c, "Sand")){
-
-                        engine.removeEntity(e);
-                    }
-
-                    if (col.CollisionWithID(c, "Wall")){
-                        t = (TransformComponent) e.getComponent(TransformComponent.class);
-
-                        exploadCell();
-                        firedbulletsToRemove.add(e);
-                        engine.removeEntity(e);
-
-                    }
+                    exploadCell();
+                    engine.removeEntity(e);
                 }
+
             }
 
         }
-
-
-
 
     }
 
@@ -187,6 +173,7 @@ public class BulletSystem extends System {
         AnimationComponent a = new AnimationComponent(0.02f, false, animation.getFrames(), true);
         i.addComponents(a);
 
+        i.addComponents(new TimerComponent(4));
         Light light = new Light(new PointLight(engine.lightning, 20, null, 40, x,y));
         light.colorAndSoftnessLength(new Color(0.7f,0.4f,0.4f,0.8f), 2f);
         light.setStatic(true);
@@ -194,8 +181,6 @@ public class BulletSystem extends System {
         i.addComponents(light);
 
         engine.addEntity(i);
-
-
     }
 
     public void addVelocity(Entity e, float dt){

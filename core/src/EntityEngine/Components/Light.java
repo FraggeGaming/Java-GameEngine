@@ -21,7 +21,7 @@ public class Light extends Component{
     }
 
     public void setActiveByHandler(boolean active){
-        if (giveLight == active)
+        if (giveLight)
             light.setActive(active);
     }
 
