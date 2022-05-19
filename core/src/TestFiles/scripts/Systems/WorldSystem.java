@@ -283,7 +283,7 @@ public class WorldSystem extends System {
         Light light = new Light(new PointLight(engine.lightning, 20, Color.WHITE, 80, 300, 300));
         light.attachToBody(box2d.getBody(), true);
         light.colorAndSoftnessLength(new Color(0.8f,0.4f,0.7f,0.8f), 10f);
-        light.activate(false);
+        light.activate(true);
         player.addComponents(light);
 
         engine.addEntity(player);
