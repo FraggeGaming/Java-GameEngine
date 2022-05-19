@@ -1,5 +1,4 @@
 package EntityEngine.Systems;
-
 import EntityEngine.Components.TimerComponent;
 import EntityEngine.Entity;
 import EntityEngine.Systems.System;

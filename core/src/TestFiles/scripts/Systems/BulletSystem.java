@@ -34,11 +34,7 @@ public class BulletSystem extends System {
     Entity player;
     TransformComponent playerTransform;
     CollisionDetectionSystem col;
-    LifeCount l;
     TextureAtlas fireAtlas;
-
-    Array<Entity> firedbullets = new Array<>();
-    Array<Entity> firedbulletsToRemove = new Array<>();
 
     TimerSystem timerSystem;
 
@@ -73,7 +69,6 @@ public class BulletSystem extends System {
 
                 e = createProjectile(1, 200,playerTransform, 20, 20, new TextureRegion(atlas.findRegion("Spore")), getbulletVector());
                 engine.addEntity(e);
-                firedbullets.add(e);
                 fireTimer = 0;
             }
 
@@ -81,9 +76,6 @@ public class BulletSystem extends System {
 
                 e = createProjectile(0.5f, 300,playerTransform, 15, 15, new TextureRegion(atlas.findRegion("SpiderEgg")), getbulletVector());
                 engine.addEntity(e);
-
-                firedbullets.add(e);
-
                 fireTimer = 0;
             }
         }
