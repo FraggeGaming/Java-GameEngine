@@ -7,7 +7,6 @@ import EntityEngine.Systems.CollisionDetectionSystem;
 import EntityEngine.Systems.System;
 import EntityEngine.Systems.TimerSystem;
 import TestFiles.scripts.Components.BulletComponent;
-import TestFiles.scripts.Components.LifeCount;
 import box2dLight.PointLight;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
