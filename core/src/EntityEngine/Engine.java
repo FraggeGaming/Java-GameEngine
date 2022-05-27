@@ -2,12 +2,14 @@ package EntityEngine;
 
 import EntityEngine.Components.Component;
 import EntityEngine.Components.RigidBody2D;
+import EntityEngine.Components.TransformComponent;
 import EntityEngine.GameClasses.TDCamera;
 import EntityEngine.Renderer.Cell;
 import EntityEngine.Renderer.SpatialHashGrid;
+import EntityEngine.Renderer.TransformComparator;
 import EntityEngine.Systems.*;
 import EntityEngine.Systems.System;
-import EntityEngine.Systems.TimerSystem;
+import TestFiles.scripts.Systems.TimerSystem;
 import box2dLight.RayHandler;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
@@ -38,21 +40,24 @@ public class Engine {
     int entityId = 0;
     public List<Entity> flagedForDelete = new ArrayList<>();
     public List<Entity> flagedRigidBodyforDelete = new ArrayList<>();
-    public String user; // for networking //TODO change this later for more modular implementation
-    boolean running = false;
-    public AssetManager assetManager;
 
+    public String user; // for networking //TODO change this later for more modular implementation
+
+    boolean running = false;
+
+    public AssetManager assetManager;
     public World world;
     public RayHandler lightning;
 
     public boolean threadedParsing = true;
+
+    public ArchitectHandler architectHandler = new ArchitectHandler();
 
 
     public Engine(float width, float height, Script scriptLoader){
 
         camera = new TDCamera(width, height);
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-        camera.zoom = 5;
         batch = new SpriteBatch();
         spatialHashGrid = new SpatialHashGrid(this);
         spatialHashGrid.setData((int) camera.viewportHeight);
@@ -85,12 +90,9 @@ public class Engine {
     }
 
     public void update(float dt){
-        deleteFlaged();
+
         getSpatialHashGrid().calculateSpatialGrid(camera.getCameraTransform());
         ScreenUtils.clear(1, 1, 1, 0.7f);
-        //TODO: render drawable first, when drawable ends, end batch
-
-        //Render batches
         batch.setProjectionMatrix(camera.combined);
 
         for (int i = 0; i < systems.size; i++){
@@ -101,7 +103,14 @@ public class Engine {
 
 
 
+        deleteFlaged();
+    }
 
+    public void setCameraBounds(float width, float height){
+        camera.viewportHeight = height;
+        camera.viewportWidth = width;
+
+        spatialHashGrid.setData((int) height);
     }
 
     public void buildSystems(){
@@ -125,17 +134,20 @@ public class Engine {
     }
 
     public void addEntity(Entity entity){
-        entity.setId(entityId++, componentMap); // and add to component map
+        entity.setId(entityId++); // and add to component map
+        componentMap.put(entity.id, entity);
+        spatialHashGrid.addEntity(entity);
+
+        architectHandler.addToArchitect(entity);
 
         for (int i = 0; i < systems.size; i++){
             systems.get(i).addEntity(entity);
         }
 
+
         if (entity.tag != null){
             entityMapper.put(entity.tag, entity);
         }
-
-        spatialHashGrid.addEntity(entity);
 
     }
 
@@ -147,6 +159,9 @@ public class Engine {
         flagedForDelete.add(entity);
         entity.flagForDelete = true;
 
+        if (entity.getComponent(RigidBody2D.class) != null){
+            deleteRigidBody(entity);
+        }
     }
 
 
@@ -190,21 +205,6 @@ public class Engine {
                     return ((ComponentManagerSystem) systems.get(i)).getLoadedComponents(c);
             }
         }
-
-        else {
-            Array<Component> componentArray = new Array<>();
-            Array<Cell> cells = getCellsFromCameraCenter();
-            for (int i = 0; i < cells.size; i++){
-                if (cells.get(i).getComponents(c) != null){
-                    componentArray.addAll( cells.get(i).getComponents(c), 0, cells.get(i).getComponents(c).length );
-
-                }
-            }
-
-            return componentArray;
-        }
-
-
         return null;
     }
 
@@ -214,6 +214,23 @@ public class Engine {
 
     public Array<Cell> getCellsFromCameraCenter(){
         return getSpatialHashGrid().getNeighbours();
+    }
+
+    public Array<Integer> NearbyComponentsFromArc(Byte b){
+        Array<Cell> loaded =  getSpatialHashGrid().getNeighbours();
+        Array<Integer> ints = new Array<>();
+        Array<TransformComponent> transforms = new Array<>();
+        for (int i = 0; i < loaded.size; i++){
+            transforms.addAll((Array<TransformComponent>) loaded.get(i).getComponents(TransformComponent.class));
+        }
+
+        transforms.sort(new TransformComparator());
+        for (int j = 0; j < transforms.size; j++){
+            TransformComponent t = transforms.get(j);
+            ints.add(t.getArchitectID(b));
+        }
+
+        return ints;
     }
 
     public TDCamera getCamera(){
@@ -228,7 +245,6 @@ public class Engine {
 
         //TODO delete flaged enteties once every x frames, before threads start with inacurate data.
         if (!world.isLocked()){
-
             //Destroy Box2D
             for (Entity e : flagedRigidBodyforDelete){
                 RigidBody2D rigidBody2D = (RigidBody2D) e.getComponent(RigidBody2D.class);
@@ -238,26 +254,17 @@ public class Engine {
                 }
             }
             flagedRigidBodyforDelete.clear();
-
-
-
-            for (Entity e : flagedForDelete){
-                //Destory box2D
-                RigidBody2D rigidBody2D = (RigidBody2D) e.getComponent(RigidBody2D.class);
-                if (rigidBody2D != null && !rigidBody2D.destroyed){
-                    rigidBody2D.destroyed = true;
-                    world.destroyBody(rigidBody2D.getBody());
-                }
-
-                e.dispose();
-                spatialHashGrid.removeEntity(e);
-                componentMap.remove(e.id);
-            }
-            flagedForDelete.clear();
         }
 
+        for (Entity e : flagedForDelete){
 
+            e.dispose();
+            componentMap.remove(e.id);
+            spatialHashGrid.removeEntity(e);
+            architectHandler.removeEntity(e);
 
+        }
+        flagedForDelete.clear();
     }
 
     public void deleteRigidBody(Entity temp) {

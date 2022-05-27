@@ -102,16 +102,15 @@ public class SpatialHashGrid  {
     }
 
     public Cell getCell(TransformComponent component){
-
         return cell = findCell(component.getOriginX()/cellSize, component.getOriginY()/cellSize );
-
 
     }
 
     public void addEntity(Entity entity) {
+        //TODO fix this
         Component x = entity.getComponent(TransformComponent.class);
         if (x != null){
-            addToGrid((TransformComponent) x, entity);
+            addToGrid((TransformComponent) x);
         }
 
         Component y = entity.getComponent(CollisionComponent.class);
@@ -125,7 +124,7 @@ public class SpatialHashGrid  {
         for (int i = 0; i < keys.size; i++){
             cell = hashGrid.get(keys.get(i));
             if (cell == null){
-                cell = new Cell(keys.get(i), engine.threadedParsing);
+                cell = new Cell(keys.get(i));
             }
 
             cell.addToCell(x);
@@ -136,14 +135,14 @@ public class SpatialHashGrid  {
 
     }
 
-    private void addToGrid(TransformComponent component, Entity entity){
+    private void addToGrid(TransformComponent component){
 
         cell = hashGrid.get(getKey(component));
         if (cell == null){
-            cell = new Cell(getKey(component), engine.threadedParsing);
+            cell = new Cell(getKey(component));
         }
 
-        cell.addToCell(component, entity);
+        cell.addToCell(component);
 
         if (cell != null && component.getZ() > cell.order){
             cell.order = component.getZ();
@@ -153,8 +152,6 @@ public class SpatialHashGrid  {
         hashGrid.put(getKey(component),cell);
         //update = true;
 
-
-
     }
 
     public void removeEntity(Entity entity){
@@ -163,7 +160,7 @@ public class SpatialHashGrid  {
 
         if (x != null){
             if (hashGrid.containsKey(getKey((TransformComponent) x))){
-                hashGrid.get(getKey((TransformComponent) x)).removeComponent((TransformComponent) x, entity);
+                hashGrid.get(getKey((TransformComponent) x)).removeComponent(x);
 
             }
         }
@@ -173,7 +170,7 @@ public class SpatialHashGrid  {
             Array<String> keys = getAllKeys((CollisionComponent) y);
             for (int i = 0; i < keys.size; i++){
                 if (hashGrid.containsKey(keys.get(i))){
-                    hashGrid.get(keys.get(i)).removeCollisionComponent((CollisionComponent) y);
+                    hashGrid.get(keys.get(i)).removeComponent( y);
                 }
             }
         }
@@ -201,7 +198,6 @@ public class SpatialHashGrid  {
         }
 
         return keys;
-
 
     }
 

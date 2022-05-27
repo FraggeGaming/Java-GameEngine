@@ -5,8 +5,8 @@ import EntityEngine.Entity;
 import EntityEngine.GameClasses.Animation;
 import EntityEngine.Systems.CollisionDetectionSystem;
 import EntityEngine.Systems.System;
-import EntityEngine.Systems.TimerSystem;
 import TestFiles.scripts.Components.BulletComponent;
+import TestFiles.scripts.Components.TimerComponent;
 import box2dLight.PointLight;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -111,9 +111,9 @@ public class BulletSystem extends System {
             if (e.getComponent(BulletComponent.class) != null) {
                 addVelocity(e, dt);
 
-
-                if (col == null)
+                if (col == null) {
                     col = (CollisionDetectionSystem) engine.getSystem(CollisionDetectionSystem.class);
+                }
 
                 c = (CollisionComponent) e.getComponent(CollisionComponent.class);
                 if (col.CollisionWithID(c, "Water") || col.CollisionWithID(c, "Sand")){
@@ -126,8 +126,8 @@ public class BulletSystem extends System {
 
                     exploadCell();
                     engine.removeEntity(e);
-                }
 
+                }
             }
 
         }
@@ -176,7 +176,7 @@ public class BulletSystem extends System {
 
     public void addVelocity(Entity e, float dt){
 
-        if (e == null)
+        if (e == null || e.flagForDelete)
             return;
         t = (TransformComponent) e.getComponent( TransformComponent.class);
         c = (CollisionComponent) e.getComponent(CollisionComponent.class);

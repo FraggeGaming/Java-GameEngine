@@ -1,10 +1,14 @@
 package TestFiles.scripts;
 
+import EntityEngine.Components.Component;
+import EntityEngine.Components.TextureComponent;
+import EntityEngine.Components.TransformComponent;
 import TestFiles.scripts.Systems.DebugStats;
 import EntityEngine.Script;
 import TestFiles.scripts.Systems.*;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.utils.Array;
 
 public class ScriptLoader extends Script {
 
@@ -23,9 +27,20 @@ public class ScriptLoader extends Script {
         engine.addSystem(new WorldSystem());
         engine.addSystem(new BulletSystem());
         //engine.addSystem(new NetworkScript());
+        engine.camera.zoom = 1;
+
+        Array<Class<?extends Component>> types = new Array<>();
+        types.add(TransformComponent.class, TextureComponent.class);
+        engine.architectHandler.createArchitect(types);
+
 
     }
 
+    //TODO Highest frametime, frametime debugging
+    //TODO collision detection optimization, flag sertain cells for update or not
+    //TODO archtect type dynamic allocator
+    //TODO only calculate 1 time everu frame (componentsfromcenter(byte b))
+    //TODO engine pool for less deletetion of entities
     //TODO lightning filter
     //TODO audio component
     //TODO different screen support, loading, settings etc

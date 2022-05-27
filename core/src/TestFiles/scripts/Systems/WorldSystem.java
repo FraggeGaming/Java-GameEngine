@@ -211,9 +211,9 @@ public class WorldSystem extends System {
 
         createTile(x + 6*16, y+7*16, "Quartz", "Quartz");
 
-        createTile(x + 4*16, y+5*16, "Table", 32,29, 2);
-        createTile(x + 6*16, y+5*16, "ChairRight", 16,32, 2);
-        createTile(x + 3*16, y+5*16, "ChairLeft",16,32, 2);
+        createTile(x + 4*16, y+5*16, "Table", 32,29, 3);
+        createTile(x + 6*16, y+5*16, "ChairRight", 16,32, 3);
+        createTile(x + 3*16, y+5*16, "ChairLeft",16,32, 3);
 
 
     }

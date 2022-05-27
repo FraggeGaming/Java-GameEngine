@@ -1,6 +1,8 @@
-package EntityEngine.Components;
+package TestFiles.scripts.Components;
 
-public class TimerComponent extends Component{
+import EntityEngine.Components.Component;
+
+public class TimerComponent extends Component {
     float time;
     public TimerComponent(float time){
         this.time = time;

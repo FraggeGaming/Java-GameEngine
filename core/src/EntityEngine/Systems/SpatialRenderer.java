@@ -1,5 +1,6 @@
 package EntityEngine.Systems;
 
+import EntityEngine.Architect;
 import EntityEngine.Components.*;
 import EntityEngine.Entity;
 import EntityEngine.Renderer.Cell;
@@ -17,7 +18,6 @@ public class SpatialRenderer extends System {
     Component x;
 
     Array<Component> comp;
-    Array<TransformComponent> transformComp;
 
     Array<Cell> cells;
     Array<TransformComponent> compt = new Array<>();
@@ -29,7 +29,7 @@ public class SpatialRenderer extends System {
     @Override
     public void update(float dt){
         drawnEntities = 0;
-        renderWithCMS();
+        arc();
     }
 
     private void renderWiothoutCMS(){
@@ -37,7 +37,7 @@ public class SpatialRenderer extends System {
 
         cells = engine.getCellsFromCameraCenter();
         for (int i = 0; i < cells.size; i++){
-            compt.addAll(cells.get(i).getComponents());
+            compt.addAll((Array<? extends TransformComponent>) cells.get(i).getComponents(TransformComponent.class));
         }
         compt.sort(new TransformComparator());
 
@@ -55,25 +55,30 @@ public class SpatialRenderer extends System {
 
         compt.clear();
     }
-    private void renderwithLayers(){
-        cells = engine.getCellsFromCameraCenter();
-        engine.getBatch().begin();
 
-        for (int k = 0; k < 5; k++){
-            for (int i = 0; i < cells.size; i++){
+    private void arc() {
 
-                transformComp = cells.get(i).getLayers().get(k);
+        Array<Integer> ints = engine.NearbyComponentsFromArc((byte) 0x1);
+        Architect architect = engine.architectHandler.getArchitect((byte) 0x1);
+        Array<Component> transformArray = architect.getComponents(TransformComponent.class);
+        Array<Component> textureArray = architect.getComponents(TextureComponent.class);
 
-                if (transformComp != null){
-                    renderArray(transformComp);
-                }
+        if (!ints.isEmpty()){
 
+            engine.getBatch().begin();
 
+            for (int i = 0; i < ints.size; i++){
+
+                transform = (TransformComponent) transformArray.get(ints.get(i));
+                t = (TextureComponent) textureArray.get(ints.get(i));
+
+                drawTexture(t, transform);
             }
-        }
 
-        engine.getBatch().end();
+            engine.getBatch().end();
+        }
     }
+
 
     private void renderWithCMS() {
 

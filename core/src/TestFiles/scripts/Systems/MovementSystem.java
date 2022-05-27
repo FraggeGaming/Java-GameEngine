@@ -21,61 +21,63 @@ public class MovementSystem extends System {
     }
 
     @Override
+    public void onCreate() {
+        network = (NetworkManager) engine.getSystem(NetworkManager.class);
+    }
+
+    @Override
     public void update(float dt){
 
-        if (!fetchNetwork){
-            network = (NetworkManager) engine.getSystem(NetworkManager.class);
-            if (network != null)
-                fetchNetwork = true;
+        if (network != null && network.isOpen)
+            return;
+
+
+        float x = 0, y = 0;
+        if(Gdx.input.isKeyPressed(Input.Keys.A)){
+            //change vertical direction
+            x -= 1;
         }
 
-        if (network == null || !network.isOpen){
-            float x = 0, y = 0;
-            if(Gdx.input.isKeyPressed(Input.Keys.A)){
-                //change vertical direction
-                x -= 1;
-            }
-
-            if(Gdx.input.isKeyPressed(Input.Keys.D)){
-                //change vertical direction
-                x += 1;
-            }
-            if(Gdx.input.isKeyPressed(Input.Keys.W)){
-                //change vertical direction
-                y += 1;
-            }
-
-            if(Gdx.input.isKeyPressed(Input.Keys.S)){
-                //change vertical direction
-                y -= 1;
-            }
-
-            addVelocity(engine.getEntity(engine.user), x*150 * dt, y*150 * dt);
-            if (x != 0 || y != 0){
-
-                AnimationComponent a = (AnimationComponent) engine.getEntity(engine.user).getComponent(AnimationComponent.class);
-                if (!a.isAlive()){
-                    a.setAlive(true);
-                }
-            }
-
-            else{
-                AnimationComponent a = (AnimationComponent) engine.getEntity(engine.user).getComponent(AnimationComponent.class);
-                if (a.isAlive()){
-                    a.resetAnimation();
-                    a.setAlive(false);
-
-                    TextureComponent t = (TextureComponent) engine.getEntity(engine.user).getComponent(TextureComponent.class);
-
-                    t.setTexture(a.getCurrentFrame());
-
-
-                }
-            }
-
-
-            engine.getCamera().update();
+        if(Gdx.input.isKeyPressed(Input.Keys.D)){
+            //change vertical direction
+            x += 1;
         }
+        if(Gdx.input.isKeyPressed(Input.Keys.W)){
+            //change vertical direction
+            y += 1;
+        }
+
+        if(Gdx.input.isKeyPressed(Input.Keys.S)){
+            //change vertical direction
+            y -= 1;
+        }
+
+        addVelocity(engine.getEntity(engine.user), x*80 * dt, y*80 * dt);
+        if (x != 0 || y != 0){
+
+            AnimationComponent a = (AnimationComponent) engine.getEntity(engine.user).getComponent(AnimationComponent.class);
+            if (!a.isAlive()){
+                a.setAlive(true);
+            }
+        }
+
+        else{
+            AnimationComponent a = (AnimationComponent) engine.getEntity(engine.user).getComponent(AnimationComponent.class);
+            if (a.isAlive()){
+                a.resetAnimation();
+                a.setAlive(false);
+
+                TextureComponent t = (TextureComponent) engine.getEntity(engine.user).getComponent(TextureComponent.class);
+
+                t.setTexture(a.getCurrentFrame());
+
+
+            }
+        }
+
+
+        engine.getCamera().update();
+
 
     }
 

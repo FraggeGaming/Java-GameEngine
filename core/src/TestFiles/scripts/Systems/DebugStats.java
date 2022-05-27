@@ -45,10 +45,6 @@ public class DebugStats extends System {
     int port = 1234;
 
 
-    public DebugStats(){
-
-    }
-
     @Override
     public void onCreate() {
         stage = new Stage(new ScreenViewport());
@@ -73,8 +69,8 @@ public class DebugStats extends System {
         labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Light function time", profiler, engine, 22 ));
 
         labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Fps", profiler, engine, 0 ));
-        //labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"DrawCalls", profiler, engine, 1 ));
-        //labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Gl Calls", profiler, engine, 2 ));
+        labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"DrawCalls", profiler, engine, 1 ));
+        labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Gl Calls", profiler, engine, 2 ));
         labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"VertexCount", profiler, engine, 3 ));
         labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Drawn Entities", profiler, engine, 4 ));
         //labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"FPS per entity", profiler, engine, 5 ));

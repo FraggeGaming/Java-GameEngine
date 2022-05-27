@@ -60,8 +60,8 @@ public class Debugger extends System {
         if (loadedCells != null){
 
             for (int i = 0; i < loadedCells.size; i++){
-                for (int j = 0; j < loadedCells.get(i).getComponents().size; j++){
-                    t =  loadedCells.get(i).getComponents().get(j);
+                for (int j = 0; j < loadedCells.get(i).getComponents(TransformComponent.class).size; j++){
+                    t = (TransformComponent) loadedCells.get(i).getComponents(TransformComponent.class).get(j);
 
                     if (t.getZ() < 1)
                         shapeRenderer.setColor(Color.GREEN);
