@@ -40,8 +40,7 @@ public class Engine {
     public List<Entity> flagedRigidBodyforDelete = new ArrayList<>();
 
     public String user; // for networking //TODO change this later for more modular implementation
-    boolean running = false;
-    public boolean threadedParsing = false;
+    public boolean threadedParsing = false; //TODO remove this and component parser
 
     public AssetManager assetManager;
     public World world;
@@ -49,10 +48,7 @@ public class Engine {
     public ExecutorService threadPool;
     public TDCamera camera;
     public Batch batch;
-
-
-    public ArchitectHandler architectHandler = new ArchitectHandler();
-
+    public ArchitectHandler architectHandler;
 
     public Engine(float width, float height, Script scriptLoader){
         camera = new TDCamera(width, height);
@@ -65,6 +61,7 @@ public class Engine {
         assetManager = new AssetManager();
         world = new World(new Vector2(0, 0f),true);
         lightning = new RayHandler(world);
+        architectHandler = new ArchitectHandler();
 
 
         initSetup();
@@ -103,10 +100,9 @@ public class Engine {
             systems.get(i).endTimer();
         }
 
-
-
         deleteFlaged();
     }
+
 
     public void setCameraBounds(float width, float height){
         camera.viewportHeight = height;
@@ -123,8 +119,6 @@ public class Engine {
         for (int i = 0; i < systems.size; i++){
             systems.get(i).onCreate();
         }
-
-        running = true;
     }
 
     public void addSystem(System system){
@@ -187,13 +181,6 @@ public class Engine {
         return null;
     }
 
-    public long getSystemFunctionTime(Class<?extends System> System){
-        if (getSystem(System) != null)
-        return getSystem(System).getFunctionDuration();
-
-        return -1;
-    }
-
     public Array<Component> getloadedComponents(Class<?extends Component> c){
         if (threadedParsing){
             for (int i = 0; i < systems.size; i++){
@@ -208,20 +195,17 @@ public class Engine {
         return spatialHashGrid;
     }
 
-    public Array<Integer> NearbyComponentsFromArc(Byte b, boolean sort){
-        Array<Cell> loaded =  getSpatialHashGrid().getNeighbours();
+    /*
+    * Returns integer array with the index of the components inrange
+    * from the given architect
+    * */
+    public Array<Integer> getSpatialArc(Architect architect){
+
+        Array<TransformComponent> transforms = getSpatialHashGrid().getNearbyTransforms();
         Array<Integer> ints = new Array<>();
-        Array<TransformComponent> transforms = new Array<>();
-        for (int i = 0; i < loaded.size; i++){
-            transforms.addAll((Array<TransformComponent>) loaded.get(i).getComponents(TransformComponent.class));
-        }
-
-        if (sort)
-            transforms.sort(new TransformComparator());
-
         for (int j = 0; j < transforms.size; j++){
             TransformComponent t = transforms.get(j);
-            int p = t.getArchitectID(b);
+            int p = t.getArchitectID(architect.id);
             if (p > -1)
                 ints.add(p);
         }

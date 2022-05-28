@@ -1,6 +1,7 @@
 package EntityEngine.Debug;
 
 import EntityEngine.Engine;
+import EntityEngine.Systems.System;
 import TestFiles.scripts.UIItem;
 import EntityEngine.Systems.*;
 import com.badlogic.gdx.Gdx;
@@ -76,35 +77,42 @@ public class DebugLabel {
             setText(getCollidableObjectsInRange());
         }
         else if (whatToDebug == 10){
-            setText(engine.getSystemFunctionTime(SpatialRenderer.class));
+            setText(getSystemFunctionTime(SpatialRenderer.class));
         }
 
         else if (whatToDebug == 11){
-            setText(engine.getSystemFunctionTime(CollisionDetectionSystem.class));
+            setText(getSystemFunctionTime(CollisionDetectionSystem.class));
         }
         else if (whatToDebug == 12){
-            setText(engine.getSystemFunctionTime(Debugger.class));
+            setText(getSystemFunctionTime(Debugger.class));
         }
 
         else if (whatToDebug == 13){
-            setText(engine.getSystemFunctionTime(AnimationSystem.class));
+            setText(getSystemFunctionTime(AnimationSystem.class));
         }
 
         else if (whatToDebug == 14){
-            setText(engine.getSystemFunctionTime(ComponentManagerSystem.class));
+            setText(getSystemFunctionTime(ComponentManagerSystem.class));
         }
 
         else if (whatToDebug == 20){
-            setText(engine.getSystemFunctionTime(TileMapRenderer.class));
+            setText(getSystemFunctionTime(TileMapRenderer.class));
         }
 
         else if (whatToDebug == 21){
-            setText(engine.getSystemFunctionTime(PhysicsSystem.class));
+            setText(getSystemFunctionTime(PhysicsSystem.class));
         }
 
         else if (whatToDebug == 22){
-            setText(engine.getSystemFunctionTime(LightningSystem.class));
+            setText(getSystemFunctionTime(LightningSystem.class));
         }
+    }
+
+    public long getSystemFunctionTime(Class<?extends System> System){
+        if (engine.getSystem(System) != null)
+            return engine.getSystem(System).getFunctionDuration();
+
+        return -1;
     }
 
     public int getCollidableObjectsInRange(){

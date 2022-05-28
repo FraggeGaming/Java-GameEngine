@@ -19,13 +19,14 @@ public class SpatialHashGrid  {
     boolean addCell = false;
 
     int cellSize = 100;
-    int offsetX = 1; //make this changeable in GUI
+    int offsetX = 1; //TODO make this changeable in GUI
     int offsetY = 3;
     int radiusY;
     int radiusX;
-    public boolean update = false;
+    public boolean update = false; //TODO remove this
     Engine engine;
 
+    Array<TransformComponent> transformsSorted;
 
     public SpatialHashGrid(Engine engine){
         this.engine = engine;
@@ -43,20 +44,32 @@ public class SpatialHashGrid  {
         return loadedCellsTemp;
     }
 
+    public Array<TransformComponent> getNearbyTransforms(){
+
+
+        return transformsSorted;
+
+
+    }
+
     public void calculateSpatialGrid(TransformComponent component){
-            loadedCells.clear();
-            getSurroundingCells(component);
-            sortLoadedCells();
-            update = true;
+        loadedCells.clear();
+        getSurroundingCells(component);
+        //sortLoadedCells();
+        update = true;
+        loadedCellsTemp.clear();
+        loadedCellsTemp.addAll(loadedCells);
 
-            loadedCellsTemp.clear();
-            loadedCellsTemp.addAll(loadedCells);
+
+        Array<Cell> loaded =  getNeighbours();
+        transformsSorted = new Array<>();
+        for (int i = 0; i < loaded.size; i++){
+            transformsSorted.addAll((Array<TransformComponent>) loaded.get(i).getComponents(TransformComponent.class));
+        }
+
+        transformsSorted.sort(new TransformComparator());
     }
 
-
-    private void sortLoadedCells() {
-        loadedCells.sort(new CellComparator());
-    }
 
     private void processCell(Cell cell){
         if (cell != null){

@@ -1,41 +1,36 @@
 package EntityEngine;
 
 import EntityEngine.Components.Component;
-import EntityEngine.Components.TextureComponent;
-import EntityEngine.Components.TransformComponent;
 import com.badlogic.gdx.utils.Array;
 
 public class Architect {
     byte id;
-    int size = 2;
     Array<Array<Component>> components = new Array<>();
-    public Array<TransformComponent> transforms = new Array<>();
-    public Array<TextureComponent> textures = new Array<>();
-    Array<Class<?extends Component>> types;
+    Type type;
 
     boolean sync = false;
 
-    public Architect(byte id , Array<Class<?extends Component>> types){
-        this.types = types;
+    public Architect(byte id , Type type){
+        this.type = type;
         this.id = id;
-        size = types.size;
-        for (int i = 0; i < types.size; i++){
+
+        for (int i = 0; i < type.types.size; i++){
            components.add(new Array<Component>());
         }
 
     }
 
     public void getComponents(Entity entity){
-        for (int i = 0; i < types.size; i++){
-            if (entity.getComponent(types.get(i)) == null)
+        for (int i = 0; i <  type.getSize(); i++){
+            if (entity.getComponent( type.getType(i)) == null)
                 return;
         }
 
         for (int i = 0; i < entity.components.size; i++){
             Component c = entity.components.get(i);
 
-            for (int j = 0; j < types.size; j++){
-                if (c.getClass().equals(types.get(j))){
+            for (int j = 0; j < type.getSize(); j++){
+                if (c.getClass().equals( type.getType(j))){
                     c.setArchitectMapper(id, components.get(j).size);
                     components.get(j).add(c);
                 }
@@ -56,8 +51,8 @@ public class Architect {
         for (int i = 0; i < entity.components.size; i++){
             Component c = entity.components.get(i);
 
-            for (int j = 0; j < types.size; j++){
-                if (c.getClass().equals(types.get(j))){
+            for (int j = 0; j <  type.getSize(); j++){
+                if (c.getClass().equals( type.getType(j))){
                     int cId = c.getArchitectID(id);
                     if (cId > -1){
                         components.get(j).removeIndex(cId);
@@ -79,10 +74,9 @@ public class Architect {
 
             sync = false;
         }
-
-
     }
 
+    //TODO optimize this
     private void updateComponentValues(Array<Component> components) {
 
         for (int i = 0; i < components.size; i++){

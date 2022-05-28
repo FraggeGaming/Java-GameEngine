@@ -3,6 +3,8 @@ package EntityEngine.Systems;
 import EntityEngine.Architect;
 import EntityEngine.Components.Component;
 import EntityEngine.Components.Light;
+import EntityEngine.Components.TransformComponent;
+import EntityEngine.Type;
 import com.badlogic.gdx.utils.Array;
 
 public class LightningSystem extends System {
@@ -16,8 +18,9 @@ public class LightningSystem extends System {
 
         engine.lightning.setCombinedMatrix(engine.getCamera());
 
-        Array<Integer> ints = engine.NearbyComponentsFromArc((byte) 0x2, false);
-        Architect architect = engine.architectHandler.getArchitect((byte) 0x2);
+        Architect architect = engine.architectHandler.getArchitect(new Type(Light.class, TransformComponent.class));
+        Array<Integer> ints = engine.getSpatialArc(architect);
+
         Array<Component> lightArray = architect.getComponents(Light.class);
 
 

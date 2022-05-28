@@ -5,6 +5,7 @@ import EntityEngine.Components.*;
 import EntityEngine.Entity;
 import EntityEngine.Renderer.Cell;
 import EntityEngine.Renderer.TransformComparator;
+import EntityEngine.Type;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
@@ -63,9 +64,9 @@ public class SpatialRenderer extends System {
 
     private void arc() {
 
-        //TODO way to get right architect
-        Array<Integer> ints = engine.NearbyComponentsFromArc((byte) 0x1, true);
-        Architect architect = engine.architectHandler.getArchitect((byte) 0x1);
+        Architect architect = engine.architectHandler.getArchitect(new Type(TransformComponent.class, TextureComponent.class));
+        Array<Integer> ints = engine.getSpatialArc(architect);
+
         Array<Component> transformArray = architect.getComponents(TransformComponent.class);
         Array<Component> textureArray = architect.getComponents(TextureComponent.class);
 

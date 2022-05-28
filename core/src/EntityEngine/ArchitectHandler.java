@@ -7,8 +7,8 @@ public class ArchitectHandler {
     Array<Architect> architects = new Array<>();
     byte id = 0x1;
 
-    public void createArchitect(Array<Class<?extends Component>> types){
-        Architect architect = new Architect(id, types);
+    public void createArchitect(Type type){
+        Architect architect = new Architect(id, type);
         architects.add(architect);
 
         id++;
@@ -20,10 +20,13 @@ public class ArchitectHandler {
         }
     }
 
-    public Architect getArchitect(byte b){
+    public Architect getArchitect(Type type){
         for (Architect architect : architects){
-            if (architect.id == b){
-                return architect;
+            if (architect.type.getSize() == type.getSize()){
+                if (architect.type.equals(type)){
+                    return architect;
+                }
+
             }
         }
         return null;

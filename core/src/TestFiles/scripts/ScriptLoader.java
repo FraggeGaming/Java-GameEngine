@@ -1,6 +1,7 @@
 package TestFiles.scripts;
 
 import EntityEngine.Components.*;
+import EntityEngine.Type;
 import TestFiles.scripts.Systems.DebugStats;
 import EntityEngine.Script;
 import TestFiles.scripts.Systems.*;
@@ -17,23 +18,23 @@ public class ScriptLoader extends Script {
         engine.addAsset(new AssetDescriptor<>("atlas/StoneCrab.atlas", TextureAtlas.class));
         engine.addAsset(new AssetDescriptor<>("atlas/LarvMovement.atlas", TextureAtlas.class));
 
+        Type type = new Type(TransformComponent.class, TextureComponent.class);
+        engine.architectHandler.createArchitect(type);
+
+        type = new Type(Light.class, TransformComponent.class);
+        engine.architectHandler.createArchitect(type);
+
+        type = new Type(AnimationComponent.class, TransformComponent.class, TextureComponent.class);
+        engine.architectHandler.createArchitect(type);
 
     }
 
     @Override
     public void onCreate() {
         //TODO fix this
-        Array<Class<?extends Component>> types = new Array<>();
-        types.add(TransformComponent.class, TextureComponent.class);
-        engine.architectHandler.createArchitect(types);
 
-        types = new Array<>();
-        types.add(Light.class, TransformComponent.class);
-        engine.architectHandler.createArchitect(types);
 
-        types = new Array<>();
-        types.add(AnimationComponent.class, TransformComponent.class, TextureComponent.class);
-        engine.architectHandler.createArchitect(types);
+
 
         engine.addSystem(new DebugStats());
         engine.addSystem(new MovementSystem());
