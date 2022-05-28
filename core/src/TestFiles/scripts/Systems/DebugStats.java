@@ -2,6 +2,8 @@ package TestFiles.scripts.Systems;
 
 import EntityEngine.Debug.DebugLabel;
 import EntityEngine.Engine;
+import EntityEngine.Systems.Debugger;
+import EntityEngine.Systems.LightningSystem;
 import EntityEngine.Systems.System;
 import TestFiles.scripts.UIItem;
 import EntityEngine.Systems.NetworkManager;
@@ -90,7 +92,9 @@ public class DebugStats extends System {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
 
-                engine.toggleDebug();
+                Debugger s = (Debugger) engine.getSystem(Debugger.class);
+                s.debug = !s.debug;
+                s.debugBox2D = false;
             }
         });
 
@@ -98,15 +102,31 @@ public class DebugStats extends System {
         item.setMargin(10);
         item.floatTop();
         item.floatLeft();
-        item.translate(30, -40*(labelOrder++));
+        item.translate(30, (-dbB - 3)*(labelOrder++));
         debugger = createButton("Collision debug",  item.getX(), item.getY());
         debugger.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                engine.toggleDebugBox2D();
+                Debugger s = (Debugger) engine.getSystem(Debugger.class);
+                s.debugBox2D = !s.debugBox2D;
+                s.debug = s.debugBox2D;
             }
         });
 
+
+        item = new UIItem(stage);
+        item.setMargin(10);
+        item.floatTop();
+        item.floatLeft();
+        item.translate(30, (-dbB - 6)*(labelOrder++));
+        debugger = createButton("Turn off Lights",  item.getX(), item.getY());
+        debugger.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                LightningSystem s = (LightningSystem) engine.getSystem(LightningSystem.class);
+                s.isActive = !s.isActive;
+            }
+        });
 
 
     }

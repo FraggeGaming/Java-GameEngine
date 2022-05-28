@@ -1,5 +1,6 @@
 package EntityEngine.Systems;
 
+import EntityEngine.Architect;
 import EntityEngine.Components.*;
 import EntityEngine.Entity;
 import com.badlogic.gdx.Gdx;
@@ -9,7 +10,6 @@ import com.badlogic.gdx.utils.Array;
 public class AnimationSystem extends System{
     AnimationComponent a;
     TextureComponent t;
-    Array<Component> comp;
 
     public int numOfAnimations = 0;
     public AnimationSystem(){
@@ -21,10 +21,27 @@ public class AnimationSystem extends System{
         numOfAnimations = 0;
 
 
-        comp = engine.getloadedComponents(AnimationComponent.class);
-        if (comp != null){
-            for (int i = 0; i < comp.size; i++){
-                setUpAnimation(comp.get(i).getId());
+        Array<Integer> ints = engine.NearbyComponentsFromArc((byte) 0x3, false);
+        Architect architect = engine.architectHandler.getArchitect((byte) 0x3);
+        Array<Component> animationArray = architect.getComponents(AnimationComponent.class);
+        Array<Component> textureArray = architect.getComponents(TextureComponent.class);
+
+        if (!ints.isEmpty()){
+            for (int i = 0; i < ints.size; i++){
+                a = (AnimationComponent) animationArray.get(ints.get(i));
+                if (a != null && a.isAlive()){
+
+                    if (a.getFrameSpeed() <= 0){
+
+                        //swap its texture component with next animation
+                        t = (TextureComponent) textureArray.get(ints.get(i));
+                        t.setTexture(getNextFrame(a));
+                    }
+
+                    a.decreaseTimer(Gdx.graphics.getDeltaTime());
+
+                    numOfAnimations++;
+                }
             }
         }
 

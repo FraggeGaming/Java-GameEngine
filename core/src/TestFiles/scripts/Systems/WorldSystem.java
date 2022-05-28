@@ -55,6 +55,8 @@ public class WorldSystem extends System {
 
     @Override
     public void onCreate() {
+        engine.lightning.setAmbientLight(0.2f);
+
         col = (CollisionDetectionSystem) engine.getSystem(CollisionDetectionSystem.class);
         sC = engine.assetManager.get("atlas/StoneCrab.atlas");
         atlas = engine.assetManager.get("atlas/TP.atlas");

@@ -2,6 +2,7 @@ package EntityEngine;
 
 import EntityEngine.Components.Component;
 import EntityEngine.Components.RigidBody2D;
+import EntityEngine.Components.TextureComponent;
 import EntityEngine.Components.TransformComponent;
 import EntityEngine.GameClasses.TDCamera;
 import EntityEngine.Renderer.Cell;
@@ -33,39 +34,38 @@ public class Engine {
     public final HashMap<String, Entity> entityMapper = new HashMap<>();
     private final Array<System> systems = new Array<>();
     private final SpatialHashGrid spatialHashGrid;
-    public ExecutorService pool;
 
-    public TDCamera camera;
-    public Batch batch;
     int entityId = 0;
     public List<Entity> flagedForDelete = new ArrayList<>();
     public List<Entity> flagedRigidBodyforDelete = new ArrayList<>();
 
     public String user; // for networking //TODO change this later for more modular implementation
-
     boolean running = false;
+    public boolean threadedParsing = false;
 
     public AssetManager assetManager;
     public World world;
     public RayHandler lightning;
+    public ExecutorService threadPool;
+    public TDCamera camera;
+    public Batch batch;
 
-    public boolean threadedParsing = true;
 
     public ArchitectHandler architectHandler = new ArchitectHandler();
 
 
     public Engine(float width, float height, Script scriptLoader){
-
         camera = new TDCamera(width, height);
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         batch = new SpriteBatch();
         spatialHashGrid = new SpatialHashGrid(this);
         spatialHashGrid.setData((int) camera.viewportHeight);
-        pool = Executors.newCachedThreadPool();
+        threadPool = Executors.newCachedThreadPool();
 
         assetManager = new AssetManager();
         world = new World(new Vector2(0, 0f),true);
         lightning = new RayHandler(world);
+
 
         initSetup();
 
@@ -86,18 +86,20 @@ public class Engine {
         addSystem(new Debugger());
         addSystem(new PhysicsSystem());
         addSystem(new LightningSystem());
-        addSystem(new TimerSystem());
     }
 
     public void update(float dt){
+        ScreenUtils.clear(1, 1, 1, 1f);
 
         getSpatialHashGrid().calculateSpatialGrid(camera.getCameraTransform());
-        ScreenUtils.clear(1, 1, 1, 0.7f);
         batch.setProjectionMatrix(camera.combined);
 
         for (int i = 0; i < systems.size; i++){
+
             systems.get(i).startTimer();
-            systems.get(i).update(dt);
+            if (systems.get(i).isActive){
+                systems.get(i).update(dt);
+            }
             systems.get(i).endTimer();
         }
 
@@ -151,10 +153,6 @@ public class Engine {
 
     }
 
-    public void addCamera(TDCamera camera){
-        this.camera = camera;
-    }
-
     public void removeEntity(Entity entity){
         flagedForDelete.add(entity);
         entity.flagForDelete = true;
@@ -162,22 +160,6 @@ public class Engine {
         if (entity.getComponent(RigidBody2D.class) != null){
             deleteRigidBody(entity);
         }
-    }
-
-
-
-    public long getSystemFunctionTime(Class<?extends System> System){
-        if (getSystem(System) != null)
-        return getSystem(System).getFunctionDuration();
-
-        return -1;
-    }
-
-    public Component getEntityComponent(int id, Class<?extends Component> component){
-        if (componentMap.get(id) != null)
-            return componentMap.get(id).getComponent(component);
-
-        return null;
     }
 
     public Entity getEntity(int id){
@@ -198,6 +180,20 @@ public class Engine {
         return null;
     }
 
+    public Component getEntityComponent(int id, Class<?extends Component> component){
+        if (componentMap.get(id) != null)
+            return componentMap.get(id).getComponent(component);
+
+        return null;
+    }
+
+    public long getSystemFunctionTime(Class<?extends System> System){
+        if (getSystem(System) != null)
+        return getSystem(System).getFunctionDuration();
+
+        return -1;
+    }
+
     public Array<Component> getloadedComponents(Class<?extends Component> c){
         if (threadedParsing){
             for (int i = 0; i < systems.size; i++){
@@ -212,11 +208,7 @@ public class Engine {
         return spatialHashGrid;
     }
 
-    public Array<Cell> getCellsFromCameraCenter(){
-        return getSpatialHashGrid().getNeighbours();
-    }
-
-    public Array<Integer> NearbyComponentsFromArc(Byte b){
+    public Array<Integer> NearbyComponentsFromArc(Byte b, boolean sort){
         Array<Cell> loaded =  getSpatialHashGrid().getNeighbours();
         Array<Integer> ints = new Array<>();
         Array<TransformComponent> transforms = new Array<>();
@@ -224,10 +216,14 @@ public class Engine {
             transforms.addAll((Array<TransformComponent>) loaded.get(i).getComponents(TransformComponent.class));
         }
 
-        transforms.sort(new TransformComparator());
+        if (sort)
+            transforms.sort(new TransformComparator());
+
         for (int j = 0; j < transforms.size; j++){
             TransformComponent t = transforms.get(j);
-            ints.add(t.getArchitectID(b));
+            int p = t.getArchitectID(b);
+            if (p > -1)
+                ints.add(p);
         }
 
         return ints;
@@ -241,7 +237,7 @@ public class Engine {
         return batch;
     }
 
-    public void deleteFlaged() {
+    private void deleteFlaged() {
 
         //TODO delete flaged enteties once every x frames, before threads start with inacurate data.
         if (!world.isLocked()){
@@ -286,68 +282,4 @@ public class Engine {
         assetManager.load(asset);
     }
 
-
-
-    //remove from scope
-    public int getDrawnEntities(){
-        if (getSystem(SpatialRenderer.class) != null){
-            SpatialRenderer s = (SpatialRenderer) getSystem(SpatialRenderer.class);
-            return s.drawnEntities;
-        }
-
-        return -1;
-    }
-
-    public int getAnimations(){
-        if (getSystem(AnimationSystem.class) != null){
-            AnimationSystem s = (AnimationSystem) getSystem(AnimationSystem.class);
-            return s.numOfAnimations;
-        }
-
-        return -1;
-    }
-
-    public int getCollisions(){
-        if(getSystem(CollisionDetectionSystem.class) != null){
-            CollisionDetectionSystem s = (CollisionDetectionSystem) getSystem(CollisionDetectionSystem.class);
-
-            return s.getNumOfCollisions();
-        }
-
-        return -1;
-    }
-
-    public int getCollidableObjectsInRange(){
-        if(getSystem(CollisionDetectionSystem.class) != null){
-            CollisionDetectionSystem s = (CollisionDetectionSystem) getSystem(CollisionDetectionSystem.class);
-
-            return s.getCollidableComponentsDebug();
-        }
-        return -1;
-    }
-
-
-    public void setDebug(boolean state){
-        if(getSystem(Debugger.class) != null){
-            Debugger s = (Debugger) getSystem(Debugger.class);
-            s.debug = state;
-        }
-    }
-
-    public void toggleDebug(){
-        if(getSystem(Debugger.class) != null){
-            Debugger s = (Debugger) getSystem(Debugger.class);
-            s.debug = !s.debug;
-            s.debugBox2D = false;
-        }
-    }
-
-    public void toggleDebugBox2D(){
-        if(getSystem(Debugger.class) != null){
-            Debugger s = (Debugger) getSystem(Debugger.class);
-            s.debugBox2D = !s.debugBox2D;
-            s.debug = s.debugBox2D;
-        }
-    }
-    //-----------------------
 }

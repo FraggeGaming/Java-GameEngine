@@ -59,8 +59,11 @@ public class Architect {
             for (int j = 0; j < types.size; j++){
                 if (c.getClass().equals(types.get(j))){
                     int cId = c.getArchitectID(id);
-                    components.get(j).removeIndex(cId);
-                    sync = true;
+                    if (cId > -1){
+                        components.get(j).removeIndex(cId);
+                        sync = true;
+
+                    }
                 }
             }
         }

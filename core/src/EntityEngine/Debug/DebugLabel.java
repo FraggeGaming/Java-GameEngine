@@ -58,22 +58,22 @@ public class DebugLabel {
             setText(profiler.getVertexCount().total);
         }
         else if (whatToDebug == 4){
-            setText(engine.getDrawnEntities());
+            setText(getDrawnEntities());
         }
         else if (whatToDebug == 5){
-            setText((double)Math.round(Gdx.graphics.getFramesPerSecond()/(double)engine.getDrawnEntities() * 10000f)/10000f);
+            setText((double)Math.round(Gdx.graphics.getFramesPerSecond()/(double)getDrawnEntities() * 10000f)/10000f);
         }
         else if (whatToDebug == 6){
             setText(engine.componentMap.size());
         }
         else if (whatToDebug == 7){
-            setText(engine.getAnimations());
+            setText(getAnimations());
         }
         else if (whatToDebug == 8){
-            setText(engine.getCollisions());
+            setText(getCollisions());
         }
         else if (whatToDebug == 9){
-            setText(engine.getCollidableObjectsInRange());
+            setText(getCollidableObjectsInRange());
         }
         else if (whatToDebug == 10){
             setText(engine.getSystemFunctionTime(SpatialRenderer.class));
@@ -105,6 +105,43 @@ public class DebugLabel {
         else if (whatToDebug == 22){
             setText(engine.getSystemFunctionTime(LightningSystem.class));
         }
+    }
+
+    public int getCollidableObjectsInRange(){
+        if(engine.getSystem(CollisionDetectionSystem.class) != null){
+            CollisionDetectionSystem s = (CollisionDetectionSystem) engine.getSystem(CollisionDetectionSystem.class);
+
+            return s.getCollidableComponentsDebug();
+        }
+        return -1;
+    }
+
+    public int getDrawnEntities(){
+        if (engine.getSystem(SpatialRenderer.class) != null){
+            SpatialRenderer s = (SpatialRenderer) engine.getSystem(SpatialRenderer.class);
+            return s.drawnEntities;
+        }
+
+        return -1;
+    }
+
+    public int getAnimations(){
+        if (engine.getSystem(AnimationSystem.class) != null){
+            AnimationSystem s = (AnimationSystem) engine.getSystem(AnimationSystem.class);
+            return s.numOfAnimations;
+        }
+
+        return -1;
+    }
+
+    public int getCollisions(){
+        if(engine.getSystem(CollisionDetectionSystem.class) != null){
+            CollisionDetectionSystem s = (CollisionDetectionSystem) engine.getSystem(CollisionDetectionSystem.class);
+
+            return s.getNumOfCollisions();
+        }
+
+        return -1;
     }
 
     private void createStat(com.badlogic.gdx.scenes.scene2d.ui.Label label, int y){

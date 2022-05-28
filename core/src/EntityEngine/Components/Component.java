@@ -31,7 +31,11 @@ public class Component {
     }
 
     public int getArchitectID(byte b){
-        return architectMapper.get(b);
+
+        if (architectMapper.containsKey(b))
+            return architectMapper.get(b);
+
+        else return -1;
     }
 
 }

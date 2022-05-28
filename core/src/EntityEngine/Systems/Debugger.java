@@ -56,7 +56,7 @@ public class Debugger extends System {
         if (debugBox2D)
             return;
 
-        loadedCells = engine.getCellsFromCameraCenter();
+        loadedCells = engine.getSpatialHashGrid().getNeighbours();
         if (loadedCells != null){
 
             for (int i = 0; i < loadedCells.size; i++){

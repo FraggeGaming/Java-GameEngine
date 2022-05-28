@@ -27,6 +27,11 @@ public class SpatialRenderer extends System {
     }
 
     @Override
+    public void onCreate() {
+
+    }
+
+    @Override
     public void update(float dt){
         drawnEntities = 0;
         arc();
@@ -35,7 +40,7 @@ public class SpatialRenderer extends System {
     private void renderWiothoutCMS(){
 
 
-        cells = engine.getCellsFromCameraCenter();
+        cells = engine.getSpatialHashGrid().getNeighbours();
         for (int i = 0; i < cells.size; i++){
             compt.addAll((Array<? extends TransformComponent>) cells.get(i).getComponents(TransformComponent.class));
         }
@@ -58,7 +63,8 @@ public class SpatialRenderer extends System {
 
     private void arc() {
 
-        Array<Integer> ints = engine.NearbyComponentsFromArc((byte) 0x1);
+        //TODO way to get right architect
+        Array<Integer> ints = engine.NearbyComponentsFromArc((byte) 0x1, true);
         Architect architect = engine.architectHandler.getArchitect((byte) 0x1);
         Array<Component> transformArray = architect.getComponents(TransformComponent.class);
         Array<Component> textureArray = architect.getComponents(TextureComponent.class);

@@ -1,5 +1,6 @@
 package EntityEngine.Systems;
 
+import EntityEngine.Architect;
 import EntityEngine.Components.Component;
 import EntityEngine.Components.Light;
 import com.badlogic.gdx.utils.Array;
@@ -8,9 +9,6 @@ public class LightningSystem extends System {
 
     @Override
     public void onCreate() {
-        engine.lightning.setAmbientLight(0.2f);
-
-
     }
 
     @Override
@@ -18,18 +16,23 @@ public class LightningSystem extends System {
 
         engine.lightning.setCombinedMatrix(engine.getCamera());
 
-        Array<Component> lights = engine.getloadedComponents(Light.class);
+        Array<Integer> ints = engine.NearbyComponentsFromArc((byte) 0x2, false);
+        Architect architect = engine.architectHandler.getArchitect((byte) 0x2);
+        Array<Component> lightArray = architect.getComponents(Light.class);
+
+
         Light light;
-        if (lights != null){
-            for (int i = 0; i <lights.size; i++){
-                light = (Light) lights.get(i);
+        if (!ints.isEmpty()){
+            for (int i = 0; i <ints.size; i++){
+
+                light = (Light) lightArray.get(ints.get(i));
                 light.setActiveByHandler(true);
             }
             engine.lightning.updateAndRender();
 
 
-            for (int i = 0; i <lights.size; i++){
-                light = (Light) lights.get(i);
+            for (int i = 0; i <ints.size; i++){
+                light = (Light) lightArray.get(ints.get(i));
                 light.setActiveByHandler(false);
             }
         }

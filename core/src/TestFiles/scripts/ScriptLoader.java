@@ -1,8 +1,6 @@
 package TestFiles.scripts;
 
-import EntityEngine.Components.Component;
-import EntityEngine.Components.TextureComponent;
-import EntityEngine.Components.TransformComponent;
+import EntityEngine.Components.*;
 import TestFiles.scripts.Systems.DebugStats;
 import EntityEngine.Script;
 import TestFiles.scripts.Systems.*;
@@ -18,24 +16,36 @@ public class ScriptLoader extends Script {
         engine.addAsset(new AssetDescriptor<>("atlas/TP.atlas", TextureAtlas.class));
         engine.addAsset(new AssetDescriptor<>("atlas/StoneCrab.atlas", TextureAtlas.class));
         engine.addAsset(new AssetDescriptor<>("atlas/LarvMovement.atlas", TextureAtlas.class));
+
+
     }
 
     @Override
     public void onCreate() {
-        engine.addSystem(new DebugStats());
-        engine.addSystem(new MovementSystem());
-        engine.addSystem(new WorldSystem());
-        engine.addSystem(new BulletSystem());
-        //engine.addSystem(new NetworkScript());
-        engine.camera.zoom = 1;
-
+        //TODO fix this
         Array<Class<?extends Component>> types = new Array<>();
         types.add(TransformComponent.class, TextureComponent.class);
         engine.architectHandler.createArchitect(types);
 
+        types = new Array<>();
+        types.add(Light.class, TransformComponent.class);
+        engine.architectHandler.createArchitect(types);
+
+        types = new Array<>();
+        types.add(AnimationComponent.class, TransformComponent.class, TextureComponent.class);
+        engine.architectHandler.createArchitect(types);
+
+        engine.addSystem(new DebugStats());
+        engine.addSystem(new MovementSystem());
+        engine.addSystem(new WorldSystem());
+        engine.addSystem(new BulletSystem());
+        engine.addSystem(new TimerSystem());
+        //engine.addSystem(new NetworkScript());
+        engine.camera.zoom = 1;
 
     }
 
+    //TODO type class
     //TODO Highest frametime, frametime debugging
     //TODO collision detection optimization, flag sertain cells for update or not
     //TODO archtect type dynamic allocator

@@ -14,6 +14,7 @@ public class System {
     Long duration = 0L;
     int iteration = 0;
     Long averageDuration = 0L;
+    public boolean isActive = true;
 
     public System(){
 

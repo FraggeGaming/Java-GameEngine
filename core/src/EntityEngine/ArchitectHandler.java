@@ -10,6 +10,8 @@ public class ArchitectHandler {
     public void createArchitect(Array<Class<?extends Component>> types){
         Architect architect = new Architect(id, types);
         architects.add(architect);
+
+        id++;
     }
 
     public void addToArchitect(Entity entity){

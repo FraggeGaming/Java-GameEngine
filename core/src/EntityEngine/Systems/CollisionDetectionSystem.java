@@ -45,7 +45,7 @@ public class CollisionDetectionSystem extends System{
     private void collisionNonThreaded(float dt) {
         collisions = new HashSet<>();
 
-        loadedCells = engine.getCellsFromCameraCenter();
+        loadedCells = engine.getSpatialHashGrid().getNeighbours();
         collidableComponents = 0;
         detectedCollisions = 0;
 
@@ -90,10 +90,10 @@ public class CollisionDetectionSystem extends System{
         if (calculateCollisions){
 
 
-            loadedCells = engine.getCellsFromCameraCenter();
+            loadedCells = engine.getSpatialHashGrid().getNeighbours();
 
 
-            computedCollisions = engine.pool.submit(new CollisionCalculation(loadedCells));
+            computedCollisions = engine.threadPool.submit(new CollisionCalculation(loadedCells));
             calculateCollisions = false;
         }
 
