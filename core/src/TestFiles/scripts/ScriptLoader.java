@@ -33,8 +33,9 @@ public class ScriptLoader extends Script {
 
     @Override
     public void onCreate() {
-        //topDownTest();
-        sideScrollerTest();
+        topDownTest();
+
+        //sideScrollerTest();
 
     }
 

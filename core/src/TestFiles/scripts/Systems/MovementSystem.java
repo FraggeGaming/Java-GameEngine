@@ -35,25 +35,25 @@ public class MovementSystem extends System {
         float x = 0, y = 0;
         if(Gdx.input.isKeyPressed(Input.Keys.A)){
             //change vertical direction
-            x -= 1;
+            x -= 5f;
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.D)){
             //change vertical direction
-            x += 1;
+            x += 5f;
         }
         if(Gdx.input.isKeyPressed(Input.Keys.W)){
             //change vertical direction
-            y += 1;
+            y += 5f;
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.S)){
             //change vertical direction
-            y -= 1;
+            y -= 5f;
         }
 
 
-        addVelocity(engine.getEntity("Player"), x*80 * dt, y*80 * dt);
+        addVelocity(engine.getEntity("Player"), x, y);
         if (x != 0 || y != 0){
 
             AnimationComponent a = (AnimationComponent) engine.getEntity("Player").getComponent(AnimationComponent.class);
@@ -97,13 +97,10 @@ public class MovementSystem extends System {
             t.mirror(true, false);
 
 
-        rigidBody2D.getBody().setLinearVelocity(x*100,y*100);
+        rigidBody2D.getBody().setLinearVelocity(x,y);
 
 
         syncWithPhysics(engine.getEntity("Player"));
-
-
-        //rigidBody2D.getBody().applyLinearImpulse(new Vector2(x*20, y*20), rigidBody2D.getBody().getWorldCenter(), true);
 
     }
 
