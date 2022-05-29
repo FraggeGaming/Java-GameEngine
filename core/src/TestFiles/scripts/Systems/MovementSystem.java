@@ -90,7 +90,11 @@ public class MovementSystem extends System {
         t = (TransformComponent) e.getComponent( TransformComponent.class);
         c = (CollisionComponent) e.getComponent(CollisionComponent.class);
         rigidBody2D = (RigidBody2D) e.getComponent(RigidBody2D.class);
+        if (x > 0 && t.getScaleX() > 0)
+            t.mirror(true, false);
 
+        else if (x < 0 && t.getScaleX() < 0)
+            t.mirror(true, false);
 
 
         rigidBody2D.getBody().setLinearVelocity(x*100,y*100);

@@ -83,9 +83,7 @@ public class WorldGen extends System {
         Entity player = new Entity();
         player.addComponents(new TextureComponent(new TextureRegion(larvMovement.findRegion("CaterpillarGun"))));
         player.addComponents(new TransformComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 5, 32, 32));
-        CollisionComponent c = new CollisionComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 32, 32);
-        c.id = "Player";
-        player.addComponents(c);
+
         player.addComponents(new VelocityComponent());
         player.tag = "Player";
 
@@ -94,7 +92,7 @@ public class WorldGen extends System {
         a.setAlive(false);
         player.addComponents(a);
 
-        RigidBody2D box2d = new RigidBody2D(camera.viewportWidth / 2, camera.viewportHeight / 2, 14, 10, 0);
+        RigidBody2D box2d = new RigidBody2D(camera.viewportWidth / 2, camera.viewportHeight / 2, 10, 0);
         box2d.addToWorld(engine.world);
         box2d.getBody().setFixedRotation(true);
         box2d.getBody().setLinearDamping(0.1f);

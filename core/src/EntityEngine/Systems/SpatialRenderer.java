@@ -126,7 +126,7 @@ public class SpatialRenderer extends System {
                     transform.getWidth()/2, transform.getHeight()/2,
 
                     transform.getWidth(), transform.getHeight() ,
-                    1, 1,   transform.getRotation());
+                    transform.getScaleX(), transform.getScaleY(),   transform.getRotation());
             drawnEntities++;
         }
     }

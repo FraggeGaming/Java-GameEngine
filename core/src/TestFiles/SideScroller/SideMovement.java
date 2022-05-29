@@ -6,6 +6,7 @@ import EntityEngine.Systems.NetworkManager;
 import EntityEngine.Systems.System;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector2;
 
 public class SideMovement extends System{
 
@@ -14,6 +15,8 @@ public class SideMovement extends System{
     VelocityComponent v;
     RigidBody2D rigidBody2D;
     NetworkManager network;
+
+    float maxSpeed = 5;
 
 
     @Override
@@ -31,31 +34,29 @@ public class SideMovement extends System{
         float x = 0, y = 0;
         if(Gdx.input.isKeyPressed(Input.Keys.A)){
             //change vertical direction
-            x -= 1;
+            x -= 0.4f;
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.D)){
             //change vertical direction
-            x += 1;
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.W)){
-            //change vertical direction
-            y += 1;
+            x += 0.4f;
         }
 
-        if(Gdx.input.isKeyPressed(Input.Keys.S)){
-            //change vertical direction
-            y -= 1;
+        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
+            y = 300;
         }
 
 
 
         if (x != 0 || y != 0){
-            addVelocity(engine.getEntity("Player"), x*80 * dt, y*80 * dt);
-            AnimationComponent a = (AnimationComponent) engine.getEntity("Player").getComponent(AnimationComponent.class);
-            if (!a.isAlive()){
-                a.setAlive(true);
+            if (Math.abs(x) <= maxSpeed){
+                addVelocity(engine.getEntity("Player"), x , y );
+                AnimationComponent a = (AnimationComponent) engine.getEntity("Player").getComponent(AnimationComponent.class);
+                if (!a.isAlive()){
+                    a.setAlive(true);
+                }
             }
+
         }
 
         else{
@@ -70,6 +71,8 @@ public class SideMovement extends System{
 
 
             }
+
+
         }
 
         syncWithPhysics(engine.getEntity("Player"));
@@ -88,16 +91,13 @@ public class SideMovement extends System{
         t = (TransformComponent) e.getComponent( TransformComponent.class);
         c = (CollisionComponent) e.getComponent(CollisionComponent.class);
         rigidBody2D = (RigidBody2D) e.getComponent(RigidBody2D.class);
+        if (x > 0 && t.getScaleX() > 0)
+            t.mirror(true, false);
 
+        else if (x < 0 && t.getScaleX() < 0)
+            t.mirror(true, false);
 
-
-        rigidBody2D.getBody().setLinearVelocity(x*100,y*100);
-
-
-
-
-
-        //rigidBody2D.getBody().applyLinearImpulse(new Vector2(x*20, y*20), rigidBody2D.getBody().getWorldCenter(), true);
+        rigidBody2D.getBody().applyLinearImpulse(new Vector2(x, y), rigidBody2D.getBody().getWorldCenter(), true);
 
     }
 
@@ -114,7 +114,7 @@ public class SideMovement extends System{
 
 
         t.setPosition(rigidBody2D.getBody().getPosition().x - 16, rigidBody2D.getBody().getPosition().y - 16 );
-        c.followTransform(t);
+        //c.followTransform(t);
 
         engine.getSpatialHashGrid().addEntity(entity);
 
