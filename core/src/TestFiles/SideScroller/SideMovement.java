@@ -1,4 +1,4 @@
-package TestFiles.scripts.Systems;
+package TestFiles.SideScroller;
 
 import EntityEngine.Components.*;
 import EntityEngine.Entity;
@@ -6,9 +6,8 @@ import EntityEngine.Systems.NetworkManager;
 import EntityEngine.Systems.System;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.math.Vector2;
 
-public class MovementSystem extends System {
+public class SideMovement extends System{
 
     TransformComponent t;
     CollisionComponent c;
@@ -16,9 +15,6 @@ public class MovementSystem extends System {
     RigidBody2D rigidBody2D;
     NetworkManager network;
 
-    public MovementSystem(){
-
-    }
 
     @Override
     public void onCreate() {
@@ -53,9 +49,9 @@ public class MovementSystem extends System {
         }
 
 
-        addVelocity(engine.getEntity("Player"), x*80 * dt, y*80 * dt);
-        if (x != 0 || y != 0){
 
+        if (x != 0 || y != 0){
+            addVelocity(engine.getEntity("Player"), x*80 * dt, y*80 * dt);
             AnimationComponent a = (AnimationComponent) engine.getEntity("Player").getComponent(AnimationComponent.class);
             if (!a.isAlive()){
                 a.setAlive(true);
@@ -75,6 +71,8 @@ public class MovementSystem extends System {
 
             }
         }
+
+        syncWithPhysics(engine.getEntity("Player"));
 
 
         engine.getCamera().update();
@@ -96,7 +94,7 @@ public class MovementSystem extends System {
         rigidBody2D.getBody().setLinearVelocity(x*100,y*100);
 
 
-        syncWithPhysics(engine.getEntity("Player"));
+
 
 
         //rigidBody2D.getBody().applyLinearImpulse(new Vector2(x*20, y*20), rigidBody2D.getBody().getWorldCenter(), true);
@@ -122,3 +120,5 @@ public class MovementSystem extends System {
 
     }
 }
+
+

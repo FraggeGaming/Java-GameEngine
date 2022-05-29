@@ -55,7 +55,6 @@ public class SpatialHashGrid  {
     public void calculateSpatialGrid(TransformComponent component){
         loadedCells.clear();
         getSurroundingCells(component);
-        //sortLoadedCells();
         update = true;
         loadedCellsTemp.clear();
         loadedCellsTemp.addAll(loadedCells);

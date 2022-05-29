@@ -2,12 +2,14 @@ package TestFiles.scripts;
 
 import EntityEngine.Components.*;
 import EntityEngine.Type;
+import TestFiles.SideScroller.SideMovement;
+import TestFiles.SideScroller.WorldGen;
 import TestFiles.scripts.Systems.DebugStats;
 import EntityEngine.Script;
 import TestFiles.scripts.Systems.*;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.utils.Array;
+
 
 public class ScriptLoader extends Script {
 
@@ -31,11 +33,12 @@ public class ScriptLoader extends Script {
 
     @Override
     public void onCreate() {
-        //TODO fix this
+        //topDownTest();
+        sideScrollerTest();
 
+    }
 
-
-
+    public void topDownTest(){
         engine.addSystem(new DebugStats());
         engine.addSystem(new MovementSystem());
         engine.addSystem(new WorldSystem());
@@ -43,14 +46,20 @@ public class ScriptLoader extends Script {
         engine.addSystem(new TimerSystem());
         //engine.addSystem(new NetworkScript());
         engine.camera.zoom = 1;
-
+    }
+    public void sideScrollerTest(){
+        engine.addSystem(new DebugStats());
+        engine.addSystem(new BulletSystem());
+        engine.addSystem(new TimerSystem());
+        engine.addSystem(new WorldGen());
+        engine.addSystem(new SideMovement());
     }
 
-    //TODO type class
+
+
     //TODO Highest frametime, frametime debugging
     //TODO collision detection optimization, flag sertain cells for update or not
     //TODO archtect type dynamic allocator
-    //TODO only calculate 1 time everu frame (componentsfromcenter(byte b))
     //TODO engine pool for less deletetion of entities
     //TODO lightning filter
     //TODO audio component
