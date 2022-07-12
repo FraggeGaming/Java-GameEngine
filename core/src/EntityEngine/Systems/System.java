@@ -29,7 +29,6 @@ public class System {
     }
 
 
-    //mby use for rendering
     public void render(float dt){
 
     }
@@ -72,5 +71,12 @@ public class System {
     }
 
 
+    public void preRender(float dt) {
+    }
 
+    public void postRender(float dt) {
+    }
+
+    public void postCreate() {
+    }
 }

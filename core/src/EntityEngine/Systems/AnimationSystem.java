@@ -27,7 +27,7 @@ public class AnimationSystem extends System{
         Array<Component> animationArray = architect.getComponents(AnimationComponent.class);
         Array<Component> textureArray = architect.getComponents(TextureComponent.class);
 
-        if (!ints.isEmpty()){
+        if (ints != null && !ints.isEmpty()){
             for (int i = 0; i < ints.size; i++){
                 a = (AnimationComponent) animationArray.get(ints.get(i));
                 if (a != null && a.isAlive()){

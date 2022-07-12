@@ -23,19 +23,39 @@ public class SpatialRenderer extends System {
     Array<Cell> cells;
     Array<TransformComponent> compt = new Array<>();
 
+    Architect architect;
+
+    Array<Integer> ints;
+    Array<Component> transformArray;
+    Array<Component> textureArray;
     public SpatialRenderer(){
 
     }
 
     @Override
     public void onCreate() {
-
+        architect = engine.architectHandler.getArchitect(new Type(TransformComponent.class, TextureComponent.class));
     }
 
     @Override
     public void update(float dt){
         drawnEntities = 0;
-        arc();
+        ints = engine.getSpatialArc(architect);
+        transformArray = architect.getComponents(TransformComponent.class);
+        textureArray = architect.getComponents(TextureComponent.class);
+    }
+
+    @Override
+    public void render(float dt) {
+        if (ints != null && !ints.isEmpty()){
+            for (int i = 0; i < ints.size; i++){
+
+                transform = (TransformComponent) transformArray.get(ints.get(i));
+                t = (TextureComponent) textureArray.get(ints.get(i));
+
+                drawTexture(t, transform);
+            }
+        }
     }
 
     private void renderWiothoutCMS(){
@@ -61,31 +81,6 @@ public class SpatialRenderer extends System {
 
         compt.clear();
     }
-
-    private void arc() {
-
-        Architect architect = engine.architectHandler.getArchitect(new Type(TransformComponent.class, TextureComponent.class));
-        Array<Integer> ints = engine.getSpatialArc(architect);
-
-        Array<Component> transformArray = architect.getComponents(TransformComponent.class);
-        Array<Component> textureArray = architect.getComponents(TextureComponent.class);
-
-        if (!ints.isEmpty()){
-
-            engine.getBatch().begin();
-
-            for (int i = 0; i < ints.size; i++){
-
-                transform = (TransformComponent) transformArray.get(ints.get(i));
-                t = (TextureComponent) textureArray.get(ints.get(i));
-
-                drawTexture(t, transform);
-            }
-
-            engine.getBatch().end();
-        }
-    }
-
 
     private void renderWithCMS() {
 

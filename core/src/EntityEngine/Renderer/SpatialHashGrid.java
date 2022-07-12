@@ -26,7 +26,7 @@ public class SpatialHashGrid  {
     public boolean update = false; //TODO remove this
     Engine engine;
 
-    Array<TransformComponent> transformsSorted;
+    final static Array<TransformComponent> transformsSorted = new Array<>();
 
     public SpatialHashGrid(Engine engine){
         this.engine = engine;
@@ -60,10 +60,9 @@ public class SpatialHashGrid  {
         loadedCellsTemp.addAll(loadedCells);
 
 
-        Array<Cell> loaded =  getNeighbours();
-        transformsSorted = new Array<>();
-        for (int i = 0; i < loaded.size; i++){
-            transformsSorted.addAll((Array<TransformComponent>) loaded.get(i).getComponents(TransformComponent.class));
+        transformsSorted.clear();
+        for (int i = 0; i < getNeighbours().size; i++){
+            transformsSorted.addAll((Array<TransformComponent>) getNeighbours().get(i).getComponents(TransformComponent.class));
         }
 
         transformsSorted.sort(new TransformComparator());

@@ -16,6 +16,8 @@ public class MovementSystem extends System {
     RigidBody2D rigidBody2D;
     NetworkManager network;
 
+
+
     public MovementSystem(){
 
     }
@@ -25,46 +27,23 @@ public class MovementSystem extends System {
         network = (NetworkManager) engine.getSystem(NetworkManager.class);
     }
 
-    @Override
-    public void update(float dt){
-
+    public void movePlayer(float x, float y){
         if (network != null && network.isOpen)
             return;
-
-
-        float x = 0, y = 0;
-        if(Gdx.input.isKeyPressed(Input.Keys.A)){
-            //change vertical direction
-            x -= 5f;
-        }
-
-        if(Gdx.input.isKeyPressed(Input.Keys.D)){
-            //change vertical direction
-            x += 5f;
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.W)){
-            //change vertical direction
-            y += 5f;
-        }
-
-        if(Gdx.input.isKeyPressed(Input.Keys.S)){
-            //change vertical direction
-            y -= 5f;
-        }
 
 
         addVelocity(engine.getEntity("Player"), x, y);
         if (x != 0 || y != 0){
 
             AnimationComponent a = (AnimationComponent) engine.getEntity("Player").getComponent(AnimationComponent.class);
-            if (!a.isAlive()){
+            if (a != null && !a.isAlive()){
                 a.setAlive(true);
             }
         }
 
         else{
             AnimationComponent a = (AnimationComponent) engine.getEntity("Player").getComponent(AnimationComponent.class);
-            if (a.isAlive()){
+            if (a != null && a.isAlive()){
                 a.resetAnimation();
                 a.setAlive(false);
 
@@ -78,6 +57,15 @@ public class MovementSystem extends System {
 
 
         engine.getCamera().update();
+    }
+
+    @Override
+    public void update(float dt){
+
+
+
+
+
 
 
     }

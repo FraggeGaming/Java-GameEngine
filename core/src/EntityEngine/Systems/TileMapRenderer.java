@@ -6,9 +6,6 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 public class TileMapRenderer extends System{
     TiledMapRenderer tiledMapRenderer;
-    public TileMapRenderer(){
-
-    }
 
     @Override
     public void update(float dt) {

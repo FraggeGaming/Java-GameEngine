@@ -9,16 +9,26 @@ import com.badlogic.gdx.utils.Array;
 
 public class LightningSystem extends System {
 
+    Architect architect;
     @Override
     public void onCreate() {
+        architect = engine.architectHandler.getArchitect(new Type(Light.class, TransformComponent.class));
     }
 
     @Override
-    public void update(float dt) {
+    public void postRender(float dt) {
 
         engine.lightning.setCombinedMatrix(engine.getCamera());
 
-        Architect architect = engine.architectHandler.getArchitect(new Type(Light.class, TransformComponent.class));
+        renderAll();
+
+    }
+
+    public void renderAll(){
+        engine.lightning.updateAndRender();
+    }
+
+    private void optimzedRender(){
         Array<Integer> ints = engine.getSpatialArc(architect);
 
         Array<Component> lightArray = architect.getComponents(Light.class);
@@ -39,6 +49,5 @@ public class LightningSystem extends System {
                 light.setActiveByHandler(false);
             }
         }
-
     }
 }

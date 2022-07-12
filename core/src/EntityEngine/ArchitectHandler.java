@@ -14,13 +14,14 @@ public class ArchitectHandler {
     }
 
     public void addToArchitect(Entity entity){
-        for (Architect a : architects){
-            a.getComponents(entity);
+        for (int i = 0; i < architects.size; i++){
+            architects.get(i).getComponents(entity);
         }
     }
 
     public Architect getArchitect(Type type){
-        for (Architect architect : architects){
+        for (int i = 0; i < architects.size; i++){
+            Architect architect = architects.get(i);
             if (architect.type.getSize() == type.getSize()){
                 if (architect.type.equals(type)){
                     return architect;

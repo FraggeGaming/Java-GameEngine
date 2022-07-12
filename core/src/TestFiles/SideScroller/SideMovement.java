@@ -12,16 +12,16 @@ public class SideMovement extends System{
 
     TransformComponent t;
     CollisionComponent c;
-    VelocityComponent v;
     RigidBody2D rigidBody2D;
     NetworkManager network;
 
     float maxSpeed = 5;
+    float speed = 5;
+    float jumpHight = 2000;
 
 
     @Override
     public void onCreate() {
-        network = (NetworkManager) engine.getSystem(NetworkManager.class);
     }
 
     @Override
@@ -34,16 +34,16 @@ public class SideMovement extends System{
         float x = 0, y = 0;
         if(Gdx.input.isKeyPressed(Input.Keys.A)){
             //change vertical direction
-            x -= 0.4f;
+            x -= speed;
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.D)){
             //change vertical direction
-            x += 0.4f;
+            x += speed;
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
-            y = 300;
+            y = jumpHight;
         }
 
 

@@ -11,10 +11,7 @@ import box2dLight.PointLight;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.MassData;
 
 public class WorldGen extends System {
     OpenSimplexNoise noise;
@@ -34,7 +31,7 @@ public class WorldGen extends System {
         fireAtlas = engine.assetManager.get("atlas/Fire.atlas");
         larvMovement = engine.assetManager.get("atlas/LarvMovement.atlas");
 
-        engine.world.setGravity(new Vector2(0, -1));
+        engine.world.setGravity(new Vector2(0, -180f));
 
         createPlayers(engine.getCamera());
         int x = 10;
@@ -95,7 +92,8 @@ public class WorldGen extends System {
         RigidBody2D box2d = new RigidBody2D(camera.viewportWidth / 2, camera.viewportHeight / 2, 10, 0);
         box2d.addToWorld(engine.world);
         box2d.getBody().setFixedRotation(true);
-        box2d.getBody().setLinearDamping(0.1f);
+        box2d.getBody().setLinearDamping(1f);
+
 
         player.addComponents(box2d);
 

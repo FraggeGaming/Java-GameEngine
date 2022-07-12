@@ -3,6 +3,7 @@ package TestFiles.scripts.Systems;
 import EntityEngine.Components.*;
 import EntityEngine.Entity;
 import EntityEngine.GameClasses.Animation;
+import EntityEngine.Components.Node;
 import EntityEngine.GameClasses.TDCamera;
 import EntityEngine.Noise.OpenSimplexNoise;
 import EntityEngine.Systems.CollisionDetectionSystem;
@@ -21,7 +22,7 @@ import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
-
+import com.badlogic.gdx.math.Vector2;
 
 
 public class WorldSystem extends System {
@@ -41,6 +42,8 @@ public class WorldSystem extends System {
     TiledMapTileLayer layer;
     Entity StoneCrab;
     CollisionDetectionSystem col;
+
+
     public WorldSystem(){
         noise = new OpenSimplexNoise(); //for tilemap generation
 
@@ -51,6 +54,8 @@ public class WorldSystem extends System {
         Cursor cursor = Gdx.graphics.newCursor(cursorPm, xHotSpot /2, yHotSpot /2);
         Gdx.graphics.setCursor(cursor);
         cursorPm.dispose();
+
+
     }
 
     @Override
@@ -96,21 +101,11 @@ public class WorldSystem extends System {
 
         createHouse(800, 800);
 
-
-
-
-
-
-
-
         createTile(300 , 400, "MushroomBig", 60, 140, 10);
 
         createTile(530 , 200, "Branch", 140, 20, 1);
 
         createTile(830 , 1200, "WaterTower", 64, 75, 1);
-
-
-
 
         createTileMapOnCreate();
 
@@ -121,6 +116,18 @@ public class WorldSystem extends System {
         cell = new TiledMapTileLayer.Cell();
         cell.setTile(new StaticTiledMapTile(generateWithNoise(noise)));
         layer.setCell((int)(x/16), (int)(y/16), cell);
+
+        Entity e = new Entity();
+
+        Node node = new Node(16);
+        node.setPos(new Vector2(x, y));
+        e.addComponents(node);
+
+        ActorComponent actorComponent = new ActorComponent(x, y, 16 ,16);
+        e.addComponents(actorComponent);
+        engine.gameStage.addActor(actorComponent.actor);
+
+        engine.addEntity(e);
     }
 
     private TextureRegion generateWithNoise(double value){
@@ -225,6 +232,7 @@ public class WorldSystem extends System {
         e.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion(name))));
         e.addComponents(new TransformComponent(x, y, 1, 16, 16));
 
+
         if (id.equals("Wall")){
             CollisionComponent c = new CollisionComponent(x, y, 16, 16);
             c.id = id;
@@ -315,7 +323,7 @@ public class WorldSystem extends System {
         AnimationComponent a = (AnimationComponent) StoneCrab.getComponent(AnimationComponent.class);
         StoneCrabLogic logic = (StoneCrabLogic) StoneCrab.getComponent(StoneCrabLogic.class);
 
-        if (col.CollisionWithID(StoneCol, "Player")){
+        if (col != null && col.CollisionWithID(StoneCol, "Player")){
 
             if (!logic.isScared){
                 a.setAlive(true);
