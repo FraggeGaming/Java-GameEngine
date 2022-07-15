@@ -20,7 +20,7 @@ import java.util.Stack;
 public class NavMesh extends System{
     List<List<Node>> nodeMap;
     AstarPathFinding pathFinding;
-    int nodeSize;
+    int nodeSize = -1;
 
     public void setNodeSize(int nodeSize){
         this.nodeSize = nodeSize;
@@ -32,11 +32,17 @@ public class NavMesh extends System{
 
     @Override
     public void postCreate() {
+
+        nodeExeption();
         pathFinding = new AstarPathFinding(nodeMap, nodeSize);
     }
 
     @Override
     public void addEntity(Entity entity) {
+
+        nodeExeption();
+
+
         if (entity.getComponent(Node.class) != null){
             Node node = (Node) entity.getComponent(Node.class);
 
@@ -61,6 +67,17 @@ public class NavMesh extends System{
             Node node = path.pop();
             ActorComponent actorComponent = (ActorComponent) engine.getEntityComponent(node.getId(), ActorComponent.class);
             actorComponent.actor.setDebug(true);
+        }
+    }
+
+    private void nodeExeption(){
+        if (nodeSize == -1){
+            try {
+                throw new Exception("Node size is -1. Set node size to > 0");
+            } catch (Exception e) {
+                e.printStackTrace();
+                engine.exit();
+            }
         }
     }
 
