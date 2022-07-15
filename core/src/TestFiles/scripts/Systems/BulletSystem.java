@@ -4,6 +4,7 @@ import EntityEngine.Components.*;
 import EntityEngine.Entity;
 import EntityEngine.GameClasses.Animation;
 import EntityEngine.Systems.CollisionDetectionSystem;
+import EntityEngine.Systems.NavMesh;
 import EntityEngine.Systems.System;
 import TestFiles.scripts.Components.BulletComponent;
 import TestFiles.scripts.Components.TimerComponent;
@@ -36,6 +37,7 @@ public class BulletSystem extends System {
     TextureAtlas fireAtlas;
 
     TimerSystem timerSystem;
+    NavMesh navMesh;
 
     @Override
     public void onCreate() {
@@ -43,6 +45,8 @@ public class BulletSystem extends System {
 
         fireAtlas = engine.assetManager.get("atlas/Fire.atlas");
         timerSystem = (TimerSystem) engine.getSystem(TimerSystem.class);
+        navMesh = (NavMesh) engine.getSystem(NavMesh.class);
+
     }
 
     @Override
@@ -122,9 +126,9 @@ public class BulletSystem extends System {
                 }
 
                 if (col.CollisionWithID(c, "Wall")){
-                    t = (TransformComponent) e.getComponent(TransformComponent.class);
 
                     exploadCell();
+
                     engine.removeEntity(e);
 
                 }
@@ -141,6 +145,7 @@ public class BulletSystem extends System {
             Entity temp = engine.getEntity(toExpload.get(k).getId());
             TextureComponent newTex = (TextureComponent) temp.getComponent(TextureComponent.class);
             t = (TransformComponent) temp.getComponent(TransformComponent.class);
+            navMesh.freeNode(t.getX(),t.getY());
 
             newTex.setTexture(new TextureRegion(atlas.findRegion("ForrestTile1")));
 

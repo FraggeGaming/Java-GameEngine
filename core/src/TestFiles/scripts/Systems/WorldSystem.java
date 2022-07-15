@@ -7,6 +7,7 @@ import EntityEngine.Components.Node;
 import EntityEngine.GameClasses.TDCamera;
 import EntityEngine.Noise.OpenSimplexNoise;
 import EntityEngine.Systems.CollisionDetectionSystem;
+import EntityEngine.Systems.NavMesh;
 import EntityEngine.Systems.System;
 import EntityEngine.Systems.TileMapRenderer;
 import TestFiles.scripts.Components.StoneCrabLogic;
@@ -42,7 +43,7 @@ public class WorldSystem extends System {
     TiledMapTileLayer layer;
     Entity StoneCrab;
     CollisionDetectionSystem col;
-
+    NavMesh navMesh;
 
     public WorldSystem(){
         noise = new OpenSimplexNoise(); //for tilemap generation
@@ -86,6 +87,10 @@ public class WorldSystem extends System {
         StoneCrab.addComponents(new StoneCrabLogic());
         engine.addEntity(StoneCrab);
 
+        navMesh = (NavMesh) engine.getSystem(NavMesh.class);
+
+        navMesh.setNodeSize(16);
+        createTileMapOnCreate();
 
         createPlayers(engine.camera);
 
@@ -107,7 +112,7 @@ public class WorldSystem extends System {
 
         createTile(830 , 1200, "WaterTower", 64, 75, 1);
 
-        createTileMapOnCreate();
+
 
 
     }
@@ -119,14 +124,12 @@ public class WorldSystem extends System {
 
         Entity e = new Entity();
 
-        Node node = new Node(16);
+        Node node = new Node();
         node.setPos(new Vector2(x, y));
         e.addComponents(node);
 
         ActorComponent actorComponent = new ActorComponent(x, y, 16 ,16);
         e.addComponents(actorComponent);
-        engine.gameStage.addActor(actorComponent.actor);
-
         engine.addEntity(e);
     }
 
@@ -242,6 +245,8 @@ public class WorldSystem extends System {
             RigidBody2D box2d = new RigidBody2D(x + 8, y + 8, 8, 8, 1);
             box2d.addToWorld(engine.world);
             e.addComponents(box2d);
+
+            navMesh.setNodeBlocked(x, y);
 
         }
 

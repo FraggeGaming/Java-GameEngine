@@ -19,8 +19,11 @@ public class AstarPathFinding {
     Node startNode;
     Node targetNode;
 
-    public AstarPathFinding(List<List<Node>> nodeMap){
+    int nodeSize;
+
+    public AstarPathFinding(List<List<Node>> nodeMap, int nodeSize){
         this.nodeMap = nodeMap;
+        this.nodeSize = nodeSize;
     }
 
     public void pathFindTo(Node start, Node target){
@@ -105,17 +108,17 @@ public class AstarPathFinding {
 
         for (int i = 0; i < 3; i++){
             for (int j = 0; j < 3; j++){
-                if (node.getIndex().x-1 + j >= 0 && node.getIndex().y-1 + i >= 0){
+                if (node.getPos().x/nodeSize -1 + j >= 0 && node.getPos().y/nodeSize -1 + i >= 0){
                     if (i == 1 && j == 1)
                         continue;
 
 
-                    if (node.getIndex().x-1 + j < nodeMap.size() && node.getIndex().y-1 + i < nodeMap.get((int) (node.getIndex().x-1 + j)).size()){
-                        Node node1 = nodeMap.get((int) (node.getIndex().x-1 + j)).get((int) (node.getIndex().y-1 + i));
+                    if (node.getPos().x/nodeSize -1 + j < nodeMap.size() && node.getPos().y/nodeSize -1 + i < nodeMap.get((int) (node.getPos().x/nodeSize -1 + j)).size()){
+                        Node node1 = nodeMap.get((int) (node.getPos().x/nodeSize -1 + j)).get((int) (node.getPos().y/nodeSize -1 + i));
                         if (node1 != null){
 
-                            //put if statement if moveable
-                            tempNeighbours.add(node1);
+                            if (!node1.isBlocked)
+                                tempNeighbours.add(node1);
 
 
                         }

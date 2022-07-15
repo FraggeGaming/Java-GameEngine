@@ -2,6 +2,7 @@ package TestFiles.scripts;
 
 import EntityEngine.Components.*;
 import EntityEngine.Components.Node;
+import EntityEngine.Systems.ActorHandler;
 import EntityEngine.Type;
 import TestFiles.SideScroller.SideMovement;
 import TestFiles.SideScroller.WorldGen;
@@ -34,7 +35,7 @@ public class ScriptLoader extends Script {
         type = new Type(Node.class);
         engine.architectHandler.createArchitect(type);
 
-        type = new Type(ActorComponent.class);
+        type = new Type(ActorComponent.class, TransformComponent.class);
         engine.architectHandler.createArchitect(type);
 
         Gdx.graphics.setForegroundFPS(0);
@@ -54,6 +55,7 @@ public class ScriptLoader extends Script {
         engine.addSystem(new MovementSystem());
         engine.addSystem(new WorldSystem());
         engine.addSystem(new InputManager());
+        engine.addSystem(new ActorHandler());
         //engine.addSystem(new NetworkScript());
         engine.camera.zoom = 1;
     }
@@ -65,15 +67,14 @@ public class ScriptLoader extends Script {
 
     public void inheritCommon(){
         engine.addSystem(new DebugStats());
-        //engine.addSystem(new BulletSystem());
+        engine.addSystem(new BulletSystem());
         engine.addSystem(new TimerSystem());
     }
 
-
+    //TODO, in Actorhandler, let it handle every stage aswell, mby change name to stageHandler?
+    //TODO creation of dynamic number of stages.
+    //TODO optimize actors
     //TODO Make pathfinding multithreaded
-
-    //TODO create mouse clicking system (ClickableComponent) Or mby collision / get color of pixel
-    //just use actors
 
     //TODO PP
 

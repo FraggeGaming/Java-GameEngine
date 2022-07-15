@@ -20,34 +20,38 @@ import java.util.Stack;
 public class NavMesh extends System{
     List<List<Node>> nodeMap;
     AstarPathFinding pathFinding;
+    int nodeSize;
+
+    public void setNodeSize(int nodeSize){
+        this.nodeSize = nodeSize;
+    }
+
+    public NavMesh(){
+        nodeMap = new ArrayList<>();
+    }
 
     @Override
     public void postCreate() {
-        nodeMap = new ArrayList<>();
-        Architect architect = engine.architectHandler.getArchitect(new Type(Node.class));
-
-        Array<Component> nodes = architect.getComponents(Node.class);
-
-        Node node;
-        for (int i = 0; i < nodes.size; i++){
-            node = (Node) nodes.get(i);
-
-            while (nodeMap.size() <= node.getIndex().x){
-                nodeMap.add(new ArrayList<Node>());
-            }
-            nodeMap.get((int) node.getIndex().x ).add((int) node.getIndex().y, node);
-        }
-
-        pathFinding = new AstarPathFinding(nodeMap);
+        pathFinding = new AstarPathFinding(nodeMap, nodeSize);
     }
 
+    @Override
+    public void addEntity(Entity entity) {
+        if (entity.getComponent(Node.class) != null){
+            Node node = (Node) entity.getComponent(Node.class);
 
+            while (nodeMap.size() <= node.getPos().x/nodeSize){
+                nodeMap.add(new ArrayList<Node>());
+            }
+            nodeMap.get((int) node.getPos().x/nodeSize ).add((int) node.getPos().y/nodeSize, node);
+        }
+    }
 
     public void testPath(){
         Entity p = engine.getEntity("Player");
         TransformComponent component = (TransformComponent) p.getComponent(TransformComponent.class);
 
-        Node start = nodeMap.get(0).get(0);
+        Node start = getNode(0,0);
         Node end = nodeMap.get((int) (component.getX()/16)). get((int) (component.getY()/16));
         pathFinding.pathFindTo(start, end);
 
@@ -66,6 +70,30 @@ public class NavMesh extends System{
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)){
             testPath();
         }
+    }
+
+    public Node getNode(int x, int y){
+        return nodeMap.get(x).get(y);
+    }
+
+    public void setNodeBlocked(int indexX, int indexY){
+        blockNode(getNode(indexX,indexY));
+    }
+
+    public void setNodeBlocked(float x, float y){
+        blockNode(getNode((int)x/nodeSize,(int)y/nodeSize));
+    }
+
+    public void freeNode(float x, float y){
+        freeNode(getNode((int)x/nodeSize,(int)y/nodeSize));
+    }
+
+    private void blockNode(Node node){
+        node.isBlocked = true;
+    }
+
+    private void freeNode(Node node){
+        node.isBlocked = false;
     }
 
 }

@@ -3,7 +3,8 @@ package EntityEngine.Components;
 import com.badlogic.gdx.math.Vector2;
 
 public class Node extends Component{
-    public boolean isMovable;
+
+    public boolean isBlocked =  false;
     //Distance from startingNode
     int gCost;
     //Distance from endNode
@@ -14,8 +15,8 @@ public class Node extends Component{
     public Node parentNode;
     public int nodeSize;
 
-    public Node(int nodeSize){
-        this.nodeSize = nodeSize;
+    public Node(){
+
     }
     
     
