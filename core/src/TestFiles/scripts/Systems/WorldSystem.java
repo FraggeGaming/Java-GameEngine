@@ -3,9 +3,11 @@ package TestFiles.scripts.Systems;
 import EntityEngine.Components.*;
 import EntityEngine.Entity;
 import EntityEngine.GameClasses.Animation;
+import EntityEngine.Components.Node;
 import EntityEngine.GameClasses.TDCamera;
 import EntityEngine.Noise.OpenSimplexNoise;
 import EntityEngine.Systems.CollisionDetectionSystem;
+import EntityEngine.Systems.NavMesh;
 import EntityEngine.Systems.System;
 import EntityEngine.Systems.TileMapRenderer;
 import TestFiles.scripts.Components.StoneCrabLogic;
@@ -21,7 +23,7 @@ import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
-
+import com.badlogic.gdx.math.Vector2;
 
 
 public class WorldSystem extends System {
@@ -41,6 +43,8 @@ public class WorldSystem extends System {
     TiledMapTileLayer layer;
     Entity StoneCrab;
     CollisionDetectionSystem col;
+    NavMesh navMesh;
+
     public WorldSystem(){
         noise = new OpenSimplexNoise(); //for tilemap generation
 
@@ -51,10 +55,14 @@ public class WorldSystem extends System {
         Cursor cursor = Gdx.graphics.newCursor(cursorPm, xHotSpot /2, yHotSpot /2);
         Gdx.graphics.setCursor(cursor);
         cursorPm.dispose();
+
+
     }
 
     @Override
     public void onCreate() {
+        engine.lightning.setAmbientLight(0.2f);
+
         col = (CollisionDetectionSystem) engine.getSystem(CollisionDetectionSystem.class);
         sC = engine.assetManager.get("atlas/StoneCrab.atlas");
         atlas = engine.assetManager.get("atlas/TP.atlas");
@@ -79,6 +87,10 @@ public class WorldSystem extends System {
         StoneCrab.addComponents(new StoneCrabLogic());
         engine.addEntity(StoneCrab);
 
+        navMesh = (NavMesh) engine.getSystem(NavMesh.class);
+
+        navMesh.setNodeSize(16);
+        createTileMapOnCreate();
 
         createPlayers(engine.camera);
 
@@ -94,13 +106,6 @@ public class WorldSystem extends System {
 
         createHouse(800, 800);
 
-
-
-
-
-
-
-
         createTile(300 , 400, "MushroomBig", 60, 140, 10);
 
         createTile(530 , 200, "Branch", 140, 20, 1);
@@ -110,15 +115,22 @@ public class WorldSystem extends System {
 
 
 
-        createTileMapOnCreate();
-
-
     }
 
     private void createTileWithNoise(float x, float y, double noise){
         cell = new TiledMapTileLayer.Cell();
         cell.setTile(new StaticTiledMapTile(generateWithNoise(noise)));
         layer.setCell((int)(x/16), (int)(y/16), cell);
+
+        Entity e = new Entity();
+
+        Node node = new Node();
+        node.setPos(new Vector2(x, y));
+        e.addComponents(node);
+
+        ActorComponent actorComponent = new ActorComponent(x, y, 16 ,16);
+        e.addComponents(actorComponent);
+        engine.addEntity(e);
     }
 
     private TextureRegion generateWithNoise(double value){
@@ -211,9 +223,9 @@ public class WorldSystem extends System {
 
         createTile(x + 6*16, y+7*16, "Quartz", "Quartz");
 
-        createTile(x + 4*16, y+5*16, "Table", 32,29, 2);
-        createTile(x + 6*16, y+5*16, "ChairRight", 16,32, 2);
-        createTile(x + 3*16, y+5*16, "ChairLeft",16,32, 2);
+        createTile(x + 4*16, y+5*16, "Table", 32,29, 3);
+        createTile(x + 6*16, y+5*16, "ChairRight", 16,32, 3);
+        createTile(x + 3*16, y+5*16, "ChairLeft",16,32, 3);
 
 
     }
@@ -222,6 +234,7 @@ public class WorldSystem extends System {
         e = new Entity();
         e.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion(name))));
         e.addComponents(new TransformComponent(x, y, 1, 16, 16));
+
 
         if (id.equals("Wall")){
             CollisionComponent c = new CollisionComponent(x, y, 16, 16);
@@ -232,6 +245,8 @@ public class WorldSystem extends System {
             RigidBody2D box2d = new RigidBody2D(x + 8, y + 8, 8, 8, 1);
             box2d.addToWorld(engine.world);
             e.addComponents(box2d);
+
+            navMesh.setNodeBlocked(x, y);
 
         }
 
@@ -313,7 +328,7 @@ public class WorldSystem extends System {
         AnimationComponent a = (AnimationComponent) StoneCrab.getComponent(AnimationComponent.class);
         StoneCrabLogic logic = (StoneCrabLogic) StoneCrab.getComponent(StoneCrabLogic.class);
 
-        if (col.CollisionWithID(StoneCol, "Player")){
+        if (col != null && col.CollisionWithID(StoneCol, "Player")){
 
             if (!logic.isScared){
                 a.setAlive(true);

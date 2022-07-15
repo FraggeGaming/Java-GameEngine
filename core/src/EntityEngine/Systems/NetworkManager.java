@@ -42,12 +42,12 @@ public class NetworkManager extends System{
         this.isHost = isHost;
         if (isHost) {
             host = new Host(port);
-            engine.pool.submit(host);
+            engine.threadPool.submit(host);
         }
 
 
         client = new Client(ip, port, queueOut, queueIn, isHost);
-        engine.pool.submit(client);
+        engine.threadPool.submit(client);
 
         isOpen = true;
 

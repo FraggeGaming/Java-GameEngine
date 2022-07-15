@@ -1,5 +1,6 @@
 package EntityEngine.Components;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
@@ -7,6 +8,7 @@ public class TransformComponent extends Component {
 
     Vector3 vec = new Vector3();
     Vector3 dim = new Vector3();
+    Vector2 scale = new Vector2();
     public float rotation = 0;
 
     public TransformComponent(float x, float y, float z, float width, float height){
@@ -14,6 +16,7 @@ public class TransformComponent extends Component {
         dim.x = width;
         dim.y = height;
         vec.set(x, y, z);
+        scale.set(1, 1);
 
     }
 
@@ -24,6 +27,14 @@ public class TransformComponent extends Component {
         vec.set(x, y, z);
 
         this.rotation = rotation;
+
+    }
+
+    public void mirror(boolean x, boolean y){
+        if (x)
+            scale.x *= -1;
+        if (y)
+            scale.y *= -1;
 
     }
 
@@ -52,16 +63,25 @@ public class TransformComponent extends Component {
         return vec;
     }
 
+    public float getScaleX(){
+        return scale.x;
+    }
+
+    public float getScaleY(){
+        return scale.y;
+    }
+
+    public void setScale(Vector2 scale) {
+        this.scale = scale;
+    }
+
     public void setVec(Vector3 vec){
         this.vec.set(vec);
-
     }
 
     public void setPosition(float x, float y){
         vec.x = x;
         vec.y = y;
-
-
     }
 
     public void translate(float x, float y){

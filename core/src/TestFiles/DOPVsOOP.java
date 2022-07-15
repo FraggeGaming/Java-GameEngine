@@ -8,14 +8,15 @@ import com.badlogic.gdx.Gdx;
 
 public class DOPVsOOP extends ApplicationAdapter {
 	Engine engine;
-	float height = 300;
+	float height = 200;
 	float width = height*16/9;
+
+
 
 	@Override
 	public void create () {
 		engine = new Engine(width, height, new ScriptLoader());
 	}
-
 
 	@Override
 	public void render() {

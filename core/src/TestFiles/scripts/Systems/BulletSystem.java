@@ -4,9 +4,10 @@ import EntityEngine.Components.*;
 import EntityEngine.Entity;
 import EntityEngine.GameClasses.Animation;
 import EntityEngine.Systems.CollisionDetectionSystem;
+import EntityEngine.Systems.NavMesh;
 import EntityEngine.Systems.System;
 import TestFiles.scripts.Components.BulletComponent;
-import TestFiles.scripts.Components.LifeCount;
+import TestFiles.scripts.Components.TimerComponent;
 import box2dLight.PointLight;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -33,16 +34,19 @@ public class BulletSystem extends System {
     Entity player;
     TransformComponent playerTransform;
     CollisionDetectionSystem col;
-    LifeCount l;
     TextureAtlas fireAtlas;
 
-    Array<Entity> firedbullets = new Array<>();
-    Array<Entity> firedbulletsToRemove = new Array<>();
+    TimerSystem timerSystem;
+    NavMesh navMesh;
 
     @Override
     public void onCreate() {
         atlas = engine.assetManager.get("atlas/TP.atlas");
+
         fireAtlas = engine.assetManager.get("atlas/Fire.atlas");
+        timerSystem = (TimerSystem) engine.getSystem(TimerSystem.class);
+        navMesh = (NavMesh) engine.getSystem(NavMesh.class);
+
     }
 
     @Override
@@ -68,7 +72,6 @@ public class BulletSystem extends System {
 
                 e = createProjectile(1, 200,playerTransform, 20, 20, new TextureRegion(atlas.findRegion("Spore")), getbulletVector());
                 engine.addEntity(e);
-                firedbullets.add(e);
                 fireTimer = 0;
             }
 
@@ -76,9 +79,6 @@ public class BulletSystem extends System {
 
                 e = createProjectile(0.5f, 300,playerTransform, 15, 15, new TextureRegion(atlas.findRegion("SpiderEgg")), getbulletVector());
                 engine.addEntity(e);
-
-                firedbullets.add(e);
-
                 fireTimer = 0;
             }
         }
@@ -91,7 +91,7 @@ public class BulletSystem extends System {
         e.addComponents(new TransformComponent(position.getX() , position.getY()+ 10, 5, width, height));
         e.addComponents(new CollisionComponent(position.getX(), position.getY()+ 10,width, height));
         e.addComponents(new VelocityComponent(bulletVector.x * speed, bulletVector.y * speed, 1));
-        e.addComponents(new LifeCount(life));
+        e.addComponents(new TimerComponent(life));
         e.addComponents(new BulletComponent());
 
         return e;
@@ -110,50 +110,31 @@ public class BulletSystem extends System {
 
     private void bulletLogic(float dt){
 
-
-        firedbullets.removeAll(firedbulletsToRemove, true);
-        firedbulletsToRemove.clear();
-
-
-
-        for (int i = 0; i < firedbullets.size; i++){
-            e = firedbullets.get(i);
-            if (e != null && !e.flagForDelete){
-
+        for (int i = 0; i < timerSystem.entities().size; i++){
+            e = timerSystem.entities().get(i);
+            if (e.getComponent(BulletComponent.class) != null) {
                 addVelocity(e, dt);
-                l = (LifeCount) e.getComponent(LifeCount.class);
-                l.live(dt);
-                if (l.isDead()){
-                    firedbulletsToRemove.add(e);
+
+                if (col == null) {
+                    col = (CollisionDetectionSystem) engine.getSystem(CollisionDetectionSystem.class);
+                }
+
+                c = (CollisionComponent) e.getComponent(CollisionComponent.class);
+                if (col.CollisionWithID(c, "Water") || col.CollisionWithID(c, "Sand")){
+
                     engine.removeEntity(e);
                 }
 
-                else {
+                if (col.CollisionWithID(c, "Wall")){
 
-                    if (col == null)
-                        col = (CollisionDetectionSystem) engine.getSystem(CollisionDetectionSystem.class);
+                    exploadCell();
 
-                    c = (CollisionComponent) e.getComponent(CollisionComponent.class);
-                    if (col.CollisionWithID(c, "Water") || col.CollisionWithID(c, "Sand")){
+                    engine.removeEntity(e);
 
-                        engine.removeEntity(e);
-                    }
-
-                    if (col.CollisionWithID(c, "Wall")){
-                        t = (TransformComponent) e.getComponent(TransformComponent.class);
-
-                        exploadCell();
-                        firedbulletsToRemove.add(e);
-                        engine.removeEntity(e);
-
-                    }
                 }
             }
 
         }
-
-
-
 
     }
 
@@ -164,6 +145,7 @@ public class BulletSystem extends System {
             Entity temp = engine.getEntity(toExpload.get(k).getId());
             TextureComponent newTex = (TextureComponent) temp.getComponent(TextureComponent.class);
             t = (TransformComponent) temp.getComponent(TransformComponent.class);
+            navMesh.freeNode(t.getX(),t.getY());
 
             newTex.setTexture(new TextureRegion(atlas.findRegion("ForrestTile1")));
 
@@ -187,6 +169,7 @@ public class BulletSystem extends System {
         AnimationComponent a = new AnimationComponent(0.02f, false, animation.getFrames(), true);
         i.addComponents(a);
 
+        i.addComponents(new TimerComponent(4));
         Light light = new Light(new PointLight(engine.lightning, 20, null, 40, x,y));
         light.colorAndSoftnessLength(new Color(0.7f,0.4f,0.4f,0.8f), 2f);
         light.setStatic(true);
@@ -194,13 +177,11 @@ public class BulletSystem extends System {
         i.addComponents(light);
 
         engine.addEntity(i);
-
-
     }
 
     public void addVelocity(Entity e, float dt){
 
-        if (e == null)
+        if (e == null || e.flagForDelete)
             return;
         t = (TransformComponent) e.getComponent( TransformComponent.class);
         c = (CollisionComponent) e.getComponent(CollisionComponent.class);

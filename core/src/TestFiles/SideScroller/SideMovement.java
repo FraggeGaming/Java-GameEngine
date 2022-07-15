@@ -1,4 +1,4 @@
-package TestFiles.scripts.Systems;
+package TestFiles.SideScroller;
 
 import EntityEngine.Components.*;
 import EntityEngine.Entity;
@@ -8,42 +8,60 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
-public class MovementSystem extends System {
+public class SideMovement extends System{
 
     TransformComponent t;
     CollisionComponent c;
-    VelocityComponent v;
     RigidBody2D rigidBody2D;
     NetworkManager network;
 
+    float maxSpeed = 5;
+    float speed = 5;
+    float jumpHight = 2000;
 
-
-    public MovementSystem(){
-
-    }
 
     @Override
     public void onCreate() {
-        network = (NetworkManager) engine.getSystem(NetworkManager.class);
     }
 
-    public void movePlayer(float x, float y){
+    @Override
+    public void update(float dt){
+
         if (network != null && network.isOpen)
             return;
 
 
-        addVelocity(engine.getEntity("Player"), x, y);
-        if (x != 0 || y != 0){
+        float x = 0, y = 0;
+        if(Gdx.input.isKeyPressed(Input.Keys.A)){
+            //change vertical direction
+            x -= speed;
+        }
 
-            AnimationComponent a = (AnimationComponent) engine.getEntity("Player").getComponent(AnimationComponent.class);
-            if (a != null && !a.isAlive()){
-                a.setAlive(true);
+        if(Gdx.input.isKeyPressed(Input.Keys.D)){
+            //change vertical direction
+            x += speed;
+        }
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
+            y = jumpHight;
+        }
+
+
+
+        if (x != 0 || y != 0){
+            if (Math.abs(x) <= maxSpeed){
+                addVelocity(engine.getEntity("Player"), x , y );
+                AnimationComponent a = (AnimationComponent) engine.getEntity("Player").getComponent(AnimationComponent.class);
+                if (!a.isAlive()){
+                    a.setAlive(true);
+                }
             }
+
         }
 
         else{
             AnimationComponent a = (AnimationComponent) engine.getEntity("Player").getComponent(AnimationComponent.class);
-            if (a != null && a.isAlive()){
+            if (a.isAlive()){
                 a.resetAnimation();
                 a.setAlive(false);
 
@@ -53,19 +71,14 @@ public class MovementSystem extends System {
 
 
             }
+
+
         }
+
+        syncWithPhysics(engine.getEntity("Player"));
 
 
         engine.getCamera().update();
-    }
-
-    @Override
-    public void update(float dt){
-
-
-
-
-
 
 
     }
@@ -84,11 +97,7 @@ public class MovementSystem extends System {
         else if (x < 0 && t.getScaleX() < 0)
             t.mirror(true, false);
 
-
-        rigidBody2D.getBody().setLinearVelocity(x,y);
-
-
-        syncWithPhysics(engine.getEntity("Player"));
+        rigidBody2D.getBody().applyLinearImpulse(new Vector2(x, y), rigidBody2D.getBody().getWorldCenter(), true);
 
     }
 
@@ -105,9 +114,11 @@ public class MovementSystem extends System {
 
 
         t.setPosition(rigidBody2D.getBody().getPosition().x - 16, rigidBody2D.getBody().getPosition().y - 16 );
-        c.followTransform(t);
+        //c.followTransform(t);
 
         engine.getSpatialHashGrid().addEntity(entity);
 
     }
 }
+
+

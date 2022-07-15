@@ -10,7 +10,7 @@ public class Light extends Component{
     public Light(PositionalLight light){
         seperate = true;
         this.light = light;
-        light.setActive(false);
+        light.setActive(true);
     }
 
     public void colorAndSoftnessLength(Color newColor, float softShadow){
@@ -21,7 +21,7 @@ public class Light extends Component{
     }
 
     public void setActiveByHandler(boolean active){
-        if (giveLight == active)
+        if (giveLight)
             light.setActive(active);
     }
 

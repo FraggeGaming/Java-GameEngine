@@ -2,6 +2,8 @@ package TestFiles.scripts.Systems;
 
 import EntityEngine.Debug.DebugLabel;
 import EntityEngine.Engine;
+import EntityEngine.Systems.Debugger;
+import EntityEngine.Systems.LightningSystem;
 import EntityEngine.Systems.System;
 import TestFiles.scripts.UIItem;
 import EntityEngine.Systems.NetworkManager;
@@ -22,7 +24,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 
 public class DebugStats extends System {
-    Stage stage;
     Label frameTimeLabel;
 
     BitmapFont font;
@@ -31,6 +32,13 @@ public class DebugStats extends System {
     long frameTime;
     long frameAverage;
     long frameCount;
+
+    long highestframeTime;
+    long highestframeAverage;
+    long highestframeCount;
+    Label highestframeTimeLabel;
+    DebugLabel highestframeTimeDebug;
+
     int fMP = 20; // frame it takes to update stats
     int dbB = 35; //distance bewteen boxes
     int labelOrder = 0;
@@ -45,46 +53,44 @@ public class DebugStats extends System {
     int port = 1234;
 
 
-    public DebugStats(){
-
-    }
-
     @Override
     public void onCreate() {
-        stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
 
         font = new BitmapFont();
         buttonAtlas = new TextureAtlas("atlas/TP.atlas");
         style = new Label.LabelStyle(font, Color.BLACK);
+
         frameTimeLabel = new Label(" ", style);
-        stage.addActor(frameTimeLabel);
+        highestframeTimeLabel = new Label(" ", style);
+
+        engine.stage.addActor(frameTimeLabel);
         profiler = new GLProfiler(Gdx.graphics);
         profiler.enable();
 
-        frameTimeDebug = new DebugLabel(style, stage, -dbB*(labelOrder++), "FrameTime", profiler, engine, -1);
-        labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Renderer function time", profiler, engine, 10 ));
-        labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Tilemap function time", profiler, engine, 20 ));
-        labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Collision detection function time", profiler, engine, 11 ));
-        labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Debugger function time", profiler, engine, 12 ));
-        labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Animation function time", profiler, engine, 13 ));
-        labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Component manager function time", profiler, engine, 14 ));
-        labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Physics function time", profiler, engine, 21 ));
-        labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Light function time", profiler, engine, 22 ));
+        frameTimeDebug = new DebugLabel(style, engine.stage, -dbB*(labelOrder++), "FrameTime", profiler, engine, -1);
+        highestframeTimeDebug = new DebugLabel(style, engine.stage, -dbB*(labelOrder++), "Highest FrameTime", profiler, engine, -1);
+        labels.add(new DebugLabel(style, engine.stage, -dbB*(labelOrder++),"Renderer function time", profiler, engine, 10 ));
+        labels.add(new DebugLabel(style, engine.stage, -dbB*(labelOrder++),"Tilemap function time", profiler, engine, 20 ));
+        labels.add(new DebugLabel(style, engine.stage, -dbB*(labelOrder++),"Collision detection function time", profiler, engine, 11 ));
+        labels.add(new DebugLabel(style, engine.stage, -dbB*(labelOrder++),"Debugger function time", profiler, engine, 12 ));
+        labels.add(new DebugLabel(style, engine.stage, -dbB*(labelOrder++),"Animation function time", profiler, engine, 13 ));
+        labels.add(new DebugLabel(style, engine.stage, -dbB*(labelOrder++),"Component manager function time", profiler, engine, 14 ));
+        labels.add(new DebugLabel(style, engine.stage, -dbB*(labelOrder++),"Physics function time", profiler, engine, 21 ));
+        labels.add(new DebugLabel(style, engine.stage, -dbB*(labelOrder++),"Light function time", profiler, engine, 22 ));
 
-        labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Fps", profiler, engine, 0 ));
-        //labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"DrawCalls", profiler, engine, 1 ));
-        //labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Gl Calls", profiler, engine, 2 ));
-        labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"VertexCount", profiler, engine, 3 ));
-        labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Drawn Entities", profiler, engine, 4 ));
-        //labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"FPS per entity", profiler, engine, 5 ));
-        labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Total Entities", profiler, engine, 6 ));
-        labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Rendered animations", profiler, engine, 7 ));
-        labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Objects in collision", profiler, engine, 8 ));
-        labels.add(new DebugLabel(style, stage, -dbB*(labelOrder++),"Potential collisions", profiler, engine, 9 ));
+        labels.add(new DebugLabel(style, engine.stage, -dbB*(labelOrder++),"Fps", profiler, engine, 0 ));
+        labels.add(new DebugLabel(style, engine.stage, -dbB*(labelOrder++),"DrawCalls", profiler, engine, 1 ));
+        labels.add(new DebugLabel(style, engine.stage, -dbB*(labelOrder++),"Gl Calls", profiler, engine, 2 ));
+        labels.add(new DebugLabel(style, engine.stage, -dbB*(labelOrder++),"VertexCount", profiler, engine, 3 ));
+        labels.add(new DebugLabel(style, engine.stage, -dbB*(labelOrder++),"Drawn Entities", profiler, engine, 4 ));
+        //labels.add(new DebugLabel(style, engine.stage, -dbB*(labelOrder++),"FPS per entity", profiler, engine, 5 ));
+        labels.add(new DebugLabel(style, engine.stage, -dbB*(labelOrder++),"Total Entities", profiler, engine, 6 ));
+        labels.add(new DebugLabel(style, engine.stage, -dbB*(labelOrder++),"Rendered animations", profiler, engine, 7 ));
+        labels.add(new DebugLabel(style, engine.stage, -dbB*(labelOrder++),"Objects in collision", profiler, engine, 8 ));
+        labels.add(new DebugLabel(style, engine.stage, -dbB*(labelOrder++),"Potential collisions", profiler, engine, 9 ));
 
 
-        UIItem item = new UIItem(stage);
+        UIItem item = new UIItem(engine.stage);
         item.setMargin(10);
         item.floatTop();
         item.floatLeft();
@@ -94,39 +100,64 @@ public class DebugStats extends System {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
 
-                engine.toggleDebug();
+                Debugger s = (Debugger) engine.getSystem(Debugger.class);
+                if (s != null){
+                    s.debug = !s.debug;
+                    s.debugBox2D = false;
+                }
+
             }
         });
 
-        item = new UIItem(stage);
+
+        item = new UIItem(engine.stage);
         item.setMargin(10);
         item.floatTop();
         item.floatLeft();
-        item.translate(30, -40*(labelOrder++));
+        item.translate(30, (-dbB - 3)*(labelOrder++));
         debugger = createButton("Collision debug",  item.getX(), item.getY());
         debugger.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                engine.toggleDebugBox2D();
+                Debugger s = (Debugger) engine.getSystem(Debugger.class);
+                if (s != null){
+                    s.debugBox2D = !s.debugBox2D;
+                    s.debug = s.debugBox2D;
+                }
+
             }
         });
 
+
+        item = new UIItem(engine.stage);
+        item.setMargin(10);
+        item.floatTop();
+        item.floatLeft();
+        item.translate(30, (-dbB - 6)*(labelOrder++));
+        debugger = createButton("Turn off Lights",  item.getX(), item.getY());
+        debugger.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                LightningSystem s = (LightningSystem) engine.getSystem(LightningSystem.class);
+                if (s != null){
+                    s.isActive = !s.isActive;
+
+                }
+            }
+        });
 
 
     }
 
     @Override
     public void update(float dt) {
-        stage.draw();
-        stage.act(dt);
-
         render();
     }
 
     public void addNetworkButtons(){
         if(engine.getSystem(NetworkManager.class) != null){
 
-            UIItem item = new UIItem(stage);
+            UIItem item = new UIItem(engine.stage);
             item.setMargin(10);
             item.floatTop();
             item.floatLeft();
@@ -141,7 +172,7 @@ public class DebugStats extends System {
                 }
             });
 
-            item = new UIItem(stage);
+            item = new UIItem(engine.stage);
             item.setMargin(10);
             item.floatTop();
             item.floatLeft();
@@ -155,7 +186,7 @@ public class DebugStats extends System {
                 }
             });
 
-            item = new UIItem(stage);
+            item = new UIItem(engine.stage);
             item.setMargin(10);
             item.floatTop();
             item.floatLeft();
@@ -168,7 +199,7 @@ public class DebugStats extends System {
                 }
             });
 
-            item = new UIItem(stage);
+            item = new UIItem(engine.stage);
             item.setMargin(10);
             item.floatTop();
             item.floatLeft();
@@ -191,7 +222,7 @@ public class DebugStats extends System {
         skin.addRegions(buttonAtlas);
         b.up = skin.getDrawable("ZombieAnt");
         TextButton button = new TextButton(text, b);
-        stage.addActor(button);
+        engine.stage.addActor(button);
 
         button.setBounds(x, y, 100, 100);
 
@@ -217,6 +248,33 @@ public class DebugStats extends System {
 
         }
 
+
+        highestframeCount++;
+        if (highestframeCount > 2000){
+           highestframeAverage = 0;
+            highestframeCount = 0;
+        }
+
+        long c = TimeUtils.timeSinceNanos(highestframeTime);
+        long t = TimeUtils.nanosToMillis(c);
+
+        if (highestframeAverage < t){
+            highestframeAverage = t;
+            highestframeTimeDebug.setText(c);
+        }
+
+        highestframeTime = TimeUtils.nanoTime();
+
+
+
         profiler.reset();
+    }
+
+    @Override
+    public void dispose() {
+
+        font.dispose();
+
+
     }
 }

@@ -1,9 +1,11 @@
 package EntityEngine.Systems;
 
+import EntityEngine.Architect;
 import EntityEngine.Components.*;
 import EntityEngine.Entity;
 import EntityEngine.Renderer.Cell;
 import EntityEngine.Renderer.TransformComparator;
+import EntityEngine.Type;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
@@ -17,27 +19,51 @@ public class SpatialRenderer extends System {
     Component x;
 
     Array<Component> comp;
-    Array<TransformComponent> transformComp;
 
     Array<Cell> cells;
     Array<TransformComponent> compt = new Array<>();
 
+    Architect architect;
+
+    Array<Integer> ints;
+    Array<Component> transformArray;
+    Array<Component> textureArray;
     public SpatialRenderer(){
 
     }
 
     @Override
+    public void onCreate() {
+        architect = engine.architectHandler.getArchitect(new Type(TransformComponent.class, TextureComponent.class));
+    }
+
+    @Override
     public void update(float dt){
         drawnEntities = 0;
-        renderWithCMS();
+        ints = engine.getSpatialArc(architect);
+        transformArray = architect.getComponents(TransformComponent.class);
+        textureArray = architect.getComponents(TextureComponent.class);
+    }
+
+    @Override
+    public void render(float dt) {
+        if (ints != null && !ints.isEmpty()){
+            for (int i = 0; i < ints.size; i++){
+
+                transform = (TransformComponent) transformArray.get(ints.get(i));
+                t = (TextureComponent) textureArray.get(ints.get(i));
+
+                drawTexture(t, transform);
+            }
+        }
     }
 
     private void renderWiothoutCMS(){
 
 
-        cells = engine.getCellsFromCameraCenter();
+        cells = engine.getSpatialHashGrid().getNeighbours();
         for (int i = 0; i < cells.size; i++){
-            compt.addAll(cells.get(i).getComponents());
+            compt.addAll((Array<? extends TransformComponent>) cells.get(i).getComponents(TransformComponent.class));
         }
         compt.sort(new TransformComparator());
 
@@ -54,25 +80,6 @@ public class SpatialRenderer extends System {
         engine.getBatch().end();
 
         compt.clear();
-    }
-    private void renderwithLayers(){
-        cells = engine.getCellsFromCameraCenter();
-        engine.getBatch().begin();
-
-        for (int k = 0; k < 5; k++){
-            for (int i = 0; i < cells.size; i++){
-
-                transformComp = cells.get(i).getLayers().get(k);
-
-                if (transformComp != null){
-                    renderArray(transformComp);
-                }
-
-
-            }
-        }
-
-        engine.getBatch().end();
     }
 
     private void renderWithCMS() {
@@ -114,7 +121,7 @@ public class SpatialRenderer extends System {
                     transform.getWidth()/2, transform.getHeight()/2,
 
                     transform.getWidth(), transform.getHeight() ,
-                    1, 1,   transform.getRotation());
+                    transform.getScaleX(), transform.getScaleY(),   transform.getRotation());
             drawnEntities++;
         }
     }

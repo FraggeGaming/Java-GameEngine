@@ -14,6 +14,7 @@ public class System {
     Long duration = 0L;
     int iteration = 0;
     Long averageDuration = 0L;
+    public boolean isActive = true;
 
     public System(){
 
@@ -28,7 +29,6 @@ public class System {
     }
 
 
-    //mby use for rendering
     public void render(float dt){
 
     }
@@ -71,5 +71,12 @@ public class System {
     }
 
 
+    public void preRender(float dt) {
+    }
 
+    public void postRender(float dt) {
+    }
+
+    public void postCreate() {
+    }
 }

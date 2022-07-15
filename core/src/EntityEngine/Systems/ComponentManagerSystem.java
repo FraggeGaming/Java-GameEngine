@@ -2,7 +2,6 @@ package EntityEngine.Systems;
 
 import EntityEngine.Components.Component;
 import EntityEngine.Components.TransformComponent;
-import EntityEngine.Engine;
 import EntityEngine.Entity;
 import EntityEngine.Renderer.Cell;
 import EntityEngine.Renderer.TransformComparator;
@@ -34,10 +33,10 @@ public class ComponentManagerSystem extends System {
         }
 
 
-        if (engine.getSpatialHashGrid().update){
+        if (engine.getSpatialHashGrid().update && engine.threadedParsing){
             engine.getSpatialHashGrid().update = false;
-            loadedCells = engine.getCellsFromCameraCenter();
-            components = engine.pool.submit(new ComponentCalculation(loadedCells, engine.componentMap));
+            loadedCells = engine.getSpatialHashGrid().getNeighbours();
+            components = engine.threadPool.submit(new ComponentCalculation(loadedCells, engine.componentMap));
         }
     }
 
@@ -124,7 +123,7 @@ class ComponentCalculation implements Callable {
         this.loadedCells = loadedCells;
         this.componentMap = entities;
         for (int i = 0; i < loadedCells.size; i++){
-            temp.addAll(loadedCells.get(i).getComponents());
+            temp.addAll((Array<? extends TransformComponent>) loadedCells.get(i).getComponents(TransformComponent.class));
         }
     }
 

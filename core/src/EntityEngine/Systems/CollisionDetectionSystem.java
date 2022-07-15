@@ -45,7 +45,7 @@ public class CollisionDetectionSystem extends System{
     private void collisionNonThreaded(float dt) {
         collisions = new HashSet<>();
 
-        loadedCells = engine.getCellsFromCameraCenter();
+        loadedCells = engine.getSpatialHashGrid().getNeighbours();
         collidableComponents = 0;
         detectedCollisions = 0;
 
@@ -90,10 +90,10 @@ public class CollisionDetectionSystem extends System{
         if (calculateCollisions){
 
 
-            loadedCells = engine.getCellsFromCameraCenter();
+            loadedCells = engine.getSpatialHashGrid().getNeighbours();
 
 
-            computedCollisions = engine.pool.submit(new CollisionCalculation(loadedCells));
+            computedCollisions = engine.threadPool.submit(new CollisionCalculation(loadedCells));
             calculateCollisions = false;
         }
 
@@ -102,17 +102,17 @@ public class CollisionDetectionSystem extends System{
     private void calculateCollisions(Cell cell) {
 
 
-        for (int i = 0; i < cell.getCollisions().size; i++){
+        for (int i = 0; i < cell.getComponents(CollisionComponent.class).size; i++){
 
-            c1 = cell.getCollisions().get(i);
+            c1 = (CollisionComponent) cell.getComponents(CollisionComponent.class).get(i);
             if (c1 != null && !c1.isSleeping()){
                 collidableComponents++;
 
-                for (int j = 0; j < cell.getCollisions().size; j++){
+                for (int j = 0; j < cell.getComponents(CollisionComponent.class).size; j++){
 
                     if (i != j){
 
-                        c2 = cell.getCollisions().get(j);
+                        c2 = (CollisionComponent) cell.getComponents(CollisionComponent.class).get(j);
 
                         //TODO fix exeption bugg
                         //TODO add velocity vector to collision component and use that to check if next frame collisions will jump over a box.
