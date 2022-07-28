@@ -58,41 +58,6 @@ public class SpatialRenderer extends System {
         }
     }
 
-    private void renderWiothoutCMS(){
-
-
-        cells = engine.getSpatialHashGrid().getNeighbours();
-        for (int i = 0; i < cells.size; i++){
-            compt.addAll((Array<? extends TransformComponent>) cells.get(i).getComponents(TransformComponent.class));
-        }
-        compt.sort(new TransformComparator());
-
-
-
-        engine.getBatch().begin();
-        for (int i = 0; i < compt.size; i++){
-
-            transform = compt.get(i);
-            t = (TextureComponent) engine.getEntityComponent(transform.getId(), TextureComponent.class);
-            drawTexture(t, transform);
-
-        }
-        engine.getBatch().end();
-
-        compt.clear();
-    }
-
-    private void renderArray(Array<TransformComponent> comp){
-        if (comp != null){
-            for (int i = 0; i < comp.size; i++){
-
-                transform = comp.get(i);
-                t = (TextureComponent) engine.getEntityComponent(transform.getId(), TextureComponent.class);
-                drawTexture(t, transform);
-
-            }
-        }
-    }
 
     private void drawTexture(TextureComponent texture, TransformComponent transform){
         if (texture != null){

@@ -37,9 +37,8 @@ public class WorldGen extends System {
         int x = 10;
         int y = 90;
         for (int i = 1; i < 100; i++){
-            float xCord = x + 16*i;
-            float yCord = y;
-            createTile(xCord, yCord, "StoneWallTop", "Wall");
+
+            createTile(x + 16*i, y, "StoneWallTop", "Wall");
         }
 
     }
