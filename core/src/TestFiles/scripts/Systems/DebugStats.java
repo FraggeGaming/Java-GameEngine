@@ -147,6 +147,24 @@ public class DebugStats extends System {
         });
 
 
+        item = new UIItem(engine.stage);
+        item.setMargin(10);
+        item.floatTop();
+        item.floatLeft();
+        item.translate(30, (-dbB - 8)*(labelOrder++));
+        debugger = createButton("debug Navmesh",  item.getX(), item.getY());
+        debugger.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                Debugger s = (Debugger) engine.getSystem(Debugger.class);
+                if (s != null){
+                    s.debugNavmesh = !s.debugNavmesh;
+
+                }
+            }
+        });
+
+
     }
 
     @Override

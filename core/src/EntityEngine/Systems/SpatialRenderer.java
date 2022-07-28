@@ -82,27 +82,6 @@ public class SpatialRenderer extends System {
         compt.clear();
     }
 
-    private void renderWithCMS() {
-
-        comp = engine.getloadedComponents(TextureComponent.class);
-        if (comp != null){
-
-            engine.getBatch().begin();
-
-            for (int i = 0; i < comp.size; i++){
-                t = (TextureComponent) comp.get(i);
-                if (engine.getEntity(t.getId()) != null){
-                    transform = (TransformComponent) engine.getEntityComponent(t.getId(), TransformComponent.class);
-                    drawTexture(t, transform);
-                }
-
-
-            }
-
-            engine.getBatch().end();
-        }
-    }
-
     private void renderArray(Array<TransformComponent> comp){
         if (comp != null){
             for (int i = 0; i < comp.size; i++){

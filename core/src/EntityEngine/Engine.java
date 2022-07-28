@@ -2,15 +2,11 @@ package EntityEngine;
 
 import EntityEngine.Components.Component;
 import EntityEngine.Components.RigidBody2D;
-import EntityEngine.Components.TextureComponent;
 import EntityEngine.Components.TransformComponent;
 import EntityEngine.GameClasses.TDCamera;
-import EntityEngine.Renderer.Cell;
 import EntityEngine.Renderer.SpatialHashGrid;
-import EntityEngine.Renderer.TransformComparator;
 import EntityEngine.Systems.*;
 import EntityEngine.Systems.System;
-import TestFiles.scripts.Systems.TimerSystem;
 import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
@@ -26,7 +22,6 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +40,6 @@ public class Engine {
     public List<Entity> flagedRigidBodyforDelete = new ArrayList<>();
 
     public String user; // for networking //TODO change this later for more modular implementation
-    public boolean threadedParsing = false; //TODO remove this and component parser
 
     public AssetManager assetManager;
     public World world;
@@ -181,8 +175,8 @@ public class Engine {
         }
 
 
-        if (entity.tag != null){
-            entityMapper.put(entity.tag, entity);
+        if (entity.name != null){
+            entityMapper.put(entity.name, entity);
         }
 
     }
@@ -221,15 +215,6 @@ public class Engine {
         return null;
     }
 
-    public Array<Component> getloadedComponents(Class<?extends Component> c){
-        if (threadedParsing){
-            for (int i = 0; i < systems.size; i++){
-                if (systems.get(i).getClass().equals(ComponentManagerSystem.class))
-                    return ((ComponentManagerSystem) systems.get(i)).getLoadedComponents(c);
-            }
-        }
-        return null;
-    }
 
     public SpatialHashGrid getSpatialHashGrid(){
         return spatialHashGrid;

@@ -82,7 +82,7 @@ public class WorldGen extends System {
         player.addComponents(new TransformComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 5, 32, 32));
 
         player.addComponents(new VelocityComponent());
-        player.tag = "Player";
+        player.name = "Player";
 
         Animation animation = new Animation(larvMovement, "CaterpillarGun", 6);
         AnimationComponent a = new AnimationComponent(0.07f, false, animation.getFrames(), false);

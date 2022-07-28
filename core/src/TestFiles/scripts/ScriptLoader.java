@@ -1,11 +1,11 @@
 package TestFiles.scripts;
 
 import EntityEngine.Components.*;
-import EntityEngine.Components.Node;
 import EntityEngine.Systems.ActorHandler;
 import EntityEngine.Type;
 import TestFiles.SideScroller.SideMovement;
 import TestFiles.SideScroller.WorldGen;
+import TestFiles.scripts.Components.StoneCrabLogic;
 import TestFiles.scripts.Systems.DebugStats;
 import EntityEngine.Script;
 import TestFiles.scripts.Systems.*;
@@ -32,10 +32,10 @@ public class ScriptLoader extends Script {
         type = new Type(AnimationComponent.class, TransformComponent.class, TextureComponent.class);
         engine.architectHandler.createArchitect(type);
 
-        type = new Type(Node.class);
+        type = new Type(ActorComponent.class, TransformComponent.class);
         engine.architectHandler.createArchitect(type);
 
-        type = new Type(ActorComponent.class, TransformComponent.class);
+        type = new Type(StoneCrabLogic.class, TransformComponent.class);
         engine.architectHandler.createArchitect(type);
 
         Gdx.graphics.setForegroundFPS(0);
@@ -51,26 +51,33 @@ public class ScriptLoader extends Script {
     }
 
     public void topDownTest(){
-        inheritCommon();
+        engine.addSystem(new DebugStats());
+        engine.addSystem(new BulletSystem());
+        engine.addSystem(new TimerSystem());
+
         engine.addSystem(new MovementSystem());
         engine.addSystem(new WorldSystem());
         engine.addSystem(new InputManager());
-        engine.addSystem(new ActorHandler());
+        //engine.addSystem(new ActorHandler());
+        engine.addSystem(new CollisionResolver());
         //engine.addSystem(new NetworkScript());
         engine.camera.zoom = 1;
     }
     public void sideScrollerTest(){
-        inheritCommon();
+
         engine.addSystem(new WorldGen());
         engine.addSystem(new SideMovement());
-    }
-
-    public void inheritCommon(){
         engine.addSystem(new DebugStats());
         engine.addSystem(new BulletSystem());
         engine.addSystem(new TimerSystem());
     }
 
+    public void inheritCommon(){
+
+    }
+
+    //TODO Navmesh block multiple tiles based on verticies
+    //TODO put timer on stonecrab in order to go back into pile
     //TODO, in Actorhandler, let it handle every stage aswell, mby change name to stageHandler?
     //TODO creation of dynamic number of stages.
     //TODO optimize actors

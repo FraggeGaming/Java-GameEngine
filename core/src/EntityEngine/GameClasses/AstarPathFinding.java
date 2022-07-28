@@ -82,7 +82,6 @@ public class AstarPathFinding {
 
         while (currentNode != start){
             path.push(currentNode);
-            //currentNode.setDebug();
             currentNode = currentNode.getParentNode();
         }
 

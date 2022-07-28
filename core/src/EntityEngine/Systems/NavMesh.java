@@ -1,17 +1,13 @@
 package EntityEngine.Systems;
 
-import EntityEngine.Architect;
-import EntityEngine.Components.ActorComponent;
-import EntityEngine.Components.Component;
+
 import EntityEngine.Components.TransformComponent;
 import EntityEngine.Entity;
 import EntityEngine.GameClasses.AstarPathFinding;
 import EntityEngine.Components.Node;
-import EntityEngine.Type;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.Array;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +16,9 @@ import java.util.Stack;
 public class NavMesh extends System{
     List<List<Node>> nodeMap;
     AstarPathFinding pathFinding;
-    int nodeSize = -1;
+    int nodeSize;
+
+    Array<Node> activeNodes = new Array<>();
 
     public void setNodeSize(int nodeSize){
         this.nodeSize = nodeSize;
@@ -32,15 +30,22 @@ public class NavMesh extends System{
 
     @Override
     public void postCreate() {
-
-        nodeExeption();
+        try {
+            nodeExeption();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         pathFinding = new AstarPathFinding(nodeMap, nodeSize);
     }
 
     @Override
     public void addEntity(Entity entity) {
 
-        nodeExeption();
+        try {
+            nodeExeption();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
         if (entity.getComponent(Node.class) != null){
@@ -54,30 +59,30 @@ public class NavMesh extends System{
     }
 
     public void testPath(){
+
+        for (int i = 0; i < activeNodes.size; i++){
+            activeNodes.get(i).debug = false;
+        }
+
         Entity p = engine.getEntity("Player");
         TransformComponent component = (TransformComponent) p.getComponent(TransformComponent.class);
 
         Node start = getNode(0,0);
-        Node end = nodeMap.get((int) (component.getX()/16)). get((int) (component.getY()/16));
+        Node end = nodeMap.get((int) (component.getOriginX()/16)). get((int) (component.getOriginY()/16));
         pathFinding.pathFindTo(start, end);
 
         Stack<Node> path = pathFinding.getPath();
 
-        while (!path.isEmpty()){
+        while (path != null && !path.isEmpty()){
             Node node = path.pop();
-            ActorComponent actorComponent = (ActorComponent) engine.getEntityComponent(node.getId(), ActorComponent.class);
-            actorComponent.actor.setDebug(true);
+            node.debug = true;
+            activeNodes.add(node);
         }
     }
 
-    private void nodeExeption(){
-        if (nodeSize == -1){
-            try {
-                throw new Exception("Node size is -1. Set node size to > 0");
-            } catch (Exception e) {
-                e.printStackTrace();
-                engine.exit();
-            }
+    private void nodeExeption() throws Exception{
+        if (nodeSize < 1){
+            throw new Exception("Node size is: " + nodeSize + ". Set node size to > 0");
         }
     }
 
@@ -98,11 +103,47 @@ public class NavMesh extends System{
     }
 
     public void setNodeBlocked(float x, float y){
-        blockNode(getNode((int)x/nodeSize,(int)y/nodeSize));
+        //Block multiple nodes that overlap with width and height
+
+        Array<Integer> verticies = getVerticies(x, y);
+
+        for (int i = 0; i < verticies.size; i+=2){
+            blockNode(getNode((verticies.get(i)), (verticies.get(i+1))));
+        }
+
+        //blockNode(getNode((int)x/nodeSize,(int)y/nodeSize));
+    }
+
+    private Array<Integer> getVerticies(float x, float y){
+
+        Array<Integer> verticies = new Array<>(7);
+        verticies.add(0, 0, 0, 0);
+        verticies.add(0, 0, 0, 0);
+        verticies.set(0, (int)x/nodeSize);
+        verticies.set(1, (int)y/nodeSize);
+
+
+        verticies.set(2, (int)x/nodeSize);
+        verticies.set(3, (int)(y + nodeSize-2)/nodeSize);
+
+        verticies.set(4, (int)(x + nodeSize-2)/nodeSize);
+        verticies.set(5, (int)(y + nodeSize-2)/nodeSize);
+
+        verticies.set(6, (int)(x + nodeSize-2)/nodeSize);
+        verticies.set(7, (int)y/nodeSize);
+
+        return verticies;
+
     }
 
     public void freeNode(float x, float y){
-        freeNode(getNode((int)x/nodeSize,(int)y/nodeSize));
+
+        Array<Integer> verticies = getVerticies(x, y);
+
+        for (int i = 0; i < verticies.size; i+=2){
+            freeNode(getNode((verticies.get(i)), (verticies.get(i+1))));
+        }
+        //freeNode(getNode((int)x/nodeSize,(int)y/nodeSize));
     }
 
     private void blockNode(Node node){

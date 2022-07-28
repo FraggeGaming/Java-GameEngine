@@ -6,7 +6,6 @@ import EntityEngine.Components.VelocityComponent;
 import EntityEngine.Entity;
 import EntityEngine.Network.ClientUpdate;
 import EntityEngine.Network.NetWorkData;
-import TestFiles.scripts.Network.Data;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.Array;
@@ -123,7 +122,7 @@ public class NetWorkClient extends ClientUpdate {
         if(data.tag.equals(doUpdate)){
             e = engine.getEntity(data.entityID);
             if (data.component.getClass() == TransformComponent.class){
-                if(!e.tag.equals(engine.user))
+                if(!e.name.equals(engine.user))
                     setPosition(e, data.component);
             }
         }

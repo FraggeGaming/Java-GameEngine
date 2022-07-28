@@ -9,7 +9,6 @@ public class CollisionComponent extends Component{
 
     public Rectangle boundingBox;
     boolean sleeping = false;
-    public boolean flag = false;
     public boolean isStatic = false;
     public HashSet<CollisionComponent> collisions = new HashSet<>();
 

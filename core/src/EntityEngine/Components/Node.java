@@ -5,21 +5,19 @@ import com.badlogic.gdx.math.Vector2;
 public class Node extends Component{
 
     public boolean isBlocked =  false;
+
+    public boolean debug = false;
     //Distance from startingNode
     int gCost;
     //Distance from endNode
     int hCost;
     //gCost + hCost
     int fCost;
+
     Vector2 pos;
+
     public Node parentNode;
-    public int nodeSize;
 
-    public Node(){
-
-    }
-    
-    
     public void setParentNode(Node node){
         parentNode = node;
     }
@@ -44,16 +42,8 @@ public class Node extends Component{
         return gCost + hCost;
     }
 
-    public void setfCost(int fCost) {
-        this.fCost = fCost;
-    }
-
     public Vector2 getPos() {
         return pos;
-    }
-
-    public Vector2 getIndex(){
-        return new Vector2(pos.x/nodeSize, pos.y/nodeSize);
     }
 
     public void setPos(Vector2 pos) {

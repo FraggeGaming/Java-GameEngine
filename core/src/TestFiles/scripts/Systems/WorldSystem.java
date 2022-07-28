@@ -13,7 +13,6 @@ import EntityEngine.Systems.TileMapRenderer;
 import TestFiles.scripts.Components.StoneCrabLogic;
 import box2dLight.PointLight;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -29,7 +28,7 @@ import com.badlogic.gdx.math.Vector2;
 public class WorldSystem extends System {
     double scale = 0.06f;
     float z = 1f;
-    int mapSize = 500;
+    int mapSize = 100;
     OpenSimplexNoise noise;
     TextureAtlas atlas;
     TextureAtlas fireAtlas;
@@ -38,10 +37,8 @@ public class WorldSystem extends System {
     Entity player;
     Entity e;
 
-    TiledMap tileMap;
     TiledMapTileLayer.Cell cell;
     TiledMapTileLayer layer;
-    Entity StoneCrab;
     CollisionDetectionSystem col;
     NavMesh navMesh;
 
@@ -56,7 +53,6 @@ public class WorldSystem extends System {
         Gdx.graphics.setCursor(cursor);
         cursorPm.dispose();
 
-
     }
 
     @Override
@@ -69,52 +65,23 @@ public class WorldSystem extends System {
         fireAtlas = engine.assetManager.get("atlas/Fire.atlas");
         larvMovement = engine.assetManager.get("atlas/LarvMovement.atlas");
 
-        for (int i = 0; i < 5; i++){
-            for (int j = 0; j < 5; j++)
-                createFireAnimationTest(30 * i, 30*j, fireAtlas );
-        }
-
-        StoneCrab = new Entity();
-        StoneCrab.addComponents(new TextureComponent(new TextureRegion(sC.findRegion("Stonepile", 0))));
-        StoneCrab.addComponents(new TransformComponent(200, 250, 2, 34, 34));
-        CollisionComponent c = new CollisionComponent(200 - 16, 250 - 16, 64, 64);
-        c.id = "StoneCrab";
-        StoneCrab.addComponents(c);
-        Animation animation = new Animation(sC, "Stonepile", 13);
-        AnimationComponent a = new AnimationComponent(0.04f, false, animation.getFrames(), false);
-        a.setAlive(false);
-        StoneCrab.addComponents(a);
-        StoneCrab.addComponents(new StoneCrabLogic());
-        engine.addEntity(StoneCrab);
-
         navMesh = (NavMesh) engine.getSystem(NavMesh.class);
-
         navMesh.setNodeSize(16);
-        createTileMapOnCreate();
 
-        createPlayers(engine.camera);
+        engine.addEntity(stoneCrab(10, 10));
+        engine.addEntity(stoneCrab(19, 20));
 
-        createHouse(300, 200);
+        createTileMap();
 
-        createHouse(300+15*14, 300);
+        engine.addEntity(player(engine.camera));
 
-        createHouse(300+15*7, 500);
+        createHouse(7*16, 5*16);
 
-        createHouse(500+15*14, 500);
+        createHouse(600, 300);
 
-        createHouse(500+15*7, 700);
-
-        createHouse(800, 800);
-
-        createTile(300 , 400, "MushroomBig", 60, 140, 10);
-
-        createTile(530 , 200, "Branch", 140, 20, 1);
-
-        createTile(830 , 1200, "WaterTower", 64, 75, 1);
-
-
-
-
+        engine.addEntity(createTile(30*16, 10*16, "MushroomBig", 60, 140, 10));
+        engine.addEntity(createTile(530 , 200, "Branch", 140, 20, 1));
+        engine.addEntity(createTile(830 , 1200, "WaterTower", 64, 75, 1));
     }
 
     private void createTileWithNoise(float x, float y, double noise){
@@ -123,13 +90,10 @@ public class WorldSystem extends System {
         layer.setCell((int)(x/16), (int)(y/16), cell);
 
         Entity e = new Entity();
-
         Node node = new Node();
         node.setPos(new Vector2(x, y));
         e.addComponents(node);
 
-        ActorComponent actorComponent = new ActorComponent(x, y, 16 ,16);
-        e.addComponents(actorComponent);
         engine.addEntity(e);
     }
 
@@ -263,15 +227,15 @@ public class WorldSystem extends System {
         engine.addEntity(e);
     }
 
-    public void createTile(float x, float y, String name, float width, float height, float z){
+    public Entity createTile(float x, float y, String name, float width, float height, float z){
         e = new Entity();
         e.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion(name))));
         e.addComponents(new TransformComponent(x, y, z, width, height));
 
-        engine.addEntity(e);
+        return e;
     }
 
-    public void createPlayers(TDCamera camera){
+    public Entity player(TDCamera camera){
         engine.user = "Player"; //TODO change this later to less shit way
 
         player = new Entity();
@@ -281,7 +245,7 @@ public class WorldSystem extends System {
         c.id = "Player";
         player.addComponents(c);
         player.addComponents(new VelocityComponent());
-        player.tag = "Player";
+        player.name = "Player";
 
         Animation animation = new Animation(larvMovement, "CaterpillarGun", 6);
         AnimationComponent a = new AnimationComponent(0.07f, false, animation.getFrames(), false);
@@ -293,15 +257,13 @@ public class WorldSystem extends System {
         box2d.getBody().setFixedRotation(true);
         player.addComponents(box2d);
 
-
-
         Light light = new Light(new PointLight(engine.lightning, 20, Color.WHITE, 80, 300, 300));
         light.attachToBody(box2d.getBody(), true);
         light.colorAndSoftnessLength(new Color(0.8f,0.4f,0.7f,0.8f), 10f);
         light.activate(true);
         player.addComponents(light);
 
-        engine.addEntity(player);
+        return player;
     }
 
     public void createFireAnimationTest(int x, int y, TextureAtlas fireAtlas){
@@ -320,52 +282,30 @@ public class WorldSystem extends System {
 
     }
 
-    @Override
-    public void update(float dt) {
+    private Entity stoneCrab(int tileX, int tileY){
+        Entity StoneCrab = new Entity();
+        StoneCrab.addComponents(new TextureComponent(new TextureRegion(sC.findRegion("Stonepile", 0))));
+        StoneCrab.addComponents(new TransformComponent(tileX * 16, tileY * 16, 2, 34, 34));
+        CollisionComponent c = new CollisionComponent(tileX* 16 - 16, tileY*16 - 16, 64, 64);
+        c.id = "StoneCrab";
+        StoneCrab.addComponents(c);
+        Animation animation = new Animation(sC, "Stonepile", 13);
+        AnimationComponent a = new AnimationComponent(0.04f, false, animation.getFrames(), false);
+        a.setAlive(false);
+        StoneCrab.addComponents(a);
+        StoneCrab.addComponents(new StoneCrabLogic());
 
-        e = engine.getEntity("Player");
-        CollisionComponent StoneCol = (CollisionComponent) StoneCrab.getComponent(CollisionComponent.class);
-        AnimationComponent a = (AnimationComponent) StoneCrab.getComponent(AnimationComponent.class);
-        StoneCrabLogic logic = (StoneCrabLogic) StoneCrab.getComponent(StoneCrabLogic.class);
-
-        if (col != null && col.CollisionWithID(StoneCol, "Player")){
-
-            if (!logic.isScared){
-                a.setAlive(true);
-                logic.setScared(true);
-            }
-        }
-
-        if (!a.isAlive() && logic.isScared){
-            TextureComponent t = (TextureComponent) StoneCrab.getComponent(TextureComponent.class);
-            t.setTexture(new TextureRegion(sC.findRegion("Stonepile", 12)));
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.Q)){
-            logic.setScared(false);
-
-            TextureComponent t = (TextureComponent) StoneCrab.getComponent(TextureComponent.class);
-            t.setTexture(new TextureRegion(sC.findRegion("Stonepile")));
-
-        }
-
+        return StoneCrab;
     }
 
-    private void createTileMapOnCreate(){
-        tileMap = new TiledMap();
-        MapLayers layers = tileMap.getLayers();
-        layer = new TiledMapTileLayer(mapSize, mapSize, 16, 16);
-        layer.setName("map");
-
+    private void createTileMap(){
+        TileMapRenderer renderer = (TileMapRenderer) engine.getSystem(TileMapRenderer.class);
+        layer = renderer.createLayer(mapSize, mapSize, 16, 16);
 
         for (int i = 0; i < mapSize; i++){
             for (int j = 0; j < mapSize; j++){
                 createTileWithNoise(16*i, 16*j,noise.eval( i*scale, j*scale, z) );
             }
         }
-
-        layers.add(layer);
-        TileMapRenderer renderer = (TileMapRenderer) engine.getSystem(TileMapRenderer.class);
-        renderer.addTilemap(tileMap);
     }
 }
