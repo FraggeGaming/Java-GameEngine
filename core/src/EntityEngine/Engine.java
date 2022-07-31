@@ -1,5 +1,7 @@
 package EntityEngine;
 
+import EntityEngine.Architect.Architect;
+import EntityEngine.Architect.ArchitectHandler;
 import EntityEngine.Components.Component;
 import EntityEngine.Components.RigidBody2D;
 import EntityEngine.Components.TransformComponent;
@@ -16,11 +18,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.ArrayList;
 import java.util.HashMap;

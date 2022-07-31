@@ -1,11 +1,10 @@
 package EntityEngine.Systems;
 
-import EntityEngine.Architect;
+import EntityEngine.Architect.Architect;
 import EntityEngine.Components.*;
 import EntityEngine.Entity;
 import EntityEngine.Renderer.Cell;
-import EntityEngine.Renderer.TransformComparator;
-import EntityEngine.Type;
+import EntityEngine.Architect.Type;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 

@@ -1,10 +1,10 @@
 package EntityEngine.Systems;
 
-import EntityEngine.Architect;
+import EntityEngine.Architect.Architect;
 import EntityEngine.Components.Component;
 import EntityEngine.Components.Light;
 import EntityEngine.Components.TransformComponent;
-import EntityEngine.Type;
+import EntityEngine.Architect.Type;
 import com.badlogic.gdx.utils.Array;
 
 public class LightningSystem extends System {

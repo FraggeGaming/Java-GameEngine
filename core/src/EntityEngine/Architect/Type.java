@@ -1,4 +1,4 @@
-package EntityEngine;
+package EntityEngine.Architect;
 
 import EntityEngine.Components.Component;
 import com.badlogic.gdx.utils.Array;

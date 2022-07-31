@@ -1,9 +1,9 @@
 package EntityEngine.Systems;
 
-import EntityEngine.Architect;
+import EntityEngine.Architect.Architect;
 import EntityEngine.Components.*;
 import EntityEngine.Entity;
-import EntityEngine.Type;
+import EntityEngine.Architect.Type;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;

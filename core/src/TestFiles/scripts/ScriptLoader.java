@@ -1,8 +1,8 @@
 package TestFiles.scripts;
 
 import EntityEngine.Components.*;
-import EntityEngine.Systems.StageHandler;
-import EntityEngine.Type;
+import TestFiles.scripts.Systems.StageHandler;
+import EntityEngine.Architect.Type;
 import TestFiles.SideScroller.SideMovement;
 import TestFiles.SideScroller.WorldGen;
 import TestFiles.scripts.Components.StoneCrabLogic;
@@ -74,11 +74,12 @@ public class ScriptLoader extends Script {
         engine.addSystem(new TimerSystem());
     }
 
+    //TODO PP
 
     //TODO optimize actors
     //TODO Make pathfinding multithreaded
 
-    //TODO PP
+
 
     //TODO engine pool for less deletetion of entities
     //TODO audio component

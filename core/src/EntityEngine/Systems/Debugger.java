@@ -1,10 +1,8 @@
 package EntityEngine.Systems;
 
-import EntityEngine.Architect;
 import EntityEngine.Components.*;
 import EntityEngine.GameClasses.Tags;
 import EntityEngine.Renderer.Cell;
-import EntityEngine.Type;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;

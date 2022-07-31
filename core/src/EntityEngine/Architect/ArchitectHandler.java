@@ -1,10 +1,11 @@
-package EntityEngine;
+package EntityEngine.Architect;
+import EntityEngine.Entity;
 import com.badlogic.gdx.utils.Array;
 
 public class ArchitectHandler {
 
     Array<Architect> architects = new Array<>();
-    byte id = 0x1;
+    public byte id = 0x1;
 
     public void createArchitect(Type type){
         Architect architect = new Architect(id, type);

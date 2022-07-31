@@ -1,16 +1,10 @@
 package TestFiles.scripts.Systems;
 
-import EntityEngine.Architect;
 import EntityEngine.Components.ActorComponent;
-import EntityEngine.Components.Component;
-import EntityEngine.Components.TransformComponent;
 import EntityEngine.Entity;
 import EntityEngine.Systems.System;
-import EntityEngine.Type;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
