@@ -48,8 +48,6 @@ public class Engine {
     public TDCamera camera;
     public Batch batch;
     public ArchitectHandler architectHandler;
-    public Stage stage;
-    public Stage gameStage;
 
     public Engine(float width, float height, Script scriptLoader){
         camera = new TDCamera(width, height);
@@ -62,9 +60,8 @@ public class Engine {
         assetManager = new AssetManager();
         world = new World(new Vector2(0, 0f),true);
         lightning = new RayHandler(world);
-        stage = new Stage(new ScreenViewport());
-        gameStage = new Stage(new FitViewport(camera.viewportWidth,camera.viewportHeight,camera));
-        Gdx.input.setInputProcessor(stage);
+
+
         architectHandler = new ArchitectHandler();
 
         initSetup();
@@ -86,6 +83,7 @@ public class Engine {
         addSystem(new PhysicsSystem());
         addSystem(new LightningSystem());
         addSystem(new NavMesh());
+
     }
 
     public void update(float dt){
@@ -104,8 +102,6 @@ public class Engine {
             systems.get(i).endTimer();
         }
 
-        gameStage.act();
-        stage.act(dt);
 
         //Renders everything that doesent use its own batch
         batch.begin();
@@ -124,11 +120,6 @@ public class Engine {
                 systems.get(i).postRender(dt);
             }
         }
-
-        gameStage.draw();
-
-        stage.draw();
-
 
         deleteFlaged();
     }
@@ -287,7 +278,7 @@ public class Engine {
         assetManager.dispose();
         world.dispose();
         lightning.dispose();
-        stage.dispose();
+
     }
 
     public void addAsset(AssetDescriptor<TextureAtlas> asset) {

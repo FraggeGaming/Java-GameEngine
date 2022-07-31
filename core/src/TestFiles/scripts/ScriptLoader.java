@@ -1,7 +1,7 @@
 package TestFiles.scripts;
 
 import EntityEngine.Components.*;
-import EntityEngine.Systems.ActorHandler;
+import EntityEngine.Systems.StageHandler;
 import EntityEngine.Type;
 import TestFiles.SideScroller.SideMovement;
 import TestFiles.SideScroller.WorldGen;
@@ -32,8 +32,6 @@ public class ScriptLoader extends Script {
         type = new Type(AnimationComponent.class, TransformComponent.class, TextureComponent.class);
         engine.architectHandler.createArchitect(type);
 
-        type = new Type(ActorComponent.class, TransformComponent.class);
-        engine.architectHandler.createArchitect(type);
 
         type = new Type(StoneCrabLogic.class, TransformComponent.class);
         engine.architectHandler.createArchitect(type);
@@ -51,35 +49,32 @@ public class ScriptLoader extends Script {
     }
 
     public void topDownTest(){
+        engine.addSystem(new StageHandler());
         engine.addSystem(new DebugStats());
+
         engine.addSystem(new BulletSystem());
         engine.addSystem(new TimerSystem());
 
         engine.addSystem(new MovementSystem());
         engine.addSystem(new WorldSystem());
         engine.addSystem(new InputManager());
-        //engine.addSystem(new ActorHandler());
         engine.addSystem(new CollisionResolver());
+
         //engine.addSystem(new NetworkScript());
         engine.camera.zoom = 1;
     }
     public void sideScrollerTest(){
+        engine.addSystem(new StageHandler());
+        engine.addSystem(new DebugStats());
 
         engine.addSystem(new WorldGen());
         engine.addSystem(new SideMovement());
-        engine.addSystem(new DebugStats());
+
         engine.addSystem(new BulletSystem());
         engine.addSystem(new TimerSystem());
     }
 
-    public void inheritCommon(){
 
-    }
-
-    //TODO Navmesh block multiple tiles based on verticies
-    //TODO put timer on stonecrab in order to go back into pile
-    //TODO, in Actorhandler, let it handle every stage aswell, mby change name to stageHandler?
-    //TODO creation of dynamic number of stages.
     //TODO optimize actors
     //TODO Make pathfinding multithreaded
 
@@ -87,7 +82,6 @@ public class ScriptLoader extends Script {
 
     //TODO engine pool for less deletetion of entities
     //TODO audio component
-    //TODO collision detection optimization, flag sertain cells for update or not
     //TODO archtect type dynamic allocator
     //TODO lightning filter
     //TODO different screen support, loading, settings etc
@@ -95,16 +89,15 @@ public class ScriptLoader extends Script {
     //TODO add reversed animation
     //TODO fix so animation gets synced //Synced animation parameter
     //TODO add dispose on stuff
-
-
-
-
-
     //TODO sorting system for systems based on priority order
 
-    //TODO create game
-    //MBY
 
+    //Gameplay
+    //TODO put timer on stonecrab in order to go back into pile
+    //TODO create game
+
+    //MBY
+    //TODO collision detection optimization, flag sertain cells for update or not
     //TODO fix large collision //multiple collision boxes
     //TODO add collision calculation using multiple steps
     //TODO add UpNp

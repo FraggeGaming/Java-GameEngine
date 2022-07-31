@@ -18,8 +18,6 @@ import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.MapLayers;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
@@ -34,11 +32,7 @@ public class WorldSystem extends System {
     TextureAtlas fireAtlas;
     TextureAtlas sC;
     TextureAtlas larvMovement;
-    Entity player;
-    Entity e;
 
-    TiledMapTileLayer.Cell cell;
-    TiledMapTileLayer layer;
     CollisionDetectionSystem col;
     NavMesh navMesh;
 
@@ -57,6 +51,7 @@ public class WorldSystem extends System {
 
     @Override
     public void onCreate() {
+
         engine.lightning.setAmbientLight(0.2f);
 
         col = (CollisionDetectionSystem) engine.getSystem(CollisionDetectionSystem.class);
@@ -68,12 +63,12 @@ public class WorldSystem extends System {
         navMesh = (NavMesh) engine.getSystem(NavMesh.class);
         navMesh.setNodeSize(16);
 
-        engine.addEntity(stoneCrab(10, 10));
-        engine.addEntity(stoneCrab(19, 20));
-
         createTileMap();
 
         engine.addEntity(player(engine.camera));
+
+        engine.addEntity(stoneCrab(10, 10));
+        engine.addEntity(stoneCrab(19, 20));
 
         createHouse(7*16, 5*16);
 
@@ -84,8 +79,8 @@ public class WorldSystem extends System {
         engine.addEntity(createTile(830 , 1200, "WaterTower", 64, 75, 1));
     }
 
-    private void createTileWithNoise(float x, float y, double noise){
-        cell = new TiledMapTileLayer.Cell();
+    private void createTileWithNoise(float x, float y, double noise, TiledMapTileLayer layer){
+        TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
         cell.setTile(new StaticTiledMapTile(generateWithNoise(noise)));
         layer.setCell((int)(x/16), (int)(y/16), cell);
 
@@ -195,7 +190,7 @@ public class WorldSystem extends System {
     }
 
     public void createTile(float x, float y, String name, String id){
-        e = new Entity();
+        Entity e = new Entity();
         e.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion(name))));
         e.addComponents(new TransformComponent(x, y, 1, 16, 16));
 
@@ -221,14 +216,11 @@ public class WorldSystem extends System {
             e.addComponents(light);
         }
 
-
-
-
         engine.addEntity(e);
     }
 
     public Entity createTile(float x, float y, String name, float width, float height, float z){
-        e = new Entity();
+        Entity e = new Entity();
         e.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion(name))));
         e.addComponents(new TransformComponent(x, y, z, width, height));
 
@@ -238,7 +230,7 @@ public class WorldSystem extends System {
     public Entity player(TDCamera camera){
         engine.user = "Player"; //TODO change this later to less shit way
 
-        player = new Entity();
+        Entity player = new Entity();
         player.addComponents(new TextureComponent(new TextureRegion(larvMovement.findRegion("CaterpillarGun"))));
         player.addComponents(new TransformComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 5, 32, 32));
         CollisionComponent c = new CollisionComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 32, 32);
@@ -300,11 +292,11 @@ public class WorldSystem extends System {
 
     private void createTileMap(){
         TileMapRenderer renderer = (TileMapRenderer) engine.getSystem(TileMapRenderer.class);
-        layer = renderer.createLayer(mapSize, mapSize, 16, 16);
+        TiledMapTileLayer layer = renderer.createLayer(mapSize, mapSize, 16, 16);
 
         for (int i = 0; i < mapSize; i++){
             for (int j = 0; j < mapSize; j++){
-                createTileWithNoise(16*i, 16*j,noise.eval( i*scale, j*scale, z) );
+                createTileWithNoise(16*i, 16*j,noise.eval( i*scale, j*scale, z), layer );
             }
         }
     }

@@ -86,6 +86,8 @@ public class Debugger extends System {
                         shapeRenderer.setColor(Color.GREEN);
                         shapeRenderer.rect(node.getPos().x, node.getPos().y, navMesh.nodeSize,  navMesh.nodeSize);
                     }
+
+
                 }
             }
         }
