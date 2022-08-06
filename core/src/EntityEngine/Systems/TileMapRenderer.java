@@ -37,6 +37,11 @@ public class TileMapRenderer extends System{
 
     @Override
     public void update(float dt) {
+
+    }
+
+    @Override
+    public void preRender(float dt) {
         if (tiledMapRenderer == null)
             return;
 

@@ -5,7 +5,7 @@ import EntityEngine.Entity;
 import com.badlogic.gdx.utils.Array;
 
 public class Architect {
-    byte id;
+    public byte id;
     Array<Array<Component>> components = new Array<>();
     Type type;
 

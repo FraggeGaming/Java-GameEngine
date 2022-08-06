@@ -5,8 +5,10 @@ import EntityEngine.Components.*;
 import EntityEngine.Entity;
 import EntityEngine.Renderer.Cell;
 import EntityEngine.Architect.Type;
+import TestFiles.scripts.Components.WaterComponent;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.crashinvaders.vfx.effects.WaterDistortionEffect;
 
 public class SpatialRenderer extends System {
 
@@ -17,16 +19,15 @@ public class SpatialRenderer extends System {
     Component c;
     Component x;
 
-    Array<Component> comp;
-
-    Array<Cell> cells;
-    Array<TransformComponent> compt = new Array<>();
-
     Architect architect;
-
     Array<Integer> ints;
     Array<Component> transformArray;
     Array<Component> textureArray;
+
+
+
+
+    public WaterDistortionEffect waterDistortionEffect = new WaterDistortionEffect(3, .5f);
     public SpatialRenderer(){
 
     }
@@ -46,16 +47,60 @@ public class SpatialRenderer extends System {
 
     @Override
     public void render(float dt) {
+
+
         if (ints != null && !ints.isEmpty()){
             for (int i = 0; i < ints.size; i++){
 
                 transform = (TransformComponent) transformArray.get(ints.get(i));
                 t = (TextureComponent) textureArray.get(ints.get(i));
 
-                drawTexture(t, transform);
+                if (t.draw)
+                    drawTexture(t, transform);
             }
         }
+
     }
+
+    /*@Override
+    public void postRender(float dt) {
+        for (int i = 0; i < engine.effects.size; i++){
+            engine.vfxManager.removeEffect(engine.effects.get(i));
+        }
+
+        engine.vfxManager.cleanUpBuffers();
+        // Begin render to an off-screen buffer.
+        engine.vfxManager.addEffect(waterDistortionEffect);
+        engine.vfxManager.beginInputCapture();
+        engine.batch.begin();
+
+        if (ints != null && !ints.isEmpty()){
+            for (int i = 0; i < ints.size; i++){
+
+                transform = (TransformComponent) transformArray.get(ints.get(i));
+                t = (TextureComponent) textureArray.get(ints.get(i));
+
+                if (engine.getEntityComponent(t.getId(), WaterComponent.class) != null)
+                    drawTexture(t, transform);
+            }
+        }
+
+        engine.batch.end();
+        engine.vfxManager.endInputCapture();
+        // Apply the effects chain to the captured frame.
+        engine.vfxManager.update(dt);
+
+        engine.vfxManager.applyEffects();
+        // Render result to the screen.
+        engine.vfxManager.renderToScreen();
+
+        engine.vfxManager.removeEffect(waterDistortionEffect);
+
+        for (int i = 0; i < engine.effects.size; i++){
+            engine.vfxManager.addEffect(engine.effects.get(i));
+        }
+
+    }*/
 
 
     private void drawTexture(TextureComponent texture, TransformComponent transform){

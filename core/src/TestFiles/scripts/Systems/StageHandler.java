@@ -52,7 +52,7 @@ public class StageHandler extends System {
     }
 
     @Override
-    public void postRender(float dt) {
+    public void UIRender(float dt) {
         UI.draw();
     }
 

@@ -6,21 +6,22 @@ import EntityEngine.GameClasses.Animation;
 import EntityEngine.Components.Node;
 import EntityEngine.GameClasses.TDCamera;
 import EntityEngine.Noise.OpenSimplexNoise;
-import EntityEngine.Systems.CollisionDetectionSystem;
-import EntityEngine.Systems.NavMesh;
+import EntityEngine.Systems.*;
 import EntityEngine.Systems.System;
-import EntityEngine.Systems.TileMapRenderer;
 import TestFiles.scripts.Components.StoneCrabLogic;
 import box2dLight.PointLight;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 
 public class WorldSystem extends System {
@@ -35,6 +36,9 @@ public class WorldSystem extends System {
 
     CollisionDetectionSystem col;
     NavMesh navMesh;
+
+    SpriteBatch batch;
+
 
     public WorldSystem(){
         noise = new OpenSimplexNoise(); //for tilemap generation
@@ -52,6 +56,7 @@ public class WorldSystem extends System {
     @Override
     public void onCreate() {
 
+
         engine.lightning.setAmbientLight(0.2f);
 
         col = (CollisionDetectionSystem) engine.getSystem(CollisionDetectionSystem.class);
@@ -62,6 +67,7 @@ public class WorldSystem extends System {
 
         navMesh = (NavMesh) engine.getSystem(NavMesh.class);
         navMesh.setNodeSize(16);
+        batch = new SpriteBatch();
 
         createTileMap();
 
@@ -77,17 +83,66 @@ public class WorldSystem extends System {
         engine.addEntity(createTile(30*16, 10*16, "MushroomBig", 60, 140, 10));
         engine.addEntity(createTile(530 , 200, "Branch", 140, 20, 1));
         engine.addEntity(createTile(830 , 1200, "WaterTower", 64, 75, 1));
+
+
+        Entity e = new Entity();
+        TextureComponent textureComponent = new TextureComponent(new TextureRegion(atlas.findRegion("Branch")));
+
+        e.addComponents(textureComponent);
+        e.addComponents(new UIElement(0, 0, 1, 500, 100));
+
+        ActorComponent actorComponent = new ActorComponent(0, 0, 500, 100);
+        actorComponent.actor.setDebug(true);
+        actorComponent.actor.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                java.lang.System.out.println("Test");
+            }
+        });
+
+        actorComponent.isSpatial = false;
+        e.addComponents(actorComponent);
+
+        engine.addEntity(e);
+
+
+    }
+
+
+
+    @Override
+    public void dispose() {
+
     }
 
     private void createTileWithNoise(float x, float y, double noise, TiledMapTileLayer layer){
-        TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-        cell.setTile(new StaticTiledMapTile(generateWithNoise(noise)));
-        layer.setCell((int)(x/16), (int)(y/16), cell);
-
         Entity e = new Entity();
         Node node = new Node();
         node.setPos(new Vector2(x, y));
         e.addComponents(node);
+
+       /* if (noise > 0f){
+            TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
+            cell.setTile(new StaticTiledMapTile(generateWithNoise(noise)));
+            layer.setCell((int)(x/16), (int)(y/16), cell);
+        }
+
+        else {
+            e.addComponents(new WaterComponent());
+            TextureComponent textureComponent = new TextureComponent(new TextureRegion(atlas.findRegion("Water")));
+            textureComponent.draw = false;
+            e.addComponents(textureComponent);
+            e.addComponents(new TransformComponent(x, y, 0, 16, 16));
+        }*/
+
+
+        TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
+        cell.setTile(new StaticTiledMapTile(generateWithNoise(noise)));
+        layer.setCell((int)(x/16), (int)(y/16), cell);
+
+
+
+
 
         engine.addEntity(e);
     }
@@ -186,6 +241,9 @@ public class WorldSystem extends System {
         createTile(x + 6*16, y+5*16, "ChairRight", 16,32, 3);
         createTile(x + 3*16, y+5*16, "ChairLeft",16,32, 3);
 
+        createTile(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, "ChairLeft",64,64, 3);
+
+
 
     }
 
@@ -257,6 +315,7 @@ public class WorldSystem extends System {
 
         return player;
     }
+
 
     public void createFireAnimationTest(int x, int y, TextureAtlas fireAtlas){
         Entity e = new Entity();

@@ -13,13 +13,18 @@ import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.crashinvaders.vfx.VfxManager;
+import com.crashinvaders.vfx.effects.ChainVfxEffect;
+import com.crashinvaders.vfx.effects.WaterDistortionEffect;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,13 +52,16 @@ public class Engine {
     public TDCamera camera;
     public Batch batch;
     public ArchitectHandler architectHandler;
+    public VfxManager vfxManager;
+    public Array<ChainVfxEffect> effects;
+
+
 
     public Engine(float width, float height, Script scriptLoader){
         camera = new TDCamera(width, height);
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         batch = new SpriteBatch();
-        spatialHashGrid = new SpatialHashGrid(this);
-        spatialHashGrid.setData((int) camera.viewportHeight);
+
         threadPool = Executors.newCachedThreadPool();
 
         assetManager = new AssetManager();
@@ -63,13 +71,23 @@ public class Engine {
 
         architectHandler = new ArchitectHandler();
 
+        vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
+        effects = new Array<>();
+        vfxManager.setBlendingEnabled(true);
+
         initSetup();
+
 
         scriptLoader.addEngine(this);
         scriptLoader.loadAssets();
+
+        spatialHashGrid = new SpatialHashGrid();
+        spatialHashGrid.setData((int) camera.viewportHeight);
+
         scriptLoader.onCreate();
 
         buildSystems();
+
     }
 
     public void initSetup(){
@@ -82,13 +100,14 @@ public class Engine {
         addSystem(new PhysicsSystem());
         addSystem(new LightningSystem());
         addSystem(new NavMesh());
+        addSystem(new UIRenderer());
 
     }
 
     public void update(float dt){
         ScreenUtils.clear(1, 1, 1, 1f);
 
-        getSpatialHashGrid().calculateSpatialGrid(camera.getCameraTransform());
+        spatialHashGrid.calculateSpatialGrid(camera.getCameraTransform());
         batch.setProjectionMatrix(camera.combined);
 
         //Updates logic
@@ -101,6 +120,23 @@ public class Engine {
             systems.get(i).endTimer();
         }
 
+        render(dt);
+
+
+        deleteFlaged();
+    }
+
+    private void render(float dt){
+        vfxManager.cleanUpBuffers();
+        vfxManager.beginInputCapture();
+
+        //Everything with its own batch mby change later so everything has own batch or uses engine batch
+        for (int i = 0; i < systems.size; i++){
+
+            if (systems.get(i).isActive){
+                systems.get(i).preRender(dt);
+            }
+        }
 
         //Renders everything that doesent use its own batch
         batch.begin();
@@ -112,7 +148,12 @@ public class Engine {
         }
         batch.end();
 
-        //For example post processing
+        vfxManager.endInputCapture();
+        vfxManager.update(dt);
+        vfxManager.applyEffects();
+        vfxManager.renderToScreen();
+
+        //For example Lightning
         for (int i = 0; i < systems.size; i++){
 
             if (systems.get(i).isActive){
@@ -120,7 +161,12 @@ public class Engine {
             }
         }
 
-        deleteFlaged();
+        for (int i = 0; i < systems.size; i++){
+
+            if (systems.get(i).isActive){
+                systems.get(i).UIRender(dt);
+            }
+        }
     }
 
 
@@ -278,6 +324,17 @@ public class Engine {
         world.dispose();
         lightning.dispose();
 
+        for (int i = 0; i < effects.size; i++){
+            effects.get(i).dispose();
+        }
+
+        vfxManager.dispose();
+
+    }
+
+    public void addEffect(ChainVfxEffect effect){
+        vfxManager.addEffect(effect);
+        effects.add(effect);
     }
 
     public void addAsset(AssetDescriptor<TextureAtlas> asset) {

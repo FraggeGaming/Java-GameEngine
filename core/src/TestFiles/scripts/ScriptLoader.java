@@ -1,6 +1,7 @@
 package TestFiles.scripts;
 
 import EntityEngine.Components.*;
+import TestFiles.scripts.Shaders.ShaderTest;
 import TestFiles.scripts.Systems.StageHandler;
 import EntityEngine.Architect.Type;
 import TestFiles.SideScroller.SideMovement;
@@ -23,6 +24,12 @@ public class ScriptLoader extends Script {
         engine.addAsset(new AssetDescriptor<>("atlas/StoneCrab.atlas", TextureAtlas.class));
         engine.addAsset(new AssetDescriptor<>("atlas/LarvMovement.atlas", TextureAtlas.class));
 
+
+
+    }
+
+    @Override
+    public void onCreate() {
         Type type = new Type(TransformComponent.class, TextureComponent.class);
         engine.architectHandler.createArchitect(type);
 
@@ -32,16 +39,19 @@ public class ScriptLoader extends Script {
         type = new Type(AnimationComponent.class, TransformComponent.class, TextureComponent.class);
         engine.architectHandler.createArchitect(type);
 
+        type = new Type(TextureComponent.class, UIElement.class);
+        engine.architectHandler.createArchitect(type);
+
 
         type = new Type(StoneCrabLogic.class, TransformComponent.class);
         engine.architectHandler.createArchitect(type);
 
         Gdx.graphics.setForegroundFPS(0);
 
-    }
 
-    @Override
-    public void onCreate() {
+
+        engine.getSpatialHashGrid().setData((int) (engine.camera.viewportHeight));
+
         topDownTest();
 
         //sideScrollerTest();
@@ -59,6 +69,7 @@ public class ScriptLoader extends Script {
         engine.addSystem(new WorldSystem());
         engine.addSystem(new InputManager());
         engine.addSystem(new CollisionResolver());
+        engine.addSystem(new ShaderTest());
 
         //engine.addSystem(new NetworkScript());
         engine.camera.zoom = 1;
@@ -74,12 +85,9 @@ public class ScriptLoader extends Script {
         engine.addSystem(new TimerSystem());
     }
 
-    //TODO PP
 
     //TODO optimize actors
     //TODO Make pathfinding multithreaded
-
-
 
     //TODO engine pool for less deletetion of entities
     //TODO audio component

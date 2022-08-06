@@ -79,4 +79,7 @@ public class System {
 
     public void postCreate() {
     }
+
+    public void UIRender(float dt) {
+    }
 }

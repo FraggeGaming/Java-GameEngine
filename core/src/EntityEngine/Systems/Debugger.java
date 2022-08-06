@@ -43,7 +43,6 @@ public class Debugger extends System {
     @Override
     public void postRender(float dt) {
 
-
         if (debugBox2D)
             collisionsDebug = findCollisions();
 
