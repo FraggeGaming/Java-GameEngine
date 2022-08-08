@@ -1,9 +1,9 @@
 package EntityEngine.Systems;
 
-import EntityEngine.Architect;
+import EntityEngine.Architect.Architect;
 import EntityEngine.Components.*;
 import EntityEngine.Entity;
-import EntityEngine.Type;
+import EntityEngine.Architect.Type;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
@@ -23,6 +23,9 @@ public class AnimationSystem extends System{
 
         Architect architect = engine.architectHandler.getArchitect(new Type(TextureComponent.class, AnimationComponent.class, TransformComponent.class));
         Array<Integer> ints = engine.getSpatialArc(architect);
+
+        if (architect == null)
+            return;
 
         Array<Component> animationArray = architect.getComponents(AnimationComponent.class);
         Array<Component> textureArray = architect.getComponents(TextureComponent.class);

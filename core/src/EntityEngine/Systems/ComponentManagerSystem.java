@@ -32,12 +32,6 @@ public class ComponentManagerSystem extends System {
             e.printStackTrace();
         }
 
-
-        if (engine.getSpatialHashGrid().update && engine.threadedParsing){
-            engine.getSpatialHashGrid().update = false;
-            loadedCells = engine.getSpatialHashGrid().getNeighbours();
-            components = engine.threadPool.submit(new ComponentCalculation(loadedCells, engine.componentMap));
-        }
     }
 
     public Array<Component> getLoadedComponents(Class<?extends Component> component){

@@ -36,7 +36,7 @@ public class NetworkScript extends System {
         c.id = "Player2";
         player.addComponents(c);
         player.addComponents(new VelocityComponent());
-        player.tag = "Player2";
+        player.name = "Player2";
         engine.addEntity(player);
     }
 }

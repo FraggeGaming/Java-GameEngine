@@ -26,7 +26,7 @@ public class CollisionDetectionSystem extends System{
 
     boolean calculateCollisions = true;
 
-    Array<Cell> loadedCellsTemp = new Array<>();
+
     public CollisionDetectionSystem(){
 
 

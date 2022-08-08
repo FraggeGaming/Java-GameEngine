@@ -79,4 +79,16 @@ public class System {
 
     public void postCreate() {
     }
+
+    public void UIRender(float dt) {
+    }
+
+    public void reset() {
+    }
+
+    public void lastUpdate(float dt) {
+    }
+
+    public void removeEntity(Entity entity) {
+    }
 }

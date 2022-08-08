@@ -37,9 +37,8 @@ public class WorldGen extends System {
         int x = 10;
         int y = 90;
         for (int i = 1; i < 100; i++){
-            float xCord = x + 16*i;
-            float yCord = y;
-            createTile(xCord, yCord, "StoneWallTop", "Wall");
+
+            createTile(x + 16*i, y, "StoneWallTop", "Wall");
         }
 
     }
@@ -82,7 +81,7 @@ public class WorldGen extends System {
         player.addComponents(new TransformComponent(camera.viewportWidth / 2, camera.viewportHeight / 2, 5, 32, 32));
 
         player.addComponents(new VelocityComponent());
-        player.tag = "Player";
+        player.name = "Player";
 
         Animation animation = new Animation(larvMovement, "CaterpillarGun", 6);
         AnimationComponent a = new AnimationComponent(0.07f, false, animation.getFrames(), false);

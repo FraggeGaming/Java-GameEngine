@@ -1,6 +1,7 @@
 package EntityEngine;
 
 import EntityEngine.Components.Component;
+import EntityEngine.GameClasses.Tags;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.HashMap;
@@ -11,8 +12,8 @@ public class Entity {
     public HashMap<Class<?extends Component>, Component> componentHashMap = new HashMap<>(15, 0.7f);
     public boolean flagForDelete = false;
     public int id;
-    public String tag;
-    private Array<String> tags = new Array<>();
+    public String name;
+    private Tags tags;
     Component c;
     public Entity(){
 
@@ -43,8 +44,8 @@ public class Entity {
         return null;
     }
 
-    public void setTags(String tag){
-        tags.add(tag);
+    public Tags getTags(){
+        return tags;
     }
 
     public void setComponents(Array<Component> components) {

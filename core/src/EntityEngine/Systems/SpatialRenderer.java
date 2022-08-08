@@ -1,13 +1,14 @@
 package EntityEngine.Systems;
 
-import EntityEngine.Architect;
+import EntityEngine.Architect.Architect;
 import EntityEngine.Components.*;
 import EntityEngine.Entity;
 import EntityEngine.Renderer.Cell;
-import EntityEngine.Renderer.TransformComparator;
-import EntityEngine.Type;
+import EntityEngine.Architect.Type;
+import TestFiles.scripts.Components.WaterComponent;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.crashinvaders.vfx.effects.WaterDistortionEffect;
 
 public class SpatialRenderer extends System {
 
@@ -18,16 +19,11 @@ public class SpatialRenderer extends System {
     Component c;
     Component x;
 
-    Array<Component> comp;
-
-    Array<Cell> cells;
-    Array<TransformComponent> compt = new Array<>();
-
     Architect architect;
-
     Array<Integer> ints;
     Array<Component> transformArray;
     Array<Component> textureArray;
+
     public SpatialRenderer(){
 
     }
@@ -35,85 +31,82 @@ public class SpatialRenderer extends System {
     @Override
     public void onCreate() {
         architect = engine.architectHandler.getArchitect(new Type(TransformComponent.class, TextureComponent.class));
+
     }
+
 
     @Override
     public void update(float dt){
-        drawnEntities = 0;
+
+        if (architect == null)
+            return;
+
+
         ints = engine.getSpatialArc(architect);
         transformArray = architect.getComponents(TransformComponent.class);
         textureArray = architect.getComponents(TextureComponent.class);
     }
 
+    /*
+    * This method renders everything visable based on the proximity from
+    * camera center, or given transform.
+    * */
     @Override
     public void render(float dt) {
+
+        drawnEntities = 0;
+        if (ints != null && !ints.isEmpty()){
+            for (int i = 0; i < ints.size; i++){
+                transform = (TransformComponent) transformArray.get(ints.get(i));
+                t = (TextureComponent) textureArray.get(ints.get(i));
+
+                if (t.draw)
+                    drawTexture(t, transform);
+            }
+        }
+
+    }
+
+    /*@Override
+    public void postRender(float dt) {
+        for (int i = 0; i < engine.effects.size; i++){
+            engine.vfxManager.removeEffect(engine.effects.get(i));
+        }
+
+        engine.vfxManager.cleanUpBuffers();
+        // Begin render to an off-screen buffer.
+        engine.vfxManager.addEffect(waterDistortionEffect);
+        engine.vfxManager.beginInputCapture();
+        engine.batch.begin();
+
         if (ints != null && !ints.isEmpty()){
             for (int i = 0; i < ints.size; i++){
 
                 transform = (TransformComponent) transformArray.get(ints.get(i));
                 t = (TextureComponent) textureArray.get(ints.get(i));
 
-                drawTexture(t, transform);
-            }
-        }
-    }
-
-    private void renderWiothoutCMS(){
-
-
-        cells = engine.getSpatialHashGrid().getNeighbours();
-        for (int i = 0; i < cells.size; i++){
-            compt.addAll((Array<? extends TransformComponent>) cells.get(i).getComponents(TransformComponent.class));
-        }
-        compt.sort(new TransformComparator());
-
-
-
-        engine.getBatch().begin();
-        for (int i = 0; i < compt.size; i++){
-
-            transform = compt.get(i);
-            t = (TextureComponent) engine.getEntityComponent(transform.getId(), TextureComponent.class);
-            drawTexture(t, transform);
-
-        }
-        engine.getBatch().end();
-
-        compt.clear();
-    }
-
-    private void renderWithCMS() {
-
-        comp = engine.getloadedComponents(TextureComponent.class);
-        if (comp != null){
-
-            engine.getBatch().begin();
-
-            for (int i = 0; i < comp.size; i++){
-                t = (TextureComponent) comp.get(i);
-                if (engine.getEntity(t.getId()) != null){
-                    transform = (TransformComponent) engine.getEntityComponent(t.getId(), TransformComponent.class);
+                if (engine.getEntityComponent(t.getId(), WaterComponent.class) != null)
                     drawTexture(t, transform);
-                }
-
-
-            }
-
-            engine.getBatch().end();
-        }
-    }
-
-    private void renderArray(Array<TransformComponent> comp){
-        if (comp != null){
-            for (int i = 0; i < comp.size; i++){
-
-                transform = comp.get(i);
-                t = (TextureComponent) engine.getEntityComponent(transform.getId(), TextureComponent.class);
-                drawTexture(t, transform);
-
             }
         }
-    }
+
+        engine.batch.end();
+        engine.vfxManager.endInputCapture();
+        // Apply the effects chain to the captured frame.
+        engine.vfxManager.update(dt);
+
+        engine.vfxManager.applyEffects();
+        // Render result to the screen.
+        engine.vfxManager.renderToScreen();
+
+        engine.vfxManager.removeEffect(waterDistortionEffect);
+
+        for (int i = 0; i < engine.effects.size; i++){
+            engine.vfxManager.addEffect(engine.effects.get(i));
+        }
+
+    }*/
+
 
     private void drawTexture(TextureComponent texture, TransformComponent transform){
         if (texture != null){

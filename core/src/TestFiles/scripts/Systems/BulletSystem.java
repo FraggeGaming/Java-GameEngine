@@ -58,16 +58,17 @@ public class BulletSystem extends System {
     }
 
     private void fireBullet(float dt){
-        if (player == null){
-            player = engine.getEntity("Player");
-            playerTransform = (TransformComponent) player.getComponent(TransformComponent.class);
-        }
+
 
 
         fireTimer += dt;
 
         if (fireTimer >= 1/fireRate){
+            player = engine.getEntity("Player");
+            if (player == null)
+                return;
 
+            playerTransform = (TransformComponent) player.getComponent(TransformComponent.class);
             if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
 
                 e = createProjectile(1, 200,playerTransform, 20, 20, new TextureRegion(atlas.findRegion("Spore")), getbulletVector());

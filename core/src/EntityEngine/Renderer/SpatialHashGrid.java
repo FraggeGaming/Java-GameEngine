@@ -19,17 +19,16 @@ public class SpatialHashGrid  {
     boolean addCell = false;
 
     int cellSize = 100;
-    int offsetX = 1; //TODO make this changeable in GUI
-    int offsetY = 3;
+    int offsetX = 1;
+    int offsetY = 2;
     int radiusY;
     int radiusX;
-    public boolean update = false; //TODO remove this
-    Engine engine;
+
 
     final static Array<TransformComponent> transformsSorted = new Array<>();
 
-    public SpatialHashGrid(Engine engine){
-        this.engine = engine;
+    public SpatialHashGrid(){
+
     }
 
     public void setData(int height){
@@ -37,7 +36,16 @@ public class SpatialHashGrid  {
         radiusX = radiusY*16/9 + offsetX;
     }
 
+    public void setCellSize(int size){
+        cellSize = size;
+    }
 
+
+    public void setOffset(int x, int y){
+        offsetX = x;
+        offsetY = y;
+
+    }
 
     public Array<Cell> getNeighbours(){
 
@@ -55,7 +63,6 @@ public class SpatialHashGrid  {
     public void calculateSpatialGrid(TransformComponent component){
         loadedCells.clear();
         getSurroundingCells(component);
-        update = true;
         loadedCellsTemp.clear();
         loadedCellsTemp.addAll(loadedCells);
 
@@ -92,6 +99,7 @@ public class SpatialHashGrid  {
             for (int j = 0; j < radiusY; j++){
                 cell = findCell(component.getOriginX()/cellSize - radiusX/2f +i, component.getOriginY()/cellSize- radiusY/2f +j );
                 processCell(cell);
+
             }
         }
     }
