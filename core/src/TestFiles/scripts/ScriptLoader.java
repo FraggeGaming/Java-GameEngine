@@ -85,19 +85,23 @@ public class ScriptLoader extends Script {
         engine.addSystem(new TimerSystem());
     }
 
+    //TODO reset tilemap
+    //TODO better PP management
+    //TODO some kind of particle system using shaders + vfxmanager
+    //TODO archtect type dynamic allocator
 
     //TODO Make pathfinding multithreaded
 
     //TODO engine pool for less deletetion of entities
     //TODO audio component
-    //TODO archtect type dynamic allocator
-    //TODO lightning filter
 
-
-    //TODO add reversed animation
     //TODO fix so animation gets synced //Synced animation parameter
     //TODO add dispose on stuff
     //TODO sorting system for systems based on priority order
+
+
+    //TODO add reversed animation
+
 
 
     //Gameplay
@@ -105,13 +109,14 @@ public class ScriptLoader extends Script {
     //TODO create game
 
     //MBY
+    //TODO lightning filter
+
     //TODO collision detection optimization, flag sertain cells for update or not
     //TODO optimize actors
     //TODO fix large collision //multiple collision boxes
     //TODO add collision calculation using multiple steps
     //TODO add UpNp
     //TODO UDP support
-    //TODO some kind of particle system (gpu calculated?)
     //TODO raycast component
 
 }
