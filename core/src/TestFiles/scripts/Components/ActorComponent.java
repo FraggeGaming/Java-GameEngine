@@ -1,8 +1,9 @@
-package EntityEngine.Components;
+package TestFiles.scripts.Components;
 
+import EntityEngine.Components.Component;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-public class ActorComponent extends Component{
+public class ActorComponent extends Component {
     public Actor actor;
     public boolean isSpatial = true;
 

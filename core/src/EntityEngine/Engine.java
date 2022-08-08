@@ -17,14 +17,12 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.effects.ChainVfxEffect;
-import com.crashinvaders.vfx.effects.WaterDistortionEffect;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,12 +30,25 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+
+/*
+* This engine composes of an ECS, renderer, assetManager, Collision detection and
+* resolution, Box2D, lightning, postprocessing and lightweight TCP packet transmission.
+*
+* To use this class correctly one should make use of components and systems in order
+* to update different aspects of a game. The use of systems is optional,
+* one system must exist in order for the game to have logic.
+*
+* Author: Fardis Nazemroaya Sedeh
+*
+* */
+
 public class Engine {
 
     public final HashMap<Integer, Entity> componentMap = new HashMap<>();
     public final HashMap<String, Entity> entityMapper = new HashMap<>();
     private final Array<System> systems = new Array<>();
-    private final SpatialHashGrid spatialHashGrid;
+    private SpatialHashGrid spatialHashGrid;
 
     int entityId = 0;
     public List<Entity> flagedForDelete = new ArrayList<>();
@@ -56,6 +67,7 @@ public class Engine {
     public Array<ChainVfxEffect> effects;
 
 
+    boolean reset = false;
 
     public Engine(float width, float height, Script scriptLoader){
         camera = new TDCamera(width, height);
@@ -99,13 +111,11 @@ public class Engine {
         addSystem(new Debugger());
         addSystem(new PhysicsSystem());
         addSystem(new LightningSystem());
-        addSystem(new NavMesh());
         addSystem(new UIRenderer());
-
     }
 
+
     public void update(float dt){
-        ScreenUtils.clear(1, 1, 1, 1f);
 
         spatialHashGrid.calculateSpatialGrid(camera.getCameraTransform());
         batch.setProjectionMatrix(camera.combined);
@@ -124,9 +134,18 @@ public class Engine {
 
 
         deleteFlaged();
+
+        for (int i = 0; i < systems.size; i++){
+
+            if (systems.get(i).isActive){
+                systems.get(i).lastUpdate(dt);
+            }
+        }
     }
 
     private void render(float dt){
+        ScreenUtils.clear(1, 1, 1, 1f);
+
         vfxManager.cleanUpBuffers();
         vfxManager.beginInputCapture();
 
@@ -138,7 +157,7 @@ public class Engine {
             }
         }
 
-        //Renders everything that doesent use its own batch
+        //Renders everything with global batch
         batch.begin();
         for (int i = 0; i < systems.size; i++){
 
@@ -153,7 +172,7 @@ public class Engine {
         vfxManager.applyEffects();
         vfxManager.renderToScreen();
 
-        //For example Lightning
+        //Post render, rendering with own batch, ex Lights
         for (int i = 0; i < systems.size; i++){
 
             if (systems.get(i).isActive){
@@ -161,6 +180,7 @@ public class Engine {
             }
         }
 
+        //Renders UI
         for (int i = 0; i < systems.size; i++){
 
             if (systems.get(i).isActive){
@@ -202,8 +222,10 @@ public class Engine {
     public void addEntity(Entity entity){
         entity.setId(entityId++); // and add to component map
         componentMap.put(entity.id, entity);
+        if (entity.name != null){
+            entityMapper.put(entity.name, entity);
+        }
         spatialHashGrid.addEntity(entity);
-
         architectHandler.addToArchitect(entity);
 
         for (int i = 0; i < systems.size; i++){
@@ -211,15 +233,18 @@ public class Engine {
         }
 
 
-        if (entity.name != null){
-            entityMapper.put(entity.name, entity);
-        }
+
 
     }
 
     public void removeEntity(Entity entity){
+        if (entity == null || entity.flagForDelete)
+            return;
+
         flagedForDelete.add(entity);
         entity.flagForDelete = true;
+
+        entityMapper.remove(entity.name);
 
         if (entity.getComponent(RigidBody2D.class) != null){
             deleteRigidBody(entity);
@@ -262,6 +287,9 @@ public class Engine {
     * */
     public Array<Integer> getSpatialArc(Architect architect){
 
+        if (architect == null)
+            return null;
+
         Array<TransformComponent> transforms = getSpatialHashGrid().getNearbyTransforms();
         Array<Integer> ints = new Array<>();
         if (transforms == null)
@@ -303,15 +331,42 @@ public class Engine {
 
             e.dispose();
             componentMap.remove(e.id);
+
+            if (e.name != null)
+                entityMapper.remove(e.name);
+
             spatialHashGrid.removeEntity(e);
             architectHandler.removeEntity(e);
 
+            for (int i = 0 ; i < systems.size; i++){
+                systems.get(i).removeEntity(e);
+            }
+
         }
         flagedForDelete.clear();
+
+
     }
 
     public void deleteRigidBody(Entity temp) {
         flagedRigidBodyforDelete.add(temp);
+    }
+
+    /*
+    * This method removes every entity and components from the internal ecs
+    * at the end of the frame.
+    * Because deletion is not instant, one may use system.lastUpdate for
+    * engine use after ecs is cleared.
+    * */
+    public void resetECS(){
+
+        for (int i = 0; i < entityId; i++){
+            removeEntity(componentMap.get(i));
+
+        }
+        entityId = 0;
+        getSystem(NavMesh.class).reset();
+
     }
 
     public void dispose() {

@@ -24,10 +24,6 @@ public class SpatialRenderer extends System {
     Array<Component> transformArray;
     Array<Component> textureArray;
 
-
-
-
-    public WaterDistortionEffect waterDistortionEffect = new WaterDistortionEffect(3, .5f);
     public SpatialRenderer(){
 
     }
@@ -35,23 +31,32 @@ public class SpatialRenderer extends System {
     @Override
     public void onCreate() {
         architect = engine.architectHandler.getArchitect(new Type(TransformComponent.class, TextureComponent.class));
+
     }
+
 
     @Override
     public void update(float dt){
-        drawnEntities = 0;
+
+        if (architect == null)
+            return;
+
+
         ints = engine.getSpatialArc(architect);
         transformArray = architect.getComponents(TransformComponent.class);
         textureArray = architect.getComponents(TextureComponent.class);
     }
 
+    /*
+    * This method renders everything visable based on the proximity from
+    * camera center, or given transform.
+    * */
     @Override
     public void render(float dt) {
 
-
+        drawnEntities = 0;
         if (ints != null && !ints.isEmpty()){
             for (int i = 0; i < ints.size; i++){
-
                 transform = (TransformComponent) transformArray.get(ints.get(i));
                 t = (TextureComponent) textureArray.get(ints.get(i));
 

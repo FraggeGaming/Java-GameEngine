@@ -28,6 +28,9 @@ public class MovementSystem extends System {
     }
 
     public void movePlayer(float x, float y){
+        if (engine.getEntity("Player") == null)
+            return;
+
         if (network != null && network.isOpen)
             return;
 

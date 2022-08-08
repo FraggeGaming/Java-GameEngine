@@ -1,5 +1,6 @@
 package EntityEngine.Systems;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
@@ -36,8 +37,9 @@ public class TileMapRenderer extends System{
     }
 
     @Override
-    public void update(float dt) {
-
+    public void reset() {
+        dispose();
+        layers.clear();
     }
 
     @Override
@@ -49,8 +51,13 @@ public class TileMapRenderer extends System{
         tiledMapRenderer.render();
     }
 
+    @Override
+    public void dispose() {
+        map.dispose();
+    }
+
     public void addTilemap(TiledMap tiledMap){
-        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, engine.batch);
     }
 
     public void setCell(int layer,int x, int y, TiledMapTileLayer.Cell cell){

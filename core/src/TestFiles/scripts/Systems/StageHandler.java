@@ -1,6 +1,6 @@
 package TestFiles.scripts.Systems;
 
-import EntityEngine.Components.ActorComponent;
+import TestFiles.scripts.Components.ActorComponent;
 import EntityEngine.Entity;
 import EntityEngine.Systems.System;
 import com.badlogic.gdx.Gdx;
@@ -31,6 +31,19 @@ public class StageHandler extends System {
 
             else
                 UI.addActor(actorComponent.actor);
+        }
+    }
+
+    @Override
+    public void removeEntity(Entity entity) {
+        if (entity.getComponent(ActorComponent.class) != null){
+            actorComponent = (ActorComponent) entity.getComponent(ActorComponent.class);
+
+            if (actorComponent.isSpatial)
+                stage.getActors().removeValue(actorComponent.actor, false);
+
+            else
+                UI.getActors().removeValue(actorComponent.actor, false);
         }
     }
 

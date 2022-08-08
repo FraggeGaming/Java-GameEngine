@@ -8,6 +8,7 @@ import EntityEngine.GameClasses.TDCamera;
 import EntityEngine.Noise.OpenSimplexNoise;
 import EntityEngine.Systems.*;
 import EntityEngine.Systems.System;
+import TestFiles.scripts.Components.ActorComponent;
 import TestFiles.scripts.Components.StoneCrabLogic;
 import box2dLight.PointLight;
 import com.badlogic.gdx.Gdx;

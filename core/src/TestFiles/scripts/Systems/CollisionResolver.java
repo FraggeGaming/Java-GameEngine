@@ -30,6 +30,9 @@ public class CollisionResolver extends System {
     private void stoneCrabJump(){
         Entity player = engine.getEntity("Player");
 
+        if (player == null)
+            return;
+
         CollisionComponent collisionComponent = (CollisionComponent) player.getComponent(CollisionComponent.class);
 
         Array<CollisionComponent> comp = collisions.getCollisision(collisionComponent, "StoneCrab");

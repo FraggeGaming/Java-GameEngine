@@ -1,20 +1,14 @@
 package TestFiles.scripts.Shaders;
 
 import EntityEngine.Systems.System;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.crashinvaders.vfx.effects.BloomEffect;
 import com.crashinvaders.vfx.effects.FilmGrainEffect;
 import com.crashinvaders.vfx.effects.VignettingEffect;
 
 public class ShaderTest extends System {
 
-
-    ShaderProgram shader;
-
-
     @Override
     public void onCreate() {
-
 
         BloomEffect bloomEffect = new BloomEffect();
         bloomEffect.setBloomIntensity(1.5f);
@@ -22,9 +16,6 @@ public class ShaderTest extends System {
 
         VignettingEffect vignettingEffect = new VignettingEffect(false);
         engine.addEffect(vignettingEffect);
-        engine.addEffect(new FilmGrainEffect());
-
-
         engine.addEffect(new FilmGrainEffect());
 
     }

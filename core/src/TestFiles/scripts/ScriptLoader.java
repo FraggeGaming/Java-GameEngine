@@ -1,6 +1,7 @@
 package TestFiles.scripts;
 
 import EntityEngine.Components.*;
+import EntityEngine.Systems.NavMesh;
 import TestFiles.scripts.Shaders.ShaderTest;
 import TestFiles.scripts.Systems.StageHandler;
 import EntityEngine.Architect.Type;
@@ -49,9 +50,6 @@ public class ScriptLoader extends Script {
         Gdx.graphics.setForegroundFPS(0);
 
 
-
-        engine.getSpatialHashGrid().setData((int) (engine.camera.viewportHeight));
-
         topDownTest();
 
         //sideScrollerTest();
@@ -59,6 +57,7 @@ public class ScriptLoader extends Script {
     }
 
     public void topDownTest(){
+        engine.addSystem(new NavMesh());
         engine.addSystem(new StageHandler());
         engine.addSystem(new DebugStats());
 
@@ -71,6 +70,7 @@ public class ScriptLoader extends Script {
         engine.addSystem(new CollisionResolver());
         engine.addSystem(new ShaderTest());
 
+        engine.addSystem(new WorldChanger());
         //engine.addSystem(new NetworkScript());
         engine.camera.zoom = 1;
     }
@@ -86,14 +86,13 @@ public class ScriptLoader extends Script {
     }
 
 
-    //TODO optimize actors
     //TODO Make pathfinding multithreaded
 
     //TODO engine pool for less deletetion of entities
     //TODO audio component
     //TODO archtect type dynamic allocator
     //TODO lightning filter
-    //TODO different screen support, loading, settings etc
+
 
     //TODO add reversed animation
     //TODO fix so animation gets synced //Synced animation parameter
@@ -107,6 +106,7 @@ public class ScriptLoader extends Script {
 
     //MBY
     //TODO collision detection optimization, flag sertain cells for update or not
+    //TODO optimize actors
     //TODO fix large collision //multiple collision boxes
     //TODO add collision calculation using multiple steps
     //TODO add UpNp

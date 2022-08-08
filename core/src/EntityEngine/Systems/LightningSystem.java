@@ -9,10 +9,9 @@ import com.badlogic.gdx.utils.Array;
 
 public class LightningSystem extends System {
 
-    Architect architect;
+
     @Override
     public void onCreate() {
-        architect = engine.architectHandler.getArchitect(new Type(Light.class, TransformComponent.class));
     }
 
     @Override

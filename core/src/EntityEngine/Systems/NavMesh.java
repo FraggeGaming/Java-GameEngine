@@ -29,6 +29,11 @@ public class NavMesh extends System{
     }
 
     @Override
+    public void reset() {
+        nodeMap.clear();
+    }
+
+    @Override
     public void postCreate() {
         try {
             nodeExeption();

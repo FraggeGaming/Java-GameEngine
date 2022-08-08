@@ -33,7 +33,14 @@ public class UIRenderer extends System{
     }
 
     @Override
+    public void reset() {
+        architect = engine.architectHandler.getArchitect(new Type(TextureComponent.class, UIElement.class));
+
+    }
+
+    @Override
     public void update(float dt){
+
         transformArray = architect.getComponents(UIElement.class);
         textureArray = architect.getComponents(TextureComponent.class);
     }
@@ -45,6 +52,9 @@ public class UIRenderer extends System{
 
     @Override
     public void UIRender(float dt) {
+
+        if (transformArray == null)
+            return;
 
         batch.begin();
 
