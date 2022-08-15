@@ -1,7 +1,6 @@
-package EntityEngine;
+package EntityEngine.Utils;
 
 import EntityEngine.Components.Component;
-import EntityEngine.GameClasses.Tags;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.HashMap;

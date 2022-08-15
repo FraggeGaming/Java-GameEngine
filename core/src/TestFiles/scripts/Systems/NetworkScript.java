@@ -4,7 +4,7 @@ import EntityEngine.Components.CollisionComponent;
 import EntityEngine.Components.TextureComponent;
 import EntityEngine.Components.TransformComponent;
 import EntityEngine.Components.VelocityComponent;
-import EntityEngine.Entity;
+import EntityEngine.Utils.Entity;
 import EntityEngine.Systems.NetworkManager;
 import EntityEngine.Systems.System;
 import TestFiles.scripts.Network.NetWorkClient;

@@ -106,6 +106,14 @@ public class DebugLabel {
         else if (whatToDebug == 22){
             setText(getSystemFunctionTime(LightningSystem.class));
         }
+
+        else if (whatToDebug == 23){
+            setText(engine.updateTime.getAverageDuration());
+        }
+
+        else if (whatToDebug == 24){
+            setText(engine.renderTime.getAverageDuration());
+        }
     }
 
     public long getSystemFunctionTime(Class<?extends System> System){

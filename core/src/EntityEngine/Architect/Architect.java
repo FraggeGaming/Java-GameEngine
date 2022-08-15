@@ -1,7 +1,7 @@
 package EntityEngine.Architect;
 
 import EntityEngine.Components.Component;
-import EntityEngine.Entity;
+import EntityEngine.Utils.Entity;
 import com.badlogic.gdx.utils.Array;
 
 public class Architect {

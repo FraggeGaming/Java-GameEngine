@@ -2,17 +2,14 @@ package EntityEngine.Systems;
 
 import EntityEngine.Architect.Architect;
 import EntityEngine.Components.*;
-import EntityEngine.Entity;
-import EntityEngine.Renderer.Cell;
+import EntityEngine.Utils.Entity;
 import EntityEngine.Architect.Type;
-import TestFiles.scripts.Components.WaterComponent;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.crashinvaders.vfx.effects.WaterDistortionEffect;
 
 public class SpatialRenderer extends System {
 
-    Vector2 worldSize = new Vector2(0, 0);
+    public Vector2 worldSize = new Vector2(0, 0);
     public int drawnEntities;
     TextureComponent t;
     TransformComponent transform;
@@ -106,6 +103,15 @@ public class SpatialRenderer extends System {
         }
 
     }*/
+
+    private void drawAffine(TextureComponent texture, TransformComponent transform){
+        if (texture != null){
+            engine.getBatch().draw(texture.getRegion(),transform.getWidth(), transform.getHeight(),transform.getAffine2());
+            drawnEntities++;
+
+
+        }
+    }
 
 
     private void drawTexture(TextureComponent texture, TransformComponent transform){

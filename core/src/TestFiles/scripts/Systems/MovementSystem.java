@@ -1,12 +1,9 @@
 package TestFiles.scripts.Systems;
 
 import EntityEngine.Components.*;
-import EntityEngine.Entity;
+import EntityEngine.Utils.Entity;
 import EntityEngine.Systems.NetworkManager;
 import EntityEngine.Systems.System;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.math.Vector2;
 
 public class MovementSystem extends System {
 

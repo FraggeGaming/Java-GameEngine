@@ -1,6 +1,6 @@
 package TestFiles.scripts.Systems;
 import TestFiles.scripts.Components.TimerComponent;
-import EntityEngine.Entity;
+import EntityEngine.Utils.Entity;
 import EntityEngine.Systems.System;
 import com.badlogic.gdx.utils.Array;
 

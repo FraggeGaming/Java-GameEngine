@@ -3,7 +3,7 @@ package TestFiles.scripts.Systems;
 import EntityEngine.Components.AnimationComponent;
 import EntityEngine.Components.CollisionComponent;
 import EntityEngine.Components.TextureComponent;
-import EntityEngine.Entity;
+import EntityEngine.Utils.Entity;
 import EntityEngine.Systems.CollisionDetectionSystem;
 import EntityEngine.Systems.System;
 import TestFiles.scripts.Components.StoneCrabLogic;

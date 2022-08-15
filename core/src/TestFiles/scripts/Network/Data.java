@@ -1,11 +1,8 @@
 package TestFiles.scripts.Network;
 
-import EntityEngine.Components.Component;
 import EntityEngine.Components.TransformComponent;
-import EntityEngine.Components.VelocityComponent;
-import EntityEngine.Entity;
+import EntityEngine.Utils.Entity;
 import EntityEngine.Network.NetWorkData;
-import com.badlogic.gdx.utils.Array;
 
 public class Data extends NetWorkData {
     public TransformComponent component;

@@ -1,4 +1,6 @@
-package EntityEngine;
+package EntityEngine.Utils;
+
+import EntityEngine.Engine;
 
 public abstract class Script {
     public Engine engine;

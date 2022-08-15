@@ -1,7 +1,5 @@
 package EntityEngine.Components;
 
-import EntityEngine.Entity;
-
 import java.util.HashMap;
 
 public class Component {

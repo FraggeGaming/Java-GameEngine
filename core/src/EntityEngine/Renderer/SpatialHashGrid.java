@@ -3,8 +3,7 @@ package EntityEngine.Renderer;
 import EntityEngine.Components.CollisionComponent;
 import EntityEngine.Components.Component;
 import EntityEngine.Components.TransformComponent;
-import EntityEngine.Engine;
-import EntityEngine.Entity;
+import EntityEngine.Utils.Entity;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import java.util.HashMap;
@@ -172,6 +171,7 @@ public class SpatialHashGrid  {
         //update = true;
 
     }
+
 
     public void removeEntity(Entity entity){
 

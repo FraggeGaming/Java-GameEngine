@@ -2,8 +2,8 @@ package EntityEngine.Systems;
 
 
 import EntityEngine.Components.TransformComponent;
-import EntityEngine.Entity;
-import EntityEngine.GameClasses.AstarPathFinding;
+import EntityEngine.Utils.Entity;
+import EntityEngine.Utils.AstarPathFinding;
 import EntityEngine.Components.Node;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

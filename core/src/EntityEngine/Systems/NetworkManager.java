@@ -1,7 +1,7 @@
 package EntityEngine.Systems;
 
 import EntityEngine.Network.*;
-import EntityEngine.NetworkClient.Client;
+import EntityEngine.Network.NetworkClient.Client;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;

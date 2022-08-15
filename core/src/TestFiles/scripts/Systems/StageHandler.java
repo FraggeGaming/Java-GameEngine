@@ -1,7 +1,7 @@
 package TestFiles.scripts.Systems;
 
 import TestFiles.scripts.Components.ActorComponent;
-import EntityEngine.Entity;
+import EntityEngine.Utils.Entity;
 import EntityEngine.Systems.System;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;

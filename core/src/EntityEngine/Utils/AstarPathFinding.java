@@ -1,4 +1,4 @@
-package EntityEngine.GameClasses;
+package EntityEngine.Utils;
 
 import EntityEngine.Components.Node;
 

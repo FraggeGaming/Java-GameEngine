@@ -9,8 +9,9 @@ import TestFiles.SideScroller.SideMovement;
 import TestFiles.SideScroller.WorldGen;
 import TestFiles.scripts.Components.StoneCrabLogic;
 import TestFiles.scripts.Systems.DebugStats;
-import EntityEngine.Script;
+import EntityEngine.Utils.Script;
 import TestFiles.scripts.Systems.*;
+import TestFiles.scripts.sim.TileSimManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -58,6 +59,8 @@ public class ScriptLoader extends Script {
 
     public void topDownTest(){
         engine.addSystem(new NavMesh());
+        engine.addSystem(new TileSimManager());
+
         engine.addSystem(new StageHandler());
         engine.addSystem(new DebugStats());
 
@@ -71,6 +74,7 @@ public class ScriptLoader extends Script {
         engine.addSystem(new ShaderTest());
 
         engine.addSystem(new WorldChanger());
+
         //engine.addSystem(new NetworkScript());
         engine.camera.zoom = 1;
     }
@@ -86,30 +90,28 @@ public class ScriptLoader extends Script {
     }
 
     //TODO reset tilemap
-    //TODO better PP management
-    //TODO some kind of particle system using shaders + vfxmanager
     //TODO archtect type dynamic allocator
 
     //TODO Make pathfinding multithreaded
-
-    //TODO engine pool for less deletetion of entities
     //TODO audio component
-
-    //TODO fix so animation gets synced //Synced animation parameter
     //TODO add dispose on stuff
-    //TODO sorting system for systems based on priority order
-
-
-    //TODO add reversed animation
 
 
 
     //Gameplay
     //TODO put timer on stonecrab in order to go back into pile
     //TODO create game
+    //TODO pool for bullets
+    //TODO some kind of particle system using shaders + vfxmanager
+    //TODO fix so animation gets synced //Synced animation parameter
+    //TODO add reversed animation
+
 
     //MBY
+    //TODO sorting system for systems based on priority order
+
     //TODO lightning filter
+    //TODO better PP management
 
     //TODO collision detection optimization, flag sertain cells for update or not
     //TODO optimize actors

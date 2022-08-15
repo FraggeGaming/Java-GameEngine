@@ -1,13 +1,11 @@
 package TestFiles.scripts.Systems;
 
-import EntityEngine.Architect.Type;
 import EntityEngine.Components.*;
-import EntityEngine.Entity;
-import EntityEngine.GameClasses.Animation;
-import EntityEngine.GameClasses.TDCamera;
+import EntityEngine.Utils.Entity;
+import EntityEngine.Utils.Animation;
+import EntityEngine.Utils.TDCamera;
 import EntityEngine.Systems.System;
 import EntityEngine.Systems.TileMapRenderer;
-import TestFiles.scripts.Components.StoneCrabLogic;
 import box2dLight.PointLight;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

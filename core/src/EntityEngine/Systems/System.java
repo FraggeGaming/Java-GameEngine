@@ -1,7 +1,8 @@
 package EntityEngine.Systems;
 
 import EntityEngine.Engine;
-import EntityEngine.Entity;
+import EntityEngine.Utils.DebugTimer;
+import EntityEngine.Utils.Entity;
 /*
 * Every system can get the camera and batch and other values from the engine
 *
@@ -9,15 +10,11 @@ import EntityEngine.Entity;
 public class System {
     int priorityOrder = 10;
     public Engine engine;
-    Long startTime;
-    Long endTime;
-    Long duration = 0L;
-    int iteration = 0;
-    Long averageDuration = 0L;
+    DebugTimer timer;
     public boolean isActive = true;
 
     public System(){
-
+        timer = new DebugTimer();
     }
 
     public void onCreate(){
@@ -46,23 +43,16 @@ public class System {
     }
 
     public Long getFunctionDuration(){
-        return averageDuration/100;
+        return timer.getAverageDuration();
     }
 
     public void startTimer(){
 
-        startTime = java.lang.System.nanoTime();
+       timer.startTimer();
     }
 
     public void endTimer(){
-        iteration++;
-        endTime = java.lang.System.nanoTime();
-        duration += (endTime - startTime);
-        if (iteration >= 500){
-            averageDuration = duration/iteration;
-            iteration = 0;
-            duration = 0L;
-        }
+        timer.endTimer();
 
     }
 

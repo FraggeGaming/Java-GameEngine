@@ -1,6 +1,9 @@
 package TestFiles.scripts.Systems;
 
+import EntityEngine.Components.TransformComponent;
 import EntityEngine.Systems.System;
+import TestFiles.scripts.sim.TileSim;
+import TestFiles.scripts.sim.TileSimManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
@@ -10,6 +13,14 @@ public class InputManager extends System {
     public void update(float dt) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
             engine.exit();
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.M)){
+            TileSimManager tileSimManager = (TileSimManager) engine.getSystem(TileSimManager.class);
+            TransformComponent t = (TransformComponent) engine.getEntity("Player").getComponent(TransformComponent.class);
+            TileSim tileSim = tileSimManager.getTile(t.getOriginX(), t.getOriginY());
+
+            java.lang.System.out.println(tileSim.x + ", " + tileSim.y);
         }
 
         movement();

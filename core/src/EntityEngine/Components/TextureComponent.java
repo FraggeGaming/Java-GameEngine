@@ -1,6 +1,5 @@
 package EntityEngine.Components;
 
-import EntityEngine.Entity;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class TextureComponent extends Component{

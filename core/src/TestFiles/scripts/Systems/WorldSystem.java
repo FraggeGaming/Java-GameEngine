@@ -1,15 +1,18 @@
 package TestFiles.scripts.Systems;
 
 import EntityEngine.Components.*;
-import EntityEngine.Entity;
-import EntityEngine.GameClasses.Animation;
+import EntityEngine.Utils.Entity;
+import EntityEngine.Utils.Animation;
 import EntityEngine.Components.Node;
-import EntityEngine.GameClasses.TDCamera;
-import EntityEngine.Noise.OpenSimplexNoise;
+import EntityEngine.Utils.TDCamera;
+import EntityEngine.Utils.OpenSimplexNoise;
 import EntityEngine.Systems.*;
 import EntityEngine.Systems.System;
 import TestFiles.scripts.Components.ActorComponent;
 import TestFiles.scripts.Components.StoneCrabLogic;
+import TestFiles.scripts.sim.Element;
+import TestFiles.scripts.sim.TileSim;
+import TestFiles.scripts.sim.TileSimManager;
 import box2dLight.PointLight;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -37,6 +40,8 @@ public class WorldSystem extends System {
 
     CollisionDetectionSystem col;
     NavMesh navMesh;
+    TileSimManager tileSimManager;
+
 
     SpriteBatch batch;
 
@@ -68,6 +73,9 @@ public class WorldSystem extends System {
 
         navMesh = (NavMesh) engine.getSystem(NavMesh.class);
         navMesh.setNodeSize(16);
+
+        tileSimManager = (TileSimManager) engine.getSystem(TileSimManager.class);
+        tileSimManager.setTileSize(16);
         batch = new SpriteBatch();
 
         createTileMap();
@@ -122,20 +130,11 @@ public class WorldSystem extends System {
         node.setPos(new Vector2(x, y));
         e.addComponents(node);
 
-       /* if (noise > 0f){
-            TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-            cell.setTile(new StaticTiledMapTile(generateWithNoise(noise)));
-            layer.setCell((int)(x/16), (int)(y/16), cell);
+        TileSim tileSim = new TileSim(x,y);
+        while (engine.getRandomInteger(10)> 7){
+            tileSim.elements.add(new Element());
         }
-
-        else {
-            e.addComponents(new WaterComponent());
-            TextureComponent textureComponent = new TextureComponent(new TextureRegion(atlas.findRegion("Water")));
-            textureComponent.draw = false;
-            e.addComponents(textureComponent);
-            e.addComponents(new TransformComponent(x, y, 0, 16, 16));
-        }*/
-
+        e.addComponents(tileSim);
 
         TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
         cell.setTile(new StaticTiledMapTile(generateWithNoise(noise)));
@@ -265,6 +264,8 @@ public class WorldSystem extends System {
             e.addComponents(box2d);
 
             navMesh.setNodeBlocked(x, y);
+            tileSimManager.setBlocked(x,y);
+            tileSimManager.getTile(x,y).clearElements();
 
         }
 

@@ -3,10 +3,7 @@ package EntityEngine.Renderer;
 import EntityEngine.Components.CollisionComponent;
 import EntityEngine.Components.Component;
 import EntityEngine.Components.TransformComponent;
-import EntityEngine.Entity;
 import com.badlogic.gdx.utils.Array;
-
-import java.util.HashMap;
 
 public class Cell {
 

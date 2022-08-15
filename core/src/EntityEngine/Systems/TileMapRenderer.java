@@ -1,11 +1,12 @@
 package EntityEngine.Systems;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.renderers.OrthoCachedTiledMapRenderer;
 import com.badlogic.gdx.utils.Array;
 
 public class TileMapRenderer extends System{
@@ -38,8 +39,11 @@ public class TileMapRenderer extends System{
 
     @Override
     public void reset() {
+
         dispose();
-        layers.clear();
+
+
+
     }
 
     @Override
@@ -47,17 +51,23 @@ public class TileMapRenderer extends System{
         if (tiledMapRenderer == null)
             return;
 
+
         tiledMapRenderer.setView(engine.camera);
         tiledMapRenderer.render();
+
+
     }
 
     @Override
     public void dispose() {
-        map.dispose();
+        layers.clear();
+
+        //set the map in your renderer
+        //tiledMapRenderer.dispose();
     }
 
     public void addTilemap(TiledMap tiledMap){
-        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, engine.batch);
+        tiledMapRenderer = new OrthoCachedTiledMapRenderer(tiledMap);
     }
 
     public void setCell(int layer,int x, int y, TiledMapTileLayer.Cell cell){
