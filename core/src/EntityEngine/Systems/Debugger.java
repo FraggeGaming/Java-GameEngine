@@ -87,17 +87,17 @@ public class Debugger extends System {
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
                     shapeRenderer.setColor(Color.RED);
                 }
-                else if (tileSim.elements.size > 0){
+                else if (tileSim.getMass() > 0){
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
-                    if (tileSim.elements.size == 1)
+                    if (tileSim.getMass() == 1)
                         shapeRenderer.setColor(Color.GREEN);
-                    else if (tileSim.elements.size == 2)
+                    else if (tileSim.getMass() == 2)
                         shapeRenderer.setColor(Color.YELLOW);
-                    else if (tileSim.elements.size == 3)
+                    else if (tileSim.getMass() == 3)
                         shapeRenderer.setColor(Color.ORANGE);
-                    else if (tileSim.elements.size == 4)
+                    else if (tileSim.getMass() == 4)
                         shapeRenderer.setColor(Color.PURPLE);
-                    else if (tileSim.elements.size > 4)
+                    else if (tileSim.getMass() > 4)
                         shapeRenderer.setColor(Color.BLUE);
                 }
 

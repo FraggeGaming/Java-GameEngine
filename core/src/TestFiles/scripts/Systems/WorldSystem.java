@@ -11,6 +11,7 @@ import EntityEngine.Systems.System;
 import TestFiles.scripts.Components.ActorComponent;
 import TestFiles.scripts.Components.StoneCrabLogic;
 import TestFiles.scripts.sim.Element;
+import TestFiles.scripts.sim.ElementState;
 import TestFiles.scripts.sim.TileSim;
 import TestFiles.scripts.sim.TileSimManager;
 import box2dLight.PointLight;
@@ -31,7 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 public class WorldSystem extends System {
     double scale = 0.06f;
     float z = 1f;
-    int mapSize = 100;
+    int mapSize = 10;
     OpenSimplexNoise noise;
     TextureAtlas atlas;
     TextureAtlas fireAtlas;
@@ -131,9 +132,9 @@ public class WorldSystem extends System {
         e.addComponents(node);
 
         TileSim tileSim = new TileSim(x,y);
-        while (engine.getRandomInteger(10)> 7){
-            tileSim.elements.add(new Element());
-        }
+        /*while (engine.getRandomInteger(10) > 5){
+            tileSim.addElement(new Element(1, 5, 1, ElementState.GAS));
+        }*/
         e.addComponents(tileSim);
 
         TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
@@ -263,9 +264,9 @@ public class WorldSystem extends System {
             box2d.addToWorld(engine.world);
             e.addComponents(box2d);
 
-            navMesh.setNodeBlocked(x, y);
+            /*navMesh.setNodeBlocked(x, y);
             tileSimManager.setBlocked(x,y);
-            tileSimManager.getTile(x,y).clearElements();
+            tileSimManager.getTile(x,y).clearElements();*/
 
         }
 

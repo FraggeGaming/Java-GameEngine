@@ -312,9 +312,8 @@ public class Engine {
     }
 
     public int getRandomInteger(int bound){
-        int r = (int) Math.floor(Math.random()*(bound+1));
-        java.lang.System.out.println(r);
-        return r;
+        Random random = new Random(java.lang.System.nanoTime());
+        return random.nextInt(bound);
 
     }
 
