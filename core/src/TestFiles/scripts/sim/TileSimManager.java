@@ -3,7 +3,6 @@ package TestFiles.scripts.sim;
 
 import EntityEngine.Systems.System;
 import EntityEngine.Utils.Entity;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,12 +12,12 @@ public class TileSimManager extends System {
     public List<List<TileSim>> tileMap;
     public int tileSize = 16;
 
-    ShapeRenderer shapeRenderer = new ShapeRenderer();
 
 
+    float updateRate = 5;
+    float updateTimer = 0;
     @Override
     public void onCreate() {
-        shapeRenderer.setAutoShapeType(true);
         tileMap = new ArrayList<>();
 
     }
@@ -41,21 +40,52 @@ public class TileSimManager extends System {
     }
 
     public void freeTile(float x, float y){
-        getTile(x,y).blocked = false;
+        TileSim tile = getTile(x,y);
+        if (tile != null)
+            tile.blocked = false;
+        else {
+            try {
+                throw new Exception("Tile does not exist, Action dismissed");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void setBlocked(float x, float y){
-        getTile(x,y).blocked = true;
+        TileSim tile = getTile(x,y);
+        if (tile != null)
+            tile.blocked = true;
+        else {
+            try {
+                throw new Exception("Tile does not exist, Action dismissed");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 
     public TileSim getTile(float x, float y) {
-        return tileMap.get((int)x/tileSize).get((int)y/tileSize);
+        if((int)x/tileSize < tileMap.size() && (int)y/tileSize < tileMap.get((int) (x/tileSize)).size())
+            return tileMap.get((int)x/tileSize).get((int)y/tileSize);
+        try {
+            throw new Exception("Tile exeeds map bounds, Tile does not exist");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
     public void update(float dt) {
 
+        updateTimer += dt;
+        if (updateTimer >= 1/updateRate){
+            sim();
+
+            updateTimer = 0;
+        }
 
 
     }
@@ -74,46 +104,33 @@ public class TileSimManager extends System {
 
         if (sim.volume > 0){
 
-            int x = getRandomDir(index);
-            int y = getRandomDir(jndex);
+            //TODO: change this,  higher pressure difference, it will try harder to find a tile
+            for (int i = 0; i < 5; i++){
+                int x = getRandomDir(index);
+                int y = getRandomDir(jndex);
 
-            if (x >= 0 && y >= 0)
 
-            if (x < tileMap.size() && y < tileMap.get(x).size()){
-                TileSim next = tileMap.get(x).get(y);
+                if (x >= 0 && y >= 0){
+                    if (x < tileMap.size() && y < tileMap.get(x).size()){
+                        TileSim next = tileMap.get(x).get(y);
 
-                if (sim.volume > next.volume){
-                    next.addElement(sim.popRandomElement());
+                        if (!next.blocked){
+                            if (sim.volume > next.volume){
+                                next.addElement(sim.popRandomElement());
+                                //TODO: Change this to a system based on pressure, higher pressure difference, more atoms transfered
+                                if (sim.volume > next.volume){
+                                    next.addElement(sim.popRandomElement());
+
+                                }
+                            }
+
+                            return;
+                        }
+                    }
 
                 }
             }
 
-
-            /*
-
-            for (int i = 0; i < 3; i++){
-                for (int j = 0; j < 3; j++){
-                    if (index-1 + i >= 0 && jndex-1 + j >= 0){
-                        if (i == 1 && j == 1)
-                            continue;
-
-                        if (index-1 + i < tileMap.size() && jndex-1 + j < tileMap.get(index-1 + i).size()){
-                            TileSim nextTile = tileMap.get(index-1 + i).get(jndex-1 + j);
-
-                            if (sim.volume > nextTile.volume){
-                                Element element = sim.popRandomElement();
-                                //java.lang.System.out.println(sim.mass);
-
-                                if (element != null){
-                                    //java.lang.System.out.println(element);
-                                    nextTile.addElement(element);
-
-                                }
-                            }
-                        }
-                    }
-                }
-            }*/
         }
 
     }

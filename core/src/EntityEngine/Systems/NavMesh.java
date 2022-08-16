@@ -100,7 +100,14 @@ public class NavMesh extends System{
     }
 
     public Node getNode(int x, int y){
-        return nodeMap.get(x).get(y);
+        if(x < nodeMap.size() && y < nodeMap.get(x).size())
+            return nodeMap.get(x).get(y);
+        try {
+            throw new Exception("Node exeeds map bounds, Node does not exist");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void setNodeBlocked(int indexX, int indexY){
@@ -152,11 +159,27 @@ public class NavMesh extends System{
     }
 
     private void blockNode(Node node){
-        node.isBlocked = true;
+        if (node != null)
+            node.isBlocked = true;
+        else {
+            try {
+                throw new Exception("Node does not exist, Action dismissed");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void freeNode(Node node){
-        node.isBlocked = false;
+        if (node != null)
+            node.isBlocked = false;
+        else {
+            try {
+                throw new Exception("Node does not exist, Action dismissed");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

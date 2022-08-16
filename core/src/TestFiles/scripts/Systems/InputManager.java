@@ -17,7 +17,7 @@ public class InputManager extends System {
             engine.exit();
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.M)){
+        if (Gdx.input.isKeyPressed(Input.Keys.M)){
             TileSimManager tileSimManager = (TileSimManager) engine.getSystem(TileSimManager.class);
             TransformComponent t = (TransformComponent) engine.getEntity("Player").getComponent(TransformComponent.class);
             TileSim tileSim = tileSimManager.getTile(t.getOriginX(), t.getOriginY());

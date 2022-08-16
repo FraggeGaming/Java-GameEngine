@@ -71,12 +71,12 @@ public class BulletSystem extends System {
                 return;
 
             playerTransform = (TransformComponent) player.getComponent(TransformComponent.class);
-            if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
+            /*if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
 
                 e = createProjectile(1, 200,playerTransform, 20, 20, new TextureRegion(atlas.findRegion("Spore")), getbulletVector());
                 engine.addEntity(e);
                 fireTimer = 0;
-            }
+            }*/
 
             if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)){
 
