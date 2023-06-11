@@ -1,0 +1,482 @@
+
+TexturePack.png
+size: 512, 128
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+BlueAnt
+  rotate: false
+  xy: 69, 5
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+BlueAntVertical
+  rotate: false
+  xy: 233, 55
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+BlueTorch
+  rotate: false
+  xy: 175, 3
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+Branch
+  rotate: false
+  xy: 1, 105
+  size: 112, 16
+  orig: 112, 16
+  offset: 0, 0
+  index: -1
+Caterpillar
+  rotate: false
+  xy: 301, 55
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+CaterpillarGun
+  rotate: false
+  xy: 267, 55
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Crystal
+  rotate: false
+  xy: 301, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+CrystalTile
+  rotate: false
+  xy: 247, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+CursorMining
+  rotate: false
+  xy: 1, 39
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+CursorMining64p
+  rotate: false
+  xy: 133, 57
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+CursorMiningVertical
+  rotate: false
+  xy: 403, 89
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+DeepWater
+  rotate: false
+  xy: 157, 3
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+DirtTile
+  rotate: false
+  xy: 211, 21
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+EatenGrass
+  rotate: false
+  xy: 301, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+FardiswallTile
+  rotate: false
+  xy: 193, 21
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+Fire
+  rotate: false
+  xy: 247, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+Firefly
+  rotate: false
+  xy: 479, 53
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+ForrestTile1
+  rotate: false
+  xy: 283, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+ForrestTile4
+  rotate: false
+  xy: 425, 53
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+FreeGrassBottom
+  rotate: false
+  xy: 229, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+FreeGrassTop
+  rotate: false
+  xy: 115, 105
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+Fungus
+  rotate: false
+  xy: 371, 71
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+GrassPlank
+  rotate: false
+  xy: 265, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+Grassfloor
+  rotate: false
+  xy: 443, 71
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+Meat
+  rotate: false
+  xy: 335, 53
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+MossyStone
+  rotate: false
+  xy: 407, 53
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+Mushroom
+  rotate: false
+  xy: 121, 21
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+MushroomBig
+  rotate: false
+  xy: 199, 57
+  size: 32, 64
+  orig: 32, 64
+  offset: 0, 0
+  index: -1
+MushroomCut
+  rotate: false
+  xy: 229, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+MushroomFloor
+  rotate: false
+  xy: 187, 39
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+MushroomPlank
+  rotate: false
+  xy: 425, 71
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+PineneedleFresh
+  rotate: false
+  xy: 479, 71
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+PineneedleOld1
+  rotate: false
+  xy: 103, 21
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+PineneedleTorch1
+  rotate: false
+  xy: 389, 53
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+PineneedleTorch2
+  rotate: false
+  xy: 205, 39
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+Podsol
+  rotate: false
+  xy: 443, 53
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+Quartz
+  rotate: false
+  xy: 175, 21
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+QuartzTile
+  rotate: false
+  xy: 121, 3
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+RedAnt
+  rotate: false
+  xy: 1, 5
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+RedAntVertical
+  rotate: false
+  xy: 35, 5
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+RockyTile
+  rotate: false
+  xy: 139, 21
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+Sand
+  rotate: false
+  xy: 169, 39
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+ScrapIron
+  rotate: false
+  xy: 103, 3
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+SpiderEgg
+  rotate: false
+  xy: 461, 53
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+SpiderR
+  rotate: false
+  xy: 471, 89
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+SpiderRVertical
+  rotate: false
+  xy: 335, 89
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+SpiderTile
+  rotate: false
+  xy: 157, 21
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+Spore
+  rotate: false
+  xy: 193, 3
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+SteelTile
+  rotate: false
+  xy: 353, 53
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+Stone
+  rotate: false
+  xy: 407, 71
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+StoneCornerUpperLeft
+  rotate: false
+  xy: 371, 53
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+StoneCornerUpperRight
+  rotate: false
+  xy: 133, 39
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+StoneMite
+  rotate: false
+  xy: 265, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+StonePileScrapIron
+  rotate: false
+  xy: 437, 89
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+StoneTile
+  rotate: false
+  xy: 139, 3
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+StoneWallBottom1
+  rotate: false
+  xy: 461, 71
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+StoneWallBottom2
+  rotate: false
+  xy: 353, 71
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+StoneWallSideLeft
+  rotate: false
+  xy: 229, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+StoneWallSideRight
+  rotate: false
+  xy: 151, 39
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+StoneWallTop
+  rotate: false
+  xy: 389, 71
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+Stonecrab
+  rotate: false
+  xy: 233, 89
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Stonepile
+  rotate: false
+  xy: 301, 89
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+TransitionWater
+  rotate: false
+  xy: 211, 3
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+Water
+  rotate: false
+  xy: 283, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+WaterDroplet
+  rotate: false
+  xy: 335, 71
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+ZombieAnt
+  rotate: false
+  xy: 369, 89
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+ZombieAntVertical
+  rotate: false
+  xy: 267, 89
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+tempcursor
+  rotate: false
+  xy: 67, 39
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
