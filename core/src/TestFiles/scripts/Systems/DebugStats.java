@@ -66,14 +66,9 @@ public class DebugStats extends System {
 
         frameTimeDebug = new DebugLabel(style, handler.UI, -dbB*(labelOrder++), "FrameTime", profiler, engine, -1);
         highestframeTimeDebug = new DebugLabel(style, handler.UI, -dbB*(labelOrder++), "Highest FrameTime", profiler, engine, -1);
-        labels.add(new DebugLabel(style, handler.UI, -dbB*(labelOrder++),"Renderer function time", profiler, engine, 10 ));
-        labels.add(new DebugLabel(style, handler.UI, -dbB*(labelOrder++),"Tilemap function time", profiler, engine, 20 ));
-        labels.add(new DebugLabel(style, handler.UI, -dbB*(labelOrder++),"Collision detection function time", profiler, engine, 11 ));
-        labels.add(new DebugLabel(style, handler.UI, -dbB*(labelOrder++),"Debugger function time", profiler, engine, 12 ));
-        labels.add(new DebugLabel(style, handler.UI, -dbB*(labelOrder++),"Animation function time", profiler, engine, 13 ));
-        labels.add(new DebugLabel(style, handler.UI, -dbB*(labelOrder++),"Component manager function time", profiler, engine, 14 ));
-        labels.add(new DebugLabel(style, handler.UI, -dbB*(labelOrder++),"Physics function time", profiler, engine, 21 ));
-        labels.add(new DebugLabel(style, handler.UI, -dbB*(labelOrder++),"Light function time", profiler, engine, 22 ));
+        labels.add(new DebugLabel(style, handler.UI, -dbB*(labelOrder++),"CPU", profiler, engine, 23 ));
+        labels.add(new DebugLabel(style, handler.UI, -dbB*(labelOrder++),"GPU", profiler, engine, 24 ));
+
 
         labels.add(new DebugLabel(style, handler.UI, -dbB*(labelOrder++),"Fps", profiler, engine, 0 ));
         labels.add(new DebugLabel(style, handler.UI, -dbB*(labelOrder++),"DrawCalls", profiler, engine, 1 ));
@@ -143,12 +138,29 @@ public class DebugStats extends System {
             }
         });
 
-
         item = new UIItem(handler.UI);
         item.setMargin(10);
         item.floatTop();
         item.floatLeft();
         item.translate(30, (-dbB - 8)*(labelOrder++));
+        debugger = createButton("Post processing",  item.getX(), item.getY());
+        debugger.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+
+
+                engine.postProcessing.active = !engine.postProcessing.active;
+
+
+            }
+        });
+
+
+        item = new UIItem(handler.UI);
+        item.setMargin(10);
+        item.floatTop();
+        item.floatLeft();
+        item.translate(30, (-dbB - 10)*(labelOrder++));
         debugger = createButton("debug Navmesh",  item.getX(), item.getY());
         debugger.addListener(new ChangeListener() {
             @Override
@@ -160,6 +172,43 @@ public class DebugStats extends System {
                 }
             }
         });
+
+        /*item = new UIItem(handler.UI);
+        item.setMargin(10);
+        item.floatTop();
+        item.floatLeft();
+        item.translate(30, (-dbB - 12)*(labelOrder++));
+        debugger = createButton("debug TileData",  item.getX(), item.getY());
+        debugger.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                Debugger s = (Debugger) engine.getSystem(Debugger.class);
+                if (s != null){
+                    s.debugTileData = !s.debugTileData;
+
+                }
+            }
+        });
+
+
+        item = new UIItem(handler.UI);
+        item.setMargin(10);
+        item.floatTop();
+        item.floatLeft();
+        item.translate(30, (-dbB - 13)*(labelOrder++));
+        debugger = createButton("debug Tile heat",  item.getX(), item.getY());
+        debugger.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                Debugger s = (Debugger) engine.getSystem(Debugger.class);
+                if (s != null){
+                    s.debugTileHeat = !s.debugTileHeat;
+
+                }
+            }
+        });*/
+
+
 
 
     }

@@ -1,6 +1,11 @@
 package TestFiles.scripts.Systems;
 
+import EntityEngine.Components.TransformComponent;
 import EntityEngine.Systems.System;
+import TestFiles.scripts.sim.Element;
+import TestFiles.scripts.sim.ElementState;
+import TestFiles.scripts.sim.TileSim;
+import TestFiles.scripts.sim.TileSimManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
@@ -11,6 +16,28 @@ public class InputManager extends System {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
             engine.exit();
         }
+
+        /*if (Gdx.input.isKeyPressed(Input.Keys.M)){
+            TileSimManager tileSimManager = (TileSimManager) engine.getSystem(TileSimManager.class);
+            TransformComponent t = (TransformComponent) engine.getEntity("Player").getComponent(TransformComponent.class);
+            TileSim tileSim = tileSimManager.getTile(t.getOriginX(), t.getOriginY());
+
+            WorldSystem worldSystem = (WorldSystem) engine.getSystem(WorldSystem.class);
+            tileSim.addElement(worldSystem.elementHandler.create(1));
+        }
+
+
+
+        if (Gdx.input.isKeyPressed(Input.Keys.N)){
+
+            TileSimManager tileSimManager = (TileSimManager) engine.getSystem(TileSimManager.class);
+            TransformComponent t = (TransformComponent) engine.getEntity("Player").getComponent(TransformComponent.class);
+            TileSim tileSim = tileSimManager.getTile(t.getOriginX(), t.getOriginY());
+
+            tileSim.addHeat(10);
+            java.lang.System.out.println("Added 50K");
+            java.lang.System.out.println("Total energy: " + tileSimManager.getTotalEnergy());
+        }*/
 
         movement();
     }

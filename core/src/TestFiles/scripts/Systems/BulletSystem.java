@@ -1,13 +1,14 @@
 package TestFiles.scripts.Systems;
 
 import EntityEngine.Components.*;
-import EntityEngine.Entity;
-import EntityEngine.GameClasses.Animation;
+import EntityEngine.Utils.Entity;
+import EntityEngine.Utils.Animation;
 import EntityEngine.Systems.CollisionDetectionSystem;
 import EntityEngine.Systems.NavMesh;
 import EntityEngine.Systems.System;
 import TestFiles.scripts.Components.BulletComponent;
 import TestFiles.scripts.Components.TimerComponent;
+import TestFiles.scripts.sim.TileSimManager;
 import box2dLight.PointLight;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -38,6 +39,7 @@ public class BulletSystem extends System {
 
     TimerSystem timerSystem;
     NavMesh navMesh;
+    TileSimManager tileSimManager;
 
     @Override
     public void onCreate() {
@@ -46,7 +48,7 @@ public class BulletSystem extends System {
         fireAtlas = engine.assetManager.get("atlas/Fire.atlas");
         timerSystem = (TimerSystem) engine.getSystem(TimerSystem.class);
         navMesh = (NavMesh) engine.getSystem(NavMesh.class);
-
+        tileSimManager = (TileSimManager) engine.getSystem(TileSimManager.class);
     }
 
     @Override
@@ -69,12 +71,12 @@ public class BulletSystem extends System {
                 return;
 
             playerTransform = (TransformComponent) player.getComponent(TransformComponent.class);
-            if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
+            /*if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
 
                 e = createProjectile(1, 200,playerTransform, 20, 20, new TextureRegion(atlas.findRegion("Spore")), getbulletVector());
                 engine.addEntity(e);
                 fireTimer = 0;
-            }
+            }*/
 
             if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)){
 
@@ -147,7 +149,7 @@ public class BulletSystem extends System {
             TextureComponent newTex = (TextureComponent) temp.getComponent(TextureComponent.class);
             t = (TransformComponent) temp.getComponent(TransformComponent.class);
             navMesh.freeNode(t.getX(),t.getY());
-
+            //tileSimManager.freeTile(t.getX(),t.getY());
             newTex.setTexture(new TextureRegion(atlas.findRegion("ForrestTile1")));
 
             engine.getSpatialHashGrid().removeEntity(temp);

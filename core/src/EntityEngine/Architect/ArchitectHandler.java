@@ -1,5 +1,5 @@
 package EntityEngine.Architect;
-import EntityEngine.Entity;
+import EntityEngine.Utils.Entity;
 import com.badlogic.gdx.utils.Array;
 
 public class ArchitectHandler {

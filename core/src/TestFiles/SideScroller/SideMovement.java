@@ -1,7 +1,7 @@
 package TestFiles.SideScroller;
 
 import EntityEngine.Components.*;
-import EntityEngine.Entity;
+import EntityEngine.Utils.Entity;
 import EntityEngine.Systems.NetworkManager;
 import EntityEngine.Systems.System;
 import com.badlogic.gdx.Gdx;

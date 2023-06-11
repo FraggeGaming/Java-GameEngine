@@ -1,17 +1,19 @@
 package TestFiles.scripts.Systems;
 
 import EntityEngine.Components.*;
-import EntityEngine.Entity;
-import EntityEngine.GameClasses.Animation;
+import EntityEngine.Utils.Entity;
+import EntityEngine.Utils.Animation;
 import EntityEngine.Components.Node;
-import EntityEngine.GameClasses.TDCamera;
-import EntityEngine.Noise.OpenSimplexNoise;
+import EntityEngine.Utils.TDCamera;
+import EntityEngine.Utils.OpenSimplexNoise;
 import EntityEngine.Systems.*;
 import EntityEngine.Systems.System;
 import TestFiles.scripts.Components.ActorComponent;
 import TestFiles.scripts.Components.StoneCrabLogic;
+import TestFiles.scripts.sim.*;
 import box2dLight.PointLight;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -23,6 +25,7 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.google.gson.Gson;
 
 
 public class WorldSystem extends System {
@@ -37,13 +40,16 @@ public class WorldSystem extends System {
 
     CollisionDetectionSystem col;
     NavMesh navMesh;
+    TileSimManager tileSimManager;
 
+    ElementHandler elementHandler;
     SpriteBatch batch;
 
 
     public WorldSystem(){
         noise = new OpenSimplexNoise(); //for tilemap generation
 
+        elementHandler = new ElementHandler(true);
 
         Pixmap cursorPm = new Pixmap(Gdx.files.internal("tempcursor.png"));
         int xHotSpot = cursorPm.getWidth() ;
@@ -68,6 +74,9 @@ public class WorldSystem extends System {
 
         navMesh = (NavMesh) engine.getSystem(NavMesh.class);
         navMesh.setNodeSize(16);
+
+        //tileSimManager = (TileSimManager) engine.getSystem(TileSimManager.class);
+        //tileSimManager.setTileSize(16);
         batch = new SpriteBatch();
 
         createTileMap();
@@ -87,11 +96,8 @@ public class WorldSystem extends System {
 
 
         Entity e = new Entity();
-        TextureComponent textureComponent = new TextureComponent(new TextureRegion(atlas.findRegion("Branch")));
-
-        e.addComponents(textureComponent);
+        e.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion("Branch"))));
         e.addComponents(new UIElement(0, 0, 1, 500, 100));
-
         ActorComponent actorComponent = new ActorComponent(0, 0, 500, 100);
         actorComponent.actor.setDebug(true);
         actorComponent.actor.addListener(new ClickListener() {
@@ -122,20 +128,12 @@ public class WorldSystem extends System {
         node.setPos(new Vector2(x, y));
         e.addComponents(node);
 
-       /* if (noise > 0f){
-            TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-            cell.setTile(new StaticTiledMapTile(generateWithNoise(noise)));
-            layer.setCell((int)(x/16), (int)(y/16), cell);
+        TileSim tileSim = new TileSim(x,y);
+        while (engine.getRandomInteger(10) > 4){
+            tileSim.addElement(elementHandler.create(1));
+
         }
-
-        else {
-            e.addComponents(new WaterComponent());
-            TextureComponent textureComponent = new TextureComponent(new TextureRegion(atlas.findRegion("Water")));
-            textureComponent.draw = false;
-            e.addComponents(textureComponent);
-            e.addComponents(new TransformComponent(x, y, 0, 16, 16));
-        }*/
-
+        e.addComponents(tileSim);
 
         TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
         cell.setTile(new StaticTiledMapTile(generateWithNoise(noise)));
@@ -265,7 +263,10 @@ public class WorldSystem extends System {
             e.addComponents(box2d);
 
             navMesh.setNodeBlocked(x, y);
-
+            //tileSimManager.setBlocked(x,y);
+            /*TileSim tile = tileSimManager.getTile(x,y);
+            if (tile != null)
+                tile.clearElements();*/
         }
 
         else if (id.equals("Light")){

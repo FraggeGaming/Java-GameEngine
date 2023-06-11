@@ -1,8 +1,7 @@
-package EntityEngine.GameClasses;
+package EntityEngine.Utils;
 
 import EntityEngine.Components.TransformComponent;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 public class TDCamera extends OrthographicCamera {
     TransformComponent cameraTransform;

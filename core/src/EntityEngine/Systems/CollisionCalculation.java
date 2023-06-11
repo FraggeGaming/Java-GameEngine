@@ -1,17 +1,10 @@
 package EntityEngine.Systems;
 
 import EntityEngine.Components.CollisionComponent;
-import EntityEngine.Components.Component;
-import EntityEngine.Engine;
-import EntityEngine.Entity;
 import EntityEngine.Renderer.Cell;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 
-import javax.swing.*;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 

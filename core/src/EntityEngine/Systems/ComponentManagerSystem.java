@@ -2,7 +2,7 @@ package EntityEngine.Systems;
 
 import EntityEngine.Components.Component;
 import EntityEngine.Components.TransformComponent;
-import EntityEngine.Entity;
+import EntityEngine.Utils.Entity;
 import EntityEngine.Renderer.Cell;
 import EntityEngine.Renderer.TransformComparator;
 import com.badlogic.gdx.utils.Array;

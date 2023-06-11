@@ -1,6 +1,5 @@
-package EntityEngine.NetworkClient;
+package EntityEngine.Network.NetworkClient;
 
-import EntityEngine.Network.Packet;
 import EntityEngine.Network.Packet;
 
 import java.io.*;

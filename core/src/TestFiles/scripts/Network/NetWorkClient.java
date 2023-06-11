@@ -3,7 +3,7 @@ package TestFiles.scripts.Network;
 import EntityEngine.Components.CollisionComponent;
 import EntityEngine.Components.TransformComponent;
 import EntityEngine.Components.VelocityComponent;
-import EntityEngine.Entity;
+import EntityEngine.Utils.Entity;
 import EntityEngine.Network.ClientUpdate;
 import EntityEngine.Network.NetWorkData;
 import com.badlogic.gdx.Gdx;

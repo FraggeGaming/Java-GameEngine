@@ -1,4 +1,4 @@
-package EntityEngine.GameClasses;
+package EntityEngine.Utils;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

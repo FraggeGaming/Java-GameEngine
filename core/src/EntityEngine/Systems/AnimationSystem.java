@@ -2,7 +2,7 @@ package EntityEngine.Systems;
 
 import EntityEngine.Architect.Architect;
 import EntityEngine.Components.*;
-import EntityEngine.Entity;
+import EntityEngine.Utils.Entity;
 import EntityEngine.Architect.Type;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

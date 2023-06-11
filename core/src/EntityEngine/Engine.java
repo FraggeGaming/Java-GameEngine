@@ -5,7 +5,11 @@ import EntityEngine.Architect.ArchitectHandler;
 import EntityEngine.Components.Component;
 import EntityEngine.Components.RigidBody2D;
 import EntityEngine.Components.TransformComponent;
-import EntityEngine.GameClasses.TDCamera;
+import EntityEngine.Renderer.PostProcessing;
+import EntityEngine.Utils.DebugTimer;
+import EntityEngine.Utils.Entity;
+import EntityEngine.Utils.Script;
+import EntityEngine.Utils.TDCamera;
 import EntityEngine.Renderer.SpatialHashGrid;
 import EntityEngine.Systems.*;
 import EntityEngine.Systems.System;
@@ -13,6 +17,8 @@ import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -27,6 +33,7 @@ import com.crashinvaders.vfx.effects.ChainVfxEffect;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -63,11 +70,11 @@ public class Engine {
     public TDCamera camera;
     public Batch batch;
     public ArchitectHandler architectHandler;
-    public VfxManager vfxManager;
-    public Array<ChainVfxEffect> effects;
+    public PostProcessing postProcessing;
+    public DebugTimer updateTime;
+    public DebugTimer renderTime;
 
-
-    boolean reset = false;
+    Random random;
 
     public Engine(float width, float height, Script scriptLoader){
         camera = new TDCamera(width, height);
@@ -82,10 +89,12 @@ public class Engine {
 
 
         architectHandler = new ArchitectHandler();
+        postProcessing = new PostProcessing();
 
-        vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
-        effects = new Array<>();
-        vfxManager.setBlendingEnabled(true);
+
+        updateTime = new DebugTimer();
+        renderTime = new DebugTimer();
+        random = new Random();
 
         initSetup();
 
@@ -116,6 +125,7 @@ public class Engine {
 
 
     public void update(float dt){
+        updateTime.startTimer();
 
         spatialHashGrid.calculateSpatialGrid(camera.getCameraTransform());
         batch.setProjectionMatrix(camera.combined);
@@ -129,9 +139,11 @@ public class Engine {
             }
             systems.get(i).endTimer();
         }
+        updateTime.endTimer();
 
+        renderTime.startTimer();
         render(dt);
-
+        renderTime.endTimer();
 
         deleteFlaged();
 
@@ -143,11 +155,12 @@ public class Engine {
         }
     }
 
-    private void render(float dt){
-        ScreenUtils.clear(1, 1, 1, 1f);
 
-        vfxManager.cleanUpBuffers();
-        vfxManager.beginInputCapture();
+    private void render(float dt){
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        
+        postProcessing.beginRender();
 
         //Everything with its own batch mby change later so everything has own batch or uses engine batch
         for (int i = 0; i < systems.size; i++){
@@ -167,10 +180,7 @@ public class Engine {
         }
         batch.end();
 
-        vfxManager.endInputCapture();
-        vfxManager.update(dt);
-        vfxManager.applyEffects();
-        vfxManager.renderToScreen();
+       postProcessing.endRender(dt);
 
         //Post render, rendering with own batch, ex Lights
         for (int i = 0; i < systems.size; i++){
@@ -231,9 +241,6 @@ public class Engine {
         for (int i = 0; i < systems.size; i++){
             systems.get(i).addEntity(entity);
         }
-
-
-
 
     }
 
@@ -302,6 +309,12 @@ public class Engine {
         }
 
         return ints;
+    }
+
+    public int getRandomInteger(int bound){
+        Random random = new Random(java.lang.System.nanoTime());
+        return random.nextInt(bound);
+
     }
 
     public TDCamera getCamera(){
@@ -379,18 +392,11 @@ public class Engine {
         world.dispose();
         lightning.dispose();
 
-        for (int i = 0; i < effects.size; i++){
-            effects.get(i).dispose();
-        }
+        postProcessing.dispose();
 
-        vfxManager.dispose();
 
     }
 
-    public void addEffect(ChainVfxEffect effect){
-        vfxManager.addEffect(effect);
-        effects.add(effect);
-    }
 
     public void addAsset(AssetDescriptor<TextureAtlas> asset) {
         assetManager.load(asset);

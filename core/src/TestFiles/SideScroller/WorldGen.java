@@ -1,10 +1,10 @@
 package TestFiles.SideScroller;
 
 import EntityEngine.Components.*;
-import EntityEngine.Entity;
-import EntityEngine.GameClasses.Animation;
-import EntityEngine.GameClasses.TDCamera;
-import EntityEngine.Noise.OpenSimplexNoise;
+import EntityEngine.Utils.Entity;
+import EntityEngine.Utils.Animation;
+import EntityEngine.Utils.TDCamera;
+import EntityEngine.Utils.OpenSimplexNoise;
 import EntityEngine.Systems.CollisionDetectionSystem;
 import EntityEngine.Systems.System;
 import box2dLight.PointLight;

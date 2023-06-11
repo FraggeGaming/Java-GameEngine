@@ -1,5 +1,6 @@
 package EntityEngine.Components;
 
+import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -10,9 +11,11 @@ public class TransformComponent extends Component {
     Vector3 dim = new Vector3();
     Vector2 scale = new Vector2();
     public float rotation = 0;
+    public Affine2 affine2;
 
     public TransformComponent(float x, float y, float z, float width, float height){
-
+        affine2 = new Affine2();
+        affine2.setToTranslation(x,y);
         dim.x = width;
         dim.y = height;
         vec.set(x, y, z);
@@ -30,9 +33,15 @@ public class TransformComponent extends Component {
 
     }
 
+    public Affine2 getAffine2(){
+        return affine2;
+    }
+
     public void mirror(boolean x, boolean y){
         if (x)
             scale.x *= -1;
+
+
         if (y)
             scale.y *= -1;
 
@@ -82,6 +91,7 @@ public class TransformComponent extends Component {
     public void setPosition(float x, float y){
         vec.x = x;
         vec.y = y;
+        affine2.setToTranslation(x,y);
     }
 
     public void translate(float x, float y){
@@ -101,6 +111,8 @@ public class TransformComponent extends Component {
 
     public void addVelocity(Vector3 v){
         vec.add(v);
+        affine2.m02 += v.x;
+        affine2.m12 += v.y;
 
 
     }
