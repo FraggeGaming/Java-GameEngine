@@ -47,7 +47,7 @@ public class CollisionResolver extends System {
                 logic.setScared(true);
             }
 
-            if (!a.isAlive() && logic.isScared){
+            else if (!a.isAlive()){
                 TextureComponent t = (TextureComponent) sCrab.getComponent(TextureComponent.class);
                 t.setTexture(new TextureRegion(sC.findRegion("Stonepile", 12)));
             }

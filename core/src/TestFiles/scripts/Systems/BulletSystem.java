@@ -149,7 +149,7 @@ public class BulletSystem extends System {
             TextureComponent newTex = (TextureComponent) temp.getComponent(TextureComponent.class);
             t = (TransformComponent) temp.getComponent(TransformComponent.class);
             navMesh.freeNode(t.getX(),t.getY());
-            tileSimManager.freeTile(t.getX(),t.getY());
+            //tileSimManager.freeTile(t.getX(),t.getY());
             newTex.setTexture(new TextureRegion(atlas.findRegion("ForrestTile1")));
 
             engine.getSpatialHashGrid().removeEntity(temp);

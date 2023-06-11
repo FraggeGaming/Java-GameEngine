@@ -17,19 +17,27 @@ public class InputManager extends System {
             engine.exit();
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.M)){
+        /*if (Gdx.input.isKeyPressed(Input.Keys.M)){
             TileSimManager tileSimManager = (TileSimManager) engine.getSystem(TileSimManager.class);
             TransformComponent t = (TransformComponent) engine.getEntity("Player").getComponent(TransformComponent.class);
             TileSim tileSim = tileSimManager.getTile(t.getOriginX(), t.getOriginY());
 
-
-           tileSim.addElement(new Element(1, 5, 1, ElementState.GAS));
+            WorldSystem worldSystem = (WorldSystem) engine.getSystem(WorldSystem.class);
+            tileSim.addElement(worldSystem.elementHandler.create(1));
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.N)){
+
+
+        if (Gdx.input.isKeyPressed(Input.Keys.N)){
+
             TileSimManager tileSimManager = (TileSimManager) engine.getSystem(TileSimManager.class);
-            for (int i = 0; i < 2 ; i++)tileSimManager.sim();
-        }
+            TransformComponent t = (TransformComponent) engine.getEntity("Player").getComponent(TransformComponent.class);
+            TileSim tileSim = tileSimManager.getTile(t.getOriginX(), t.getOriginY());
+
+            tileSim.addHeat(10);
+            java.lang.System.out.println("Added 50K");
+            java.lang.System.out.println("Total energy: " + tileSimManager.getTotalEnergy());
+        }*/
 
         movement();
     }

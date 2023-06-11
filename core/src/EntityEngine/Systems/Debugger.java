@@ -24,6 +24,7 @@ public class Debugger extends System {
     public boolean debug = false;
     public boolean debugNavmesh = false;
     public boolean debugTileData = false;
+    public boolean debugTileHeat = false;
     CollisionDetectionSystem cSystem;
     public HashSet<CollisionComponent> collisionsDebug = new HashSet<>();
     Box2DDebugRenderer debugRenderer;
@@ -59,7 +60,8 @@ public class Debugger extends System {
         drawCells();
         drawBox2D();
         renderNavMesh();
-        renderTileData();
+        //renderTileData();
+        //renderheat();
         shapeRenderer.end();
 
         if (debugBox2D)
@@ -87,19 +89,84 @@ public class Debugger extends System {
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
                     shapeRenderer.setColor(Color.RED);
                 }
-                else if (tileSim.getMass() > 0){
+                else if (tileSim.getPressure()> 0){
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
-                    if (tileSim.getMass() == 1)
+                    if (tileSim.getPressure() == 1)
                         shapeRenderer.setColor(Color.GREEN);
-                    else if (tileSim.getMass() == 2)
+                    else if (tileSim.getPressure() == 2)
                         shapeRenderer.setColor(Color.YELLOW);
-                    else if (tileSim.getMass() == 3)
+                    else if (tileSim.getPressure() == 3)
                         shapeRenderer.setColor(Color.ORANGE);
-                    else if (tileSim.getMass() == 4)
+                    else if (tileSim.getPressure() >= 4)
                         shapeRenderer.setColor(Color.PURPLE);
-                    else if (tileSim.getMass() > 4)
-                        shapeRenderer.setColor(Color.BLUE);
                 }
+
+                shapeRenderer.rect(tileSim.x , tileSim.y , tileSimManager.tileSize, tileSimManager.tileSize);
+
+            }
+        }
+    }
+
+    private void renderPlasma(){
+        if (!debugTileHeat)
+            return;
+
+
+        for (int i = 0; i < tileSimManager.tileMap.size(); i++){
+            for (int j = 0; j < tileSimManager.tileMap.get(i).size(); j++){
+                shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+                TileSim tileSim = tileSimManager.tileMap.get(i).get(j);
+
+                if (tileSim.blocked){
+                    shapeRenderer.setColor(Color.RED);
+
+                    shapeRenderer.rect(tileSim.x , tileSim.y , tileSimManager.tileSize, tileSimManager.tileSize);
+                }
+                else if (tileSim.getPlasma()){
+                    shapeRenderer.setColor(Color.BLUE);
+
+                    shapeRenderer.rect(tileSim.x , tileSim.y , tileSimManager.tileSize, tileSimManager.tileSize);
+
+                }
+
+
+
+            }
+        }
+    }
+
+
+    private void renderheat(){
+        if (!debugTileHeat)
+            return;
+
+
+        for (int i = 0; i < tileSimManager.tileMap.size(); i++){
+            for (int j = 0; j < tileSimManager.tileMap.get(i).size(); j++){
+                shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+                shapeRenderer.setColor(Color.BLACK);
+                TileSim tileSim = tileSimManager.tileMap.get(i).get(j);
+
+                if (tileSim.blocked){
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+                    shapeRenderer.setColor(Color.RED);
+                }
+                else if (tileSim.getE() > 0){
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+                    if (tileSim.getE() >= 20)
+                        shapeRenderer.setColor(Color.GREEN);
+                    if (tileSim.getE() >= 25)
+                        shapeRenderer.setColor(Color.YELLOW);
+                    if (tileSim.getE() >= 30)
+                        shapeRenderer.setColor(Color.ORANGE);
+                    if (tileSim.getE() >= 35)
+                        shapeRenderer.setColor(Color.PURPLE);
+
+                }
+
+                /*if (tileSim.getPlasma()){
+                    shapeRenderer.setColor(Color.BLUE);
+                }*/
 
                 shapeRenderer.rect(tileSim.x , tileSim.y , tileSimManager.tileSize, tileSimManager.tileSize);
 

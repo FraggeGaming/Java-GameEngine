@@ -10,12 +10,10 @@ import EntityEngine.Systems.*;
 import EntityEngine.Systems.System;
 import TestFiles.scripts.Components.ActorComponent;
 import TestFiles.scripts.Components.StoneCrabLogic;
-import TestFiles.scripts.sim.Element;
-import TestFiles.scripts.sim.ElementState;
-import TestFiles.scripts.sim.TileSim;
-import TestFiles.scripts.sim.TileSimManager;
+import TestFiles.scripts.sim.*;
 import box2dLight.PointLight;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -27,12 +25,13 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.google.gson.Gson;
 
 
 public class WorldSystem extends System {
     double scale = 0.06f;
     float z = 1f;
-    int mapSize = 30;
+    int mapSize = 100;
     OpenSimplexNoise noise;
     TextureAtlas atlas;
     TextureAtlas fireAtlas;
@@ -43,13 +42,14 @@ public class WorldSystem extends System {
     NavMesh navMesh;
     TileSimManager tileSimManager;
 
-
+    ElementHandler elementHandler;
     SpriteBatch batch;
 
 
     public WorldSystem(){
         noise = new OpenSimplexNoise(); //for tilemap generation
 
+        elementHandler = new ElementHandler(true);
 
         Pixmap cursorPm = new Pixmap(Gdx.files.internal("tempcursor.png"));
         int xHotSpot = cursorPm.getWidth() ;
@@ -75,8 +75,8 @@ public class WorldSystem extends System {
         navMesh = (NavMesh) engine.getSystem(NavMesh.class);
         navMesh.setNodeSize(16);
 
-        tileSimManager = (TileSimManager) engine.getSystem(TileSimManager.class);
-        tileSimManager.setTileSize(16);
+        //tileSimManager = (TileSimManager) engine.getSystem(TileSimManager.class);
+        //tileSimManager.setTileSize(16);
         batch = new SpriteBatch();
 
         createTileMap();
@@ -96,11 +96,8 @@ public class WorldSystem extends System {
 
 
         Entity e = new Entity();
-        TextureComponent textureComponent = new TextureComponent(new TextureRegion(atlas.findRegion("Branch")));
-
-        e.addComponents(textureComponent);
+        e.addComponents(new TextureComponent(new TextureRegion(atlas.findRegion("Branch"))));
         e.addComponents(new UIElement(0, 0, 1, 500, 100));
-
         ActorComponent actorComponent = new ActorComponent(0, 0, 500, 100);
         actorComponent.actor.setDebug(true);
         actorComponent.actor.addListener(new ClickListener() {
@@ -132,8 +129,9 @@ public class WorldSystem extends System {
         e.addComponents(node);
 
         TileSim tileSim = new TileSim(x,y);
-        while (engine.getRandomInteger(10) > 2){
-            tileSim.addElement(new Element(1, 5, 1, ElementState.GAS));
+        while (engine.getRandomInteger(10) > 4){
+            tileSim.addElement(elementHandler.create(1));
+
         }
         e.addComponents(tileSim);
 
@@ -265,10 +263,10 @@ public class WorldSystem extends System {
             e.addComponents(box2d);
 
             navMesh.setNodeBlocked(x, y);
-            tileSimManager.setBlocked(x,y);
-            TileSim tile = tileSimManager.getTile(x,y);
+            //tileSimManager.setBlocked(x,y);
+            /*TileSim tile = tileSimManager.getTile(x,y);
             if (tile != null)
-                tile.clearElements();
+                tile.clearElements();*/
         }
 
         else if (id.equals("Light")){

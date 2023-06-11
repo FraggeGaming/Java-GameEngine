@@ -13,7 +13,6 @@ public class TileSimManager extends System {
     public int tileSize = 16;
 
 
-
     float updateRate = 5;
     float updateTimer = 0;
     @Override
@@ -65,7 +64,6 @@ public class TileSimManager extends System {
         }
     }
 
-
     public TileSim getTile(float x, float y) {
         if((int)x/tileSize < tileMap.size() && (int)y/tileSize < tileMap.get((int) (x/tileSize)).size())
             return tileMap.get((int)x/tileSize).get((int)y/tileSize);
@@ -96,13 +94,17 @@ public class TileSimManager extends System {
                 simulateTile(i,j);
             }
         }
+        java.lang.System.out.println(getTotalEnergy());
+        //cal();
     }
 
     private void simulateTile(int index, int jndex){
 
         TileSim sim = tileMap.get(index).get(jndex);
 
-        if (sim.volume > 0){
+        sim.heatTransition();
+
+        if (sim.getPressure() > 0){
 
             //TODO: change this,  higher pressure difference, it will try harder to find a tile
             for (int i = 0; i < 5; i++){
@@ -114,17 +116,22 @@ public class TileSimManager extends System {
                     if (x < tileMap.size() && y < tileMap.get(x).size()){
                         TileSim next = tileMap.get(x).get(y);
 
-                        if (!next.blocked){
-                            if (sim.volume > next.volume){
-                                next.addElement(sim.popRandomElement());
-                                //TODO: Change this to a system based on pressure, higher pressure difference, more atoms transfered
-                                if (sim.volume > next.volume){
-                                    next.addElement(sim.popRandomElement());
+                        //TODO heat sensitivity???????
+                        if (sim.heat > next.heat)
+                            next.addHeat(sim.giveHalfOfHeat());
 
+                        if (!next.blocked){
+                            if (sim.getPressure() > next.getPressure()){
+
+                                next.addElement(sim.popRandomAir());
+                                //TODO: Change this to a system based on pressure, higher pressure difference, more atoms transfered
+                                if (sim.getPressure() > next.getPressure()){
+                                    next.addElement(sim.popRandomAir());
                                 }
+
+                                return;
                             }
 
-                            return;
                         }
                     }
 
@@ -133,13 +140,36 @@ public class TileSimManager extends System {
 
         }
 
+
+
+    }
+
+    private void cal(){
+        float s = 0;
+        for (int i = 0; i < tileMap.size(); i++){
+            for (int j = 0; j < tileMap.get(i).size(); j++){
+               s += tileMap.get(i).get(j).getPressure();
+            }
+        }
+
+        java.lang.System.out.println(s);
+    }
+
+    public double getTotalEnergy(){
+        double s = 0;
+        for (int i = 0; i < tileMap.size(); i++){
+            for (int j = 0; j < tileMap.get(i).size(); j++){
+                s += tileMap.get(i).get(j).air.getTotE();
+                s += tileMap.get(i).get(j).heat;
+            }
+        }
+
+        return s;
     }
 
     private int getRandomDir(int index) {
         return index + engine.getRandomInteger(3) -1;
-
     }
-
 
     public void setTileSize(int i) {
         tileSize = i;

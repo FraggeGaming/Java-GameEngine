@@ -1,100 +1,146 @@
 package TestFiles.scripts.sim;
 
 import EntityEngine.Components.Component;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.Gdx;
+
+import java.util.Random;
 
 public class TileSim extends Component {
     public float x,y;
     public boolean blocked = false;
-    private Array<Element> elements;
-
-    float mass = 0;
-    float volume = 0;
+    public final Layer air;
+    private final Layer ground;
+    public double heat = 0;
 
 
     public TileSim(float x, float y){
         this.x = x;
         this.y= y;
+        ground = new Layer();
+        air = new Layer();
+        ground.setAcceptedStates(ElementState.SOLID);
+        ground.setAcceptedStates(ElementState.LIQUID);
 
+        air.setAcceptedStates(ElementState.GAS);
+        air.setAcceptedStates(ElementState.PLASMA);
 
-        elements = new Array<>();
     }
 
-    public float getMass() {
-        return mass;
+    public float getPressure(){
+        return air.getPressure();
+    }
+
+    public float getAirPressure(){
+        return air.getPressure();
     }
 
     public void addElement(Element element){
         if (element == null)
             return;
-        elements.add(element);
-        mass += element.mass;
-        volume += element.volume;
-    }
 
-    public void calculateMass(){
-        mass = 0;
-        for (int i = 0; i < elements.size; i++){
-            mass += elements.get(i).mass;
-        }
+        air.addElement(element);
+
+
     }
 
     public Element popElement(int atomicNum, ElementState state){
+        Element element = new Element(0, 0,"" , atomicNum, state);
 
-        Element element = new Element(0, 0, atomicNum, state);
+        if (state.equals(ElementState.GAS)){
+            return air.popElement(element);
+        }
 
-        for (int i = 0; i < elements.size; i++){
-            if (elements.get(i).equals(element)){
-
-                Element e = elements.removeIndex(i);
-                mass -= e.mass;
-                volume -= e.volume;
-                return e;
-            }
+        else if (state.equals(ElementState.SOLID)){
+            return ground.popElement(element);
         }
 
         return null;
 
-
-
-
     }
 
-    public Element popElement(Element element){
-
-        return popElement(element.atomicNum, element.state);
-
-    }
-
-    public Element popRandomElement(){
-        if (elements.isEmpty())
-            return null;
-
-        return popElement(elements.get(0).atomicNum, elements.get(0).state);
-    }
-
-    private Element getRandomElement(){
-        return elements.get(getRandomInteger(elements.size));
-    }
-
-    public void CalculateVolume(){
-        volume = 0;
-        for (int i = 0; i < elements.size; i++){
-            volume += elements.get(i).volume;
-        }
+    public Element popRandomAir(){
+        return air.popRandomElement();
     }
 
     public void clearElements(){
-        elements.clear();
-        volume = 0;
-        mass = 0;
-    }
-
-    private int getRandomInteger(int bound){
-
-        return 0;
+        air.clearElements();
+        ground.clearElements(); //TODO fix this
 
     }
 
+    public void addHeat(double C){
+        heat += C;
+
+        //Element element = air.checkTransitions(heat);
+
+        //TODO fix this
+        //When added heat, elements change state
+        //However if heat is not added, state should go back?
+
+    }
+
+    public double giveHalfOfHeat(){
+        heat /= 2;
+        return heat;
+    }
+
+
+    public void heatTransition(){
+
+        //This is fixed
+
+        air.applyHeat(heat);
+            //Element element = ground.applyHeat(heat/2);
+
+        heat = 0;
+
+
+            /*if (element != null) {
+                System.out.println("CHANGE");
+                ground.popElement(element);
+                air.addElement(element);
+
+            }*/
+
+
+
+
+        /*else {
+            if (baseHeat + heat < 0){
+                Element element = air.applyHeat((baseHeat + heat )/2);
+                ground.applyHeat((baseHeat + heat )/2);
+
+                heat += Gdx.graphics.getDeltaTime();
+                if (element != null){
+
+                    System.out.println("CHANGE");
+                    air.popElement(element);
+                    ground.addElement(element);
+                }
+            }
+
+        }*/
+
+        heat += air.goToStable();
+
+    }
+    public double getE(){
+
+        return air.getTotE() + heat;
+    }
+
+
+
+    public boolean getPlasma(){
+
+        for (int i = 0; i < air.layer.size; i++){
+            Element element = air.layer.get(i);
+
+            if (element.getIntState() > 2)
+                return true;
+        }
+
+        return false;
+    }
 
 }

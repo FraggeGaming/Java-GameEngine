@@ -59,20 +59,16 @@ public class ScriptLoader extends Script {
 
     public void topDownTest(){
         engine.addSystem(new NavMesh());
-        engine.addSystem(new TileSimManager());
-
+        //engine.addSystem(new TileSimManager());
         engine.addSystem(new StageHandler());
         engine.addSystem(new DebugStats());
-
         engine.addSystem(new BulletSystem());
         engine.addSystem(new TimerSystem());
-
         engine.addSystem(new MovementSystem());
         engine.addSystem(new WorldSystem());
         engine.addSystem(new InputManager());
         engine.addSystem(new CollisionResolver());
         engine.addSystem(new ShaderTest());
-
         engine.addSystem(new WorldChanger());
 
         //engine.addSystem(new NetworkScript());
